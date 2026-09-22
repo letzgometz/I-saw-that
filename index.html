@@ -118,7 +118,7 @@ const S = {
   phase: "loading", user: null, tab: "log", entries: [], pending: [], draft: null,
   openId: null, openPages: null, query: "", lightbox: null, backupText: "", pasteText: "",
   busy: false, adding: false, moving: false, error: "", toast: "", syncing: false,
-  cfg: { key:"", model:"claude-sonnet-5" }, keyDraft: null, modelDraft: null
+  cfg: { key:"", model:"claude-sonnet-5" }, keyDraft: null, modelDraft: null, pageTarget: "tray"
 };
 let db = null, auth = null, unsub = null, unsubCfg = null, toastTimer = null;
 
@@ -251,10 +251,14 @@ async function loadPages(id){
 async function writeShow(rec, pages){
   const b = writeBatch(db);
   b.set(doc(db, "shows", rec.id), clean(rec));
-  (pages||[]).forEach((p, i) => {
-    const v = typeof p === "string" ? { thumb:p, full:p } : p;
-    b.set(doc(db, "shows", rec.id, "pages", pad(i)), { n:i, thumb:v.thumb || v.full, full:v.full || v.thumb });
-  });
+  if (Array.isArray(pages)){
+    const existing = await getDocs(collection(db, "shows", rec.id, "pages"));
+    existing.forEach(p => b.delete(p.ref));          // clear the old set first
+    pages.forEach((p, i) => {
+      const v = typeof p === "string" ? { thumb:p, full:p } : p;
+      b.set(doc(db, "shows", rec.id, "pages", pad(i)), { n:i, thumb:v.thumb || v.full, full:v.full || v.thumb });
+    });
+  }
   return b.commit();
 }
 async function removeShow(id){
@@ -370,9 +374,12 @@ function viewAdd(){
 function viewReview(){
   const d = S.draft, info = d.dateInfo || {};
   const p = precisionOf(d.dateSeen) || d.datePrecision || "day";
-  let h = '<div class="eyebrow">Check before filing</div><div class="card">';
-  if((d.pageViews||[]).length) h += '<div class="strip">' + d.pageViews.map((pg,i) =>
-      '<img src="'+pg.thumb+'" data-act="lightd:'+i+'">').join("") + '</div>';
+  let h = '<div class="eyebrow">'+(d.savedAt ? "Editing" : "Check before filing")+'</div><div class="card">';
+  if((d.pageViews||[]).length) h += '<div class="pages" style="margin-bottom:10px">' + d.pageViews.map((pg,i) =>
+      '<div class="page"><img src="'+pg.thumb+'" data-act="lightd:'+i+'"><span class="num">'+(i+1)+'</span>'
+      + '<button class="x" data-act="rmdpage:'+i+'">&times;</button></div>').join("") + '</div>';
+  h += '<button class="btn ghost" style="margin-bottom:14px" data-act="addtodraft"'+(S.adding?" disabled":"")+'>'
+    + (S.adding ? "Adding pages…" : ((d.pageViews||[]).length ? "Add more program pages" : "Add program pages")) + '</button>';
   h += '<label><span>Show</span><input type="text" data-field="title" value="'+esc(d.title)+'" placeholder="Production title"></label>';
   h += '<div style="background:var(--house);border:1px solid var(--line);border-radius:6px;padding:12px;margin-bottom:14px"><div class="meta" style="margin-bottom:8px">Date you saw it</div>';
   h += info.printed
@@ -393,6 +400,7 @@ function viewReview(){
   h += '<div class="grid2"><label><span>Venue</span><input type="text" data-field="venue" value="'+esc(d.venue)+'"></label>'
     + '<label><span>City</span><input type="text" data-field="city" value="'+esc(d.city)+'"></label></div>'
     + '<label><span>Company</span><input type="text" data-field="company" value="'+esc(d.company)+'"></label>'
+    + '<label><span>Creative team — one per line, “Director: Name”</span><textarea rows="4" data-field="creativesText">'+esc(d.creativesText)+'</textarea></label>'
     + '<label><span>Cast — one per line, “Actor as Role”</span><textarea rows="8" data-field="castText">'+esc(d.castText)+'</textarea></label>'
     + '<label><span>Notes</span><input type="text" data-field="notes" value="'+esc(d.notes)+'" placeholder="Understudy on, seats, who came along"></label>'
     + '<div style="display:flex;gap:10px"><button class="btn" style="margin:0" data-act="save">File this show</button>'
@@ -485,10 +493,17 @@ function newDraft(base){
     id: base.id || newId(), title: base.title||"", company: base.company||"", venue: base.venue||"",
     city: base.city||"", dateSeen: base.dateSeen||"", datePrecision: base.datePrecision||"day",
     dateInfo: base.dateInfo || { exact:"", rangeStart:"", rangeEnd:"", printed:"" },
-    creatives: base.creatives||[], castText: castToText(base.cast), notes: base.notes||"",
+    creativesText: (base.creatives||[]).map(c => (c.role ? c.role + ": " : "") + c.name).join("\n"),
+    castText: castToText(base.cast), notes: base.notes||"",
     pageViews: base.pageViews||[], pagesNew: !!base.pagesNew,
     addedBy: base.addedBy, addedByName: base.addedByName, savedAt: base.savedAt
   };
+}
+function textToCreatives(t){
+  return (t||"").split("\n").filter(l => l.trim()).map(l => {
+    const i = l.indexOf(":");
+    return i>-1 ? { role:l.slice(0,i).trim(), name:l.slice(i+1).trim() } : { role:"", name:l.trim() };
+  });
 }
 
 async function scanPending(){
@@ -522,17 +537,17 @@ function saveDraft(){
   const rec = {
     id:d.id, title:d.title.trim(), company:d.company, venue:d.venue, city:d.city,
     dateSeen:d.dateSeen, datePrecision:precisionOf(d.dateSeen) || d.datePrecision,
-    dateInfo:d.dateInfo, creatives:d.creatives, cast:textToCast(d.castText), notes:d.notes,
+    dateInfo:d.dateInfo, creatives:textToCreatives(d.creativesText), cast:textToCast(d.castText), notes:d.notes,
     pageCount:(d.pageViews||[]).length, savedAt:d.savedAt || Date.now(), updatedAt:Date.now(),
     addedBy:d.addedBy || S.user.email, addedByName:d.addedByName || firstName(S.user)
   };
   if(!isNew) rec.editedBy = firstName(S.user);
-  const pages = d.pagesNew ? d.pageViews : null;
+  const pages = d.pagesNew ? (d.pageViews || []) : null;
   S.draft = null; S.tab = "log";
-  say(rec.title + " filed");
+  say(rec.title + (isNew ? " filed" : " updated"));
   // Firestore shows the change locally at once and syncs in the background, even offline.
-  (pages ? writeShow(rec, pages) : writeShow(rec, []))
-    .catch(err => fail("That show did not reach the shared log: " + (err.message || err.code)));
+  writeShow(rec, pages)
+    .catch(err => fail("That change did not reach the shared log: " + (err.message || err.code)));
 }
 
 async function buildBackup(withPages){
@@ -623,7 +638,13 @@ appEl.addEventListener("click", async ev => {
     return;
   }
   if(act==="movelegacy") return moveLegacy();
-  if(act==="addpages"){ document.getElementById("pageInput").click(); return; }
+  if(act==="addpages"){ S.pageTarget = "tray"; document.getElementById("pageInput").click(); return; }
+  if(act==="addtodraft"){ S.pageTarget = "draft"; document.getElementById("pageInput").click(); return; }
+  if(act==="rmdpage"){
+    S.draft.pageViews = S.draft.pageViews.filter((_, i) => i !== +arg);
+    S.draft.pagesNew = true;
+    return render();
+  }
   if(act==="rmpage"){ S.pending = S.pending.filter(p => p.id!==arg); return render(); }
   if(act==="scan") return scanPending();
   if(act==="manual"){ S.draft = newDraft(null); return render(); }
@@ -687,12 +708,19 @@ appEl.addEventListener("input", ev => {
 document.getElementById("pageInput").addEventListener("change", async ev => {
   const files = Array.from(ev.target.files || []); ev.target.value = "";
   if(!files.length) return;
-  const room = 8 - S.pending.length;
+  const toDraft = S.pageTarget === "draft" && S.draft;
+  const have = toDraft ? (S.draft.pageViews||[]).length : S.pending.length;
+  const room = 8 - have;
   if(room <= 0) return fail("Eight pages is the limit for one show.");
   S.adding = true; S.error = ""; render();
   try {
     const added = await Promise.all(files.slice(0, room).map(preparePage));
-    S.pending = S.pending.concat(added);
+    if (toDraft){
+      S.draft.pageViews = (S.draft.pageViews||[]).concat(added.map(p => ({ thumb:p.thumb, full:p.full })));
+      S.draft.pagesNew = true;
+    } else {
+      S.pending = S.pending.concat(added);
+    }
     if(files.length > room) S.error = "Added " + room + " — eight pages is the limit.";
   } catch(err){ S.error = err.message || "One of those images would not open."; }
   S.adding = false; render();
