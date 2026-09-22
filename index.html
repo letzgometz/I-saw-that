@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#1E1620">
+<title>Curtain Call</title>
+<style>
+  :root{
+    --house:#1E1620; --velvet:#2B1D2C; --line:#43303F;
+    --paper:#F3EDE1; --paperDim:#D9D0C0; --brass:#C9A227; --brassDim:#8C7220; --muted:#A2919F;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--house);color:var(--paper);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-text-size-adjust:100%}
+  body{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+  #app{max-width:720px;margin:0 auto;padding:22px 16px 80px}
+  h1{font-family:Georgia,"Times New Roman",serif;font-size:30px;margin:0;letter-spacing:-.01em}
+  h2{font-family:Georgia,serif;font-size:22px;margin:0 0 2px;line-height:1.2}
+  .serif{font-family:Georgia,serif}
+  .eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:var(--brass);margin-bottom:8px}
+  .meta{font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:var(--muted)}
+  .muted{color:var(--muted)} .dim{color:var(--paperDim)}
+  .small{font-size:13px} .tiny{font-size:11px}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .tabs{display:flex;gap:22px;margin:20px 0 18px}
+  .tab{background:none;border:0;padding:0 0 8px;font:inherit;font-size:11px;text-transform:uppercase;
+    letter-spacing:.16em;color:var(--muted);border-bottom:2px solid transparent;cursor:pointer}
+  .tab.on{color:var(--brass);border-bottom-color:var(--brass)}
+  .card{background:var(--velvet);border:1px solid var(--line);border-radius:8px;padding:16px}
+  .notice{background:var(--velvet);border:1px solid var(--brass);border-radius:8px;padding:12px;margin-bottom:16px;font-size:14px;line-height:1.45}
+  .toast{background:var(--velvet);border:1px solid var(--brassDim);color:var(--brass);
+    border-radius:8px;padding:10px 12px;margin-bottom:16px;font-size:14px}
+  button{font:inherit;cursor:pointer;border-radius:6px}
+  .btn{display:block;width:100%;padding:14px;background:var(--brass);color:var(--house);
+    border:0;font-weight:600;font-size:15px;margin-bottom:10px}
+  .btn.ghost{background:none;border:1px solid var(--line);color:var(--muted);font-weight:400}
+  .btn.outline{background:none;border:1px solid var(--brass);color:var(--brass);font-weight:400}
+  .btn:disabled{opacity:.5;cursor:default}
+  .btn.sm{padding:7px 12px;width:auto;display:inline-block;font-size:12px;margin:0}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  label{display:block;margin-bottom:12px}
+  label span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:5px}
+  input,textarea{width:100%;padding:11px;background:var(--house);color:var(--paper);
+    border:1px solid var(--line);border-radius:6px;font:inherit;font-size:16px;outline:none}
+  textarea{resize:vertical;font-size:14px;line-height:1.5}
+  input:focus,textarea:focus{border-color:var(--brassDim)}
+  .chip{background:none;border:1px solid var(--brassDim);color:var(--brass);padding:6px 10px;font-size:12px;margin:0 6px 6px 0}
+  .seg{background:none;border:1px solid var(--line);color:var(--muted);padding:6px 10px;font-size:12px;margin-right:6px}
+  .seg.on{border-color:var(--brass);color:var(--brass)}
+  .stub{display:flex;align-items:stretch;width:100%;background:var(--velvet);border:1px solid var(--line);
+    border-radius:8px;overflow:hidden;text-align:left;padding:0;margin-bottom:10px;color:inherit}
+  .stub .date{background:var(--house);padding:12px 10px;min-width:76px;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:3px}
+  .stub .perf{width:1px;background-image:repeating-linear-gradient(to bottom,var(--line) 0 5px,transparent 5px 10px)}
+  .stub .body{padding:12px 14px;min-width:0;flex:1}
+  .truncate{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hr{height:1px;margin:14px 0;background-image:repeating-linear-gradient(to right,var(--line) 0 6px,transparent 6px 12px)}
+  .pages{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .page{position:relative;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+  .page img{width:100%;height:84px;object-fit:cover;display:block}
+  .page .num{position:absolute;left:0;bottom:0;background:var(--house);color:var(--brass);font-size:11px;padding:1px 5px}
+  .page .x{position:absolute;top:4px;right:4px;background:var(--house);color:var(--paper);
+    border:0;border-radius:50%;width:22px;height:22px;line-height:1;font-size:14px}
+  .strip{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px}
+  .strip img{height:120px;width:92px;object-fit:cover;border-radius:6px;border:1px solid var(--line);flex:0 0 auto}
+  .kv{display:flex;justify-content:space-between;gap:16px;font-size:14px;padding:4px 0}
+  .stat{background:var(--velvet);border:1px solid var(--line);border-radius:8px;padding:14px}
+  .stat b{font-family:Georgia,serif;font-size:28px;color:var(--brass);font-weight:400;display:block}
+  .lightbox{position:fixed;inset:0;background:rgba(12,8,13,.95);display:flex;align-items:center;
+    justify-content:center;padding:16px;z-index:50}
+  .lightbox img{max-width:100%;max-height:100%;border-radius:6px}
+  .gate{text-align:center;padding:48px 8px}
+  .gate p{max-width:420px;margin:0 auto 20px;line-height:1.5}
+  .spin{display:inline-block;animation:sp 1s linear infinite}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<input type="file" id="pageInput" accept="image/*" multiple class="hidden">
+<input type="file" id="restoreInput" accept="application/json,.json" class="hidden">
+
+<script type="module">
+/* =====================================================================
+   SETUP — paste your Firebase web config below, replacing the whole
+   firebase: { ... } block. It comes from Firebase console → Project
+   settings → Your apps → Web app → "SDK setup and configuration".
+   This config is meant to be public; your Firestore rules are what
+   keep the log private to the two of you.
+   ===================================================================== */
+const CONFIG = {
+  firebase: {
+    apiKey: "AIzaSyCISeGJvEHheRQFfOoZpZb5TPLKEqx1als",
+    authDomain: "i-saw-that-69d03.firebaseapp.com",
+    projectId: "i-saw-that-69d03",
+    storageBucket: "i-saw-that-69d03.firebasestorage.app",
+    messagingSenderId: "822629576979",
+    appId: "1:822629576979:web:26f8709085c31002a8eae6"
+  }
+};
+/* ===================================================================== */
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { initializeFirestore, getFirestore, persistentLocalCache, persistentMultipleTabManager,
+  collection, doc, onSnapshot, getDocs, writeBatch }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* ============ state ============ */
+const S = {
+  phase: "loading", user: null, tab: "log", entries: [], pending: [], draft: null,
+  openId: null, openPages: null, query: "", lightbox: null, backupText: "", pasteText: "",
+  busy: false, adding: false, moving: false, error: "", toast: "", syncing: false
+};
+let db = null, auth = null, unsub = null, toastTimer = null;
+
+function say(msg){ S.toast = msg; render();
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => { S.toast = ""; render(); }, 4000); }
+function fail(msg){ S.error = msg; render(); }
+function firstName(u){ return ((u && (u.displayName || u.email)) || "").split(/[ @]/)[0]; }
+function pad(i){ return String(i).padStart(2, "0"); }
+function newId(){ return "s_" + Date.now() + "_" + Math.random().toString(36).slice(2, 7); }
+function clean(o){ return JSON.parse(JSON.stringify(o)); } // Firestore rejects undefined
+
+/* ============ this browser only: Claude key ============ */
+const LK = { key: "cc:apikey", model: "cc:model", legacy: "cc:entries", legacyPages: "cc:pages:", moved: "cc:moved" };
+function lsGet(k){ try { return localStorage.getItem(k); } catch { return null; } }
+function lsSet(k, v){ try { localStorage.setItem(k, v); return true; } catch { return false; } }
+function apiKey(){ return (lsGet(LK.key) || "").trim(); }
+function apiModel(){ return (lsGet(LK.model) || "claude-sonnet-5").trim(); }
+function legacyLog(){
+  if (lsGet(LK.moved)) return null;
+  try { const l = JSON.parse(lsGet(LK.legacy) || "[]"); return l.length ? l : null; } catch { return null; }
+}
+
+/* ============ dates ============ */
+const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+function precisionOf(v){ if(!v) return null; if(v.length>=10) return "day"; if(v.length===7) return "month"; return "year"; }
+function fmtDate(v){
+  const p = precisionOf(v); if(!p) return "Date not recorded";
+  const a = v.split("-");
+  if(p==="year") return a[0];
+  if(p==="month") return MONTHS[+a[1]-1] + " " + a[0];
+  return MONTHS[+a[1]-1] + " " + (+a[2]) + ", " + a[0];
+}
+function stubParts(v){
+  const p = precisionOf(v);
+  if(!p) return { eyebrow:"", big:"—", sub:"undated" };
+  const a = v.split("-"), mon = (MONTHS[+a[1]-1]||"").slice(0,3).toUpperCase();
+  if(p==="year") return { eyebrow:"", big:a[0], sub:"" };
+  if(p==="month") return { eyebrow:mon, big:a[0], sub:"" };
+  return { eyebrow:mon, big:String(+a[2]), sub:a[0] };
+}
+
+/* ============ images ============ */
+function loadImage(file){
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onerror = () => reject(new Error("Could not read that image."));
+    r.onload = () => { const img = new Image();
+      img.onerror = () => reject(new Error("Could not open that image."));
+      img.onload = () => resolve(img); img.src = r.result; };
+    r.readAsDataURL(file);
+  });
+}
+function encode(img, maxDim, q){
+  const s = Math.min(1, maxDim / Math.max(img.width, img.height));
+  const c = document.createElement("canvas");
+  c.width = Math.round(img.width*s); c.height = Math.round(img.height*s);
+  c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+  return c.toDataURL("image/jpeg", q);
+}
+async function preparePage(file, i){
+  const img = await loadImage(file);
+  let archive = encode(img, 1100, .62);
+  if (archive.length > 850000) archive = encode(img, 800, .55);  // stay under Firestore's 1 MB document limit
+  return { id: "p_" + Date.now() + "_" + i, read: encode(img, 1400, .75), full: archive, thumb: encode(img, 300, .55) };
+}
+
+/* ============ reading a program ============ */
+const PROMPT = 'These images are pages from a single theatre, opera, dance or concert program, in the order they were added. Details are scattered across pages: the title may be on the cover, the run of dates inside, the cast elsewhere, an understudy slip loose in the book. Read every image and merge what you find into one record. When pages disagree, prefer the page specific to this performance (an insert or slip) over the general season book. Return ONLY a JSON object, no markdown fences and no commentary:\n' +
+'{"title":"","company":"","venue":"","city":"","dateInfo":{"exact":"","rangeStart":"","rangeEnd":"","printed":""},"creatives":[{"role":"","name":""}],"cast":[{"actor":"","role":""}],"notes":""}\n' +
+'Rules: title is the production name. company is the producing theatre or opera company if named. dateInfo: hunt for dates everywhere including small print, cover, title page, the run of performances, a season line, and any copyright or issue date. "exact" is YYYY-MM-DD only when one single performance date is printed. "rangeStart" and "rangeEnd" are YYYY-MM-DD when a run or repertory span is printed. "printed" is the date text copied exactly as it appears, for example "March 4-22, 2019" or "2011-2012 Season". Never guess a date that is not printed. creatives: up to 6. cast: up to 40 performers, principals first, with the character each plays. notes: one short line if anything is notable, else "". Use "" for anything unreadable.';
+
+async function readProgram(images){
+  const key = apiKey();
+  if(!key) throw new Error("Add a Claude API key in Season → Settings, or type the show in by hand.");
+  const content = images.map(d => ({ type:"image", source:{ type:"base64", media_type:"image/jpeg", data:d.split(",")[1] } }));
+  content.push({ type:"text", text:PROMPT });
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method:"POST",
+    headers:{ "Content-Type":"application/json", "x-api-key":key, "anthropic-version":"2023-06-01",
+      "anthropic-dangerous-direct-browser-access":"true" },
+    body: JSON.stringify({ model:apiModel(), max_tokens:2000, messages:[{ role:"user", content }] })
+  });
+  if(!res.ok){
+    const t = await res.text();
+    throw new Error(res.status===401 ? "That Claude API key was refused. Check it in Season → Settings."
+      : res.status===402 ? "The Claude account needs credits — add them in the Claude Console."
+      : "The reader could not reach Claude (" + res.status + "). " + t.slice(0,120));
+  }
+  const data = await res.json();
+  const text = (data.content||[]).filter(b => b.type==="text").map(b => b.text).join("\n");
+  const c = text.replace(/```json/g,"").replace(/```/g,"").trim();
+  const a = c.indexOf("{"), b = c.lastIndexOf("}");
+  if(a<0||b<0) throw new Error("Nothing readable came back. Try a brighter, straighter photo.");
+  return JSON.parse(c.slice(a, b+1));
+}
+
+/* ============ helpers ============ */
+function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;")
+  .replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;"); }
+function castToText(cast){ return (cast||[]).map(c => c.actor + (c.role ? " as " + c.role : "")).join("\n"); }
+function textToCast(t){
+  return (t||"").split("\n").filter(l => l.trim()).map(l => {
+    const i = l.toLowerCase().indexOf(" as ");
+    return i>-1 ? { actor:l.slice(0,i).trim(), role:l.slice(i+4).trim() } : { actor:l.trim(), role:"" };
+  });
+}
+function sortEntries(list){ return list.sort((a,b) => (b.dateSeen||"0").localeCompare(a.dateSeen||"0")); }
+function download(text, filename, mime){
+  try { const url = URL.createObjectURL(new Blob([text], { type:mime }));
+    const a = document.createElement("a"); a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000); } catch {}
+}
+function copyText(text){
+  const legacy = () => { try { const ta = document.createElement("textarea");
+      ta.value = text; ta.style.position="fixed"; ta.style.opacity="0";
+      document.body.appendChild(ta); ta.select(); document.execCommand("copy");
+      document.body.removeChild(ta); say("Copied — paste it somewhere safe");
+    } catch { fail("Copying is blocked. Tap the box, select all, and copy by hand."); } };
+  if (navigator.clipboard && navigator.clipboard.writeText)
+    navigator.clipboard.writeText(text).then(() => say("Copied — paste it somewhere safe"), legacy);
+  else legacy();
+}
+
+/* ============ the shared log ============ */
+async function loadPages(id){
+  const snap = await getDocs(collection(db, "shows", id, "pages"));
+  return snap.docs.map(d => d.data()).sort((a,b) => a.n - b.n);
+}
+async function writeShow(rec, pages){
+  const b = writeBatch(db);
+  b.set(doc(db, "shows", rec.id), clean(rec));
+  (pages||[]).forEach((p, i) => {
+    const v = typeof p === "string" ? { thumb:p, full:p } : p;
+    b.set(doc(db, "shows", rec.id, "pages", pad(i)), { n:i, thumb:v.thumb || v.full, full:v.full || v.thumb });
+  });
+  return b.commit();
+}
+async function removeShow(id){
+  const pages = await getDocs(collection(db, "shows", id, "pages"));
+  const b = writeBatch(db);
+  pages.forEach(p => b.delete(p.ref));
+  b.delete(doc(db, "shows", id));
+  return b.commit();
+}
+async function importShows(entries, pagesMap){
+  let n = 0;
+  for (const e of entries){
+    if (!e || !e.id || !e.title) continue;
+    const rec = Object.assign({}, e, {
+      addedBy: e.addedBy || S.user.email, addedByName: e.addedByName || firstName(S.user),
+      pageCount: (pagesMap[e.id] || []).length || e.pageCount || 0
+    });
+    await writeShow(rec, pagesMap[e.id] || []);
+    n++;
+  }
+  return n;
+}
+
+/* ============ views ============ */
+function viewGate(){
+  if (S.phase === "setup") return '<div class="gate"><h1 style="margin-bottom:14px">Curtain Call</h1>'
+    + '<p class="muted">This copy is not connected to Firebase yet. Open index.html, find the CONFIG block near the top of the script, paste in your Firebase web config, and upload it again.</p></div>';
+  if (S.phase === "signin") return '<div class="gate"><h1 style="margin-bottom:14px">Curtain Call</h1>'
+    + '<p class="muted">A shared log of every show you have seen. Sign in to open it.</p>'
+    + '<button class="btn" style="max-width:260px;margin:0 auto" data-act="signin">Sign in with Google</button>'
+    + (S.error ? '<p class="small" style="color:var(--brass);margin-top:18px">'+esc(S.error)+'</p>' : '') + '</div>';
+  if (S.phase === "denied") return '<div class="gate"><h1 style="margin-bottom:14px">Curtain Call</h1>'
+    + '<p class="muted">You are signed in as '+esc(S.user && S.user.email)+', but this account is not allowed into the log. '
+    + 'The allowed addresses are set in the Firestore rules in the Firebase console.</p>'
+    + '<button class="btn ghost" style="max-width:260px;margin:0 auto" data-act="signout">Sign out</button></div>';
+  return '<div class="gate"><p class="muted">Opening the log…</p></div>';
+}
+
+function viewLog(){
+  const q = S.query.trim().toLowerCase();
+  const list = S.entries.filter(e => {
+    if(!q) return true;
+    if([e.title,e.venue,e.city,e.company,e.notes,e.addedByName].join(" ").toLowerCase().includes(q)) return true;
+    return (e.cast||[]).some(c => (c.actor+" "+c.role).toLowerCase().includes(q));
+  });
+  let h = "";
+  const legacy = legacyLog();
+  if (legacy) h += '<div class="notice">This browser still holds '+legacy.length+' show'+(legacy.length===1?"":"s")
+    + ' from the earlier, unshared version. <button class="btn sm" style="margin-top:10px" data-act="movelegacy"'
+    + (S.moving?" disabled":"")+'>'+(S.moving?"Moving…":"Move them into the shared log")+'</button></div>';
+  h += '<label style="margin-bottom:16px"><input type="text" placeholder="Search shows, venues, actors" value="'+esc(S.query)+'" data-field="query"></label>';
+  if(!S.entries.length) return h + '<div class="gate" style="padding:40px 0"><div class="serif" style="font-size:22px;margin-bottom:6px">The log is empty</div>'
+    + '<p class="small muted">Start with the last playbill in your bag.</p>'
+    + '<button class="btn" style="max-width:200px;margin:0 auto" data-act="tab:add">Add a show</button></div>';
+  if(!list.length) return h + '<p class="small muted" style="text-align:center;padding:32px 0">Nothing matches that.</p>';
+  return h + list.map(e => {
+    const s = stubParts(e.dateSeen);
+    let names = (e.cast||[]).slice(0,3).map(c => c.actor).join(", ");
+    if((e.cast||[]).length>3) names += " +" + (e.cast.length-3);
+    return '<button class="stub" data-act="open:'+e.id+'"><div class="date">'
+      + (s.eyebrow ? '<span class="meta" style="color:var(--brass)">'+s.eyebrow+'</span>' : '')
+      + '<span class="serif" style="font-size:'+(s.big.length>2?"17px":"21px")+';line-height:1;'+(s.sub==="undated"?"color:var(--muted)":"")+'">'+esc(s.big)+'</span>'
+      + (s.sub ? '<span class="tiny muted">'+esc(s.sub)+'</span>' : '')
+      + '</div><div class="perf"></div><div class="body">'
+      + '<div class="serif truncate" style="font-size:17px">'+esc(e.title)+'</div>'
+      + '<div class="tiny muted truncate" style="margin-top:4px">'+esc([e.venue,e.city].filter(Boolean).join(" · ") || "Venue not recorded")+'</div>'
+      + (names ? '<div class="tiny dim truncate" style="margin-top:3px">'+esc(names)+'</div>' : '')
+      + '</div></button>';
+  }).join("");
+}
+
+function viewDetail(){
+  const e = S.entries.find(x => x.id===S.openId);
+  if(!e) return '<p class="muted">That show is no longer in the log.</p>';
+  let h = '<button class="tab" style="border:0;margin-bottom:14px" data-act="back">&larr; Back to the log</button><div class="card">';
+  if(S.openPages === null && e.pageCount) h += '<p class="tiny muted">Loading pages…</p>';
+  if((S.openPages||[]).length) h += '<div class="strip">' + S.openPages.map((p,i) =>
+      '<img src="'+p.thumb+'" alt="Page '+(i+1)+'" data-act="light:'+i+'">').join("") + '</div>';
+  h += '<h2>'+esc(e.title)+'</h2>'
+    + '<div class="small muted" style="margin-top:4px">'+esc([e.venue,e.city].filter(Boolean).join(" · "))+'</div>'
+    + '<div class="meta" style="color:var(--brass);margin-top:8px">'+esc(fmtDate(e.dateSeen))+'</div>';
+  if(e.dateInfo && e.dateInfo.printed) h += '<div class="tiny muted" style="margin-top:4px">Program reads: '+esc(e.dateInfo.printed)+'</div>';
+  if(e.company) h += '<div class="small dim" style="margin-top:8px">'+esc(e.company)+'</div>';
+  if(e.notes) h += '<div class="small dim" style="margin-top:8px">'+esc(e.notes)+'</div>';
+  if((e.creatives||[]).length) h += '<div class="hr"></div>' + e.creatives.map(c =>
+      '<div class="kv"><span class="muted">'+esc(c.role)+'</span><span>'+esc(c.name)+'</span></div>').join("");
+  h += '<div class="hr"></div><div class="eyebrow">Cast</div>';
+  h += (e.cast||[]).length ? e.cast.map(c => '<div class="kv"><span>'+esc(c.actor)+'</span><span class="muted" style="text-align:right">'+esc(c.role)+'</span></div>').join("")
+    : '<p class="small muted">No cast recorded.</p>';
+  if(e.addedByName) h += '<p class="tiny muted" style="margin-top:14px">Filed by '+esc(e.addedByName)+(e.editedBy && e.editedBy!==e.addedByName ? ', edited by '+esc(e.editedBy) : '')+'</p>';
+  h += '<div style="display:flex;gap:10px;margin-top:18px">'
+    + '<button class="btn ghost" style="margin:0" data-act="edit"'+(S.openPages===null&&e.pageCount?" disabled":"")+'>Edit</button>'
+    + '<button class="btn ghost" style="margin:0" data-act="del">Remove</button></div></div>';
+  return h;
+}
+
+function viewAdd(){
+  if(S.draft) return viewReview();
+  let h = '<div class="eyebrow">Photograph the program</div>'
+    + '<p class="small muted" style="margin-top:0">Add pages one at a time or in batches — cover, title page, cast list, the run of dates, an understudy slip. Up to eight, read together as one program.</p>';
+  if(S.pending.length) h += '<div class="pages">' + S.pending.map((p,i) =>
+      '<div class="page"><img src="'+p.thumb+'" data-act="lightp:'+i+'"><span class="num">'+(i+1)+'</span>'
+      + '<button class="x" data-act="rmpage:'+p.id+'">&times;</button></div>').join("")
+    + '</div><p class="tiny muted" style="margin:8px 0 14px">'+S.pending.length+' of 8 pages ready.</p>';
+  h += '<button class="btn '+(S.pending.length?"ghost":"outline")+'" data-act="addpages"'+(S.adding||S.busy?" disabled":"")+'>'
+    + (S.adding ? "Adding pages…" : (S.pending.length ? "Add more pages" : "Add photos of the program")) + '</button>';
+  if(S.pending.length) h += '<button class="btn" data-act="scan"'+(S.busy?" disabled":"")+'>'
+    + (S.busy ? '<span class="spin">◠</span> Reading the program…' : "Read " + S.pending.length + (S.pending.length===1?" page":" pages")) + '</button>';
+  h += '<button class="btn ghost" data-act="manual">Type it in instead</button>';
+  return h;
+}
+
+function viewReview(){
+  const d = S.draft, info = d.dateInfo || {};
+  const p = precisionOf(d.dateSeen) || d.datePrecision || "day";
+  let h = '<div class="eyebrow">Check before filing</div><div class="card">';
+  if((d.pageViews||[]).length) h += '<div class="strip">' + d.pageViews.map((pg,i) =>
+      '<img src="'+pg.thumb+'" data-act="lightd:'+i+'">').join("") + '</div>';
+  h += '<label><span>Show</span><input type="text" data-field="title" value="'+esc(d.title)+'" placeholder="Production title"></label>';
+  h += '<div style="background:var(--house);border:1px solid var(--line);border-radius:6px;padding:12px;margin-bottom:14px"><div class="meta" style="margin-bottom:8px">Date you saw it</div>';
+  h += info.printed
+    ? '<p class="small dim" style="margin:0 0 10px">On the program: <span style="color:var(--brass)">'+esc(info.printed)+'</span>'+(info.rangeStart ? ' — a run of performances, so pick the night you were there.' : '')+'</p>'
+    : '<p class="small muted" style="margin:0 0 10px">No date printed on this program. Add what you know — a year alone is fine.</p>';
+  const chips = [];
+  if(info.exact) chips.push(["Use the printed date", info.exact]);
+  if(info.rangeStart) chips.push(["First night · " + fmtDate(info.rangeStart), info.rangeStart]);
+  if(info.rangeEnd && info.rangeEnd !== info.rangeStart) chips.push(["Last night · " + fmtDate(info.rangeEnd), info.rangeEnd]);
+  if(info.rangeStart) chips.push(["Just " + fmtDate(info.rangeStart.slice(0,7)), info.rangeStart.slice(0,7)]);
+  if(chips.length) h += '<div style="margin-bottom:10px">' + chips.map(c => '<button class="chip" data-act="chip:'+c[1]+'">'+esc(c[0])+'</button>').join("") + '</div>';
+  h += '<div style="margin-bottom:10px">' + [["day","Exact day"],["month","Month"],["year","Year only"]].map(o =>
+      '<button class="seg'+(p===o[0]?" on":"")+'" data-act="prec:'+o[0]+'">'+o[1]+'</button>').join("") + '</div>';
+  if(p==="day") h += '<input type="date" data-field="date" value="'+esc(d.dateSeen.length>=10?d.dateSeen:"")+'">';
+  else if(p==="month") h += '<input type="month" data-field="date" value="'+esc(d.dateSeen.length>=7?d.dateSeen.slice(0,7):"")+'">';
+  else h += '<input type="number" data-field="date" min="1850" max="2100" placeholder="1998" value="'+esc(d.dateSeen?d.dateSeen.slice(0,4):"")+'">';
+  h += '<p class="tiny muted" style="margin:8px 0 0">Filed as: <span id="filedAs" style="color:var(--paper)">'+esc(fmtDate(d.dateSeen))+'</span></p></div>';
+  h += '<div class="grid2"><label><span>Venue</span><input type="text" data-field="venue" value="'+esc(d.venue)+'"></label>'
+    + '<label><span>City</span><input type="text" data-field="city" value="'+esc(d.city)+'"></label></div>'
+    + '<label><span>Company</span><input type="text" data-field="company" value="'+esc(d.company)+'"></label>'
+    + '<label><span>Cast — one per line, “Actor as Role”</span><textarea rows="8" data-field="castText">'+esc(d.castText)+'</textarea></label>'
+    + '<label><span>Notes</span><input type="text" data-field="notes" value="'+esc(d.notes)+'" placeholder="Understudy on, seats, who came along"></label>'
+    + '<div style="display:flex;gap:10px"><button class="btn" style="margin:0" data-act="save">File this show</button>'
+    + '<button class="btn ghost" style="margin:0;width:auto;padding:14px 18px" data-act="discard">Discard</button></div></div>';
+  return h;
+}
+
+function viewSeason(){
+  let h = "";
+  if(!S.entries.length) h += '<p class="small muted">Numbers appear once you have filed a show or two.</p>';
+  else {
+    const year = new Date().getFullYear();
+    const thisYear = S.entries.filter(e => (e.dateSeen||"").startsWith(String(year))).length;
+    const titles = new Set(S.entries.map(e => e.title.toLowerCase())).size;
+    const dates = S.entries.map(e => e.dateSeen).filter(Boolean).sort();
+    const tally = fn => { const m = {};
+      S.entries.forEach(e => fn(e).forEach(v => { if(v) m[v] = (m[v]||0)+1; }));
+      return Object.entries(m).sort((a,b) => b[1]-a[1]).slice(0,6); };
+    const list = (title, rows, unit) => '<div style="margin-top:22px"><div class="eyebrow">'+title+'</div>'
+      + (rows.length ? rows.map(r => '<div class="kv" style="border-bottom:1px solid var(--line)"><span class="truncate">'+esc(r[0])
+        + '</span><span class="muted">'+r[1]+' '+unit+(r[1]>1?"s":"")+'</span></div>').join("") : '<p class="small muted">Not recorded yet.</p>') + '</div>';
+    h += '<div class="grid3"><div class="stat"><b>'+S.entries.length+'</b><span class="meta">Total</span></div>'
+      + '<div class="stat"><b>'+thisYear+'</b><span class="meta">In '+year+'</span></div>'
+      + '<div class="stat"><b>'+titles+'</b><span class="meta">Distinct</span></div></div>';
+    if(dates.length) h += '<p class="tiny muted" style="margin-top:12px">Logged from '+esc(fmtDate(dates[0]))+' to '+esc(fmtDate(dates[dates.length-1]))+'.</p>';
+    if(S.entries.length - dates.length > 0) h += '<p class="tiny" style="color:var(--brass);margin-top:4px">'+(S.entries.length-dates.length)+' still undated.</p>';
+    h += list("Most-visited venues", tally(e => [e.venue]), "visit");
+    h += list("Performers seen most", tally(e => (e.cast||[]).map(c => c.actor)), "show");
+    h += list("Filed by", tally(e => [e.addedByName]), "show");
+  }
+  h += '<div style="margin-top:32px;padding-top:20px;border-top:1px solid var(--line)"><div class="eyebrow">The archive</div>'
+    + '<p class="small muted" style="margin-top:0">The log lives in your Firebase database and syncs between both of you. A backup is an extra copy outside it — downloaded as a file, and shown as text you can copy.</p>'
+    + '<div class="grid2" style="margin-bottom:10px"><button class="btn" style="margin:0" data-act="backup:log">Backup — log only</button>'
+    + '<button class="btn outline" style="margin:0" data-act="backup:full">Backup — with pages</button></div>'
+    + '<button class="btn ghost" data-act="csv">Spreadsheet (CSV)</button>';
+  if(S.backupText) h += '<div style="margin:14px 0"><div class="row" style="margin-bottom:8px"><span class="tiny muted">'+(S.backupText.length/1024).toFixed(0)+' KB of text</span><span>'
+    + '<button class="btn sm" data-act="copy">Copy all</button> <button class="btn sm ghost" data-act="closebackup">Close</button></span></div>'
+    + '<textarea rows="6" readonly onfocus="this.select()">'+esc(S.backupText)+'</textarea></div>';
+  h += '<div class="hr"></div><div class="eyebrow">Restore into the shared log</div>'
+    + '<textarea rows="3" data-field="paste" placeholder="Paste a backup here">'+esc(S.pasteText)+'</textarea>'
+    + '<button class="btn ghost" style="margin-top:10px" data-act="restorepaste"'+(S.moving?" disabled":"")+'>Restore from pasted text</button>'
+    + '<button class="btn ghost" data-act="restorefile"'+(S.moving?" disabled":"")+'>Restore from a file</button>';
+  h += '<div class="hr"></div><div class="eyebrow">Settings on this device</div>'
+    + '<p class="small muted" style="margin-top:0">Reading playbills uses a Claude API key, billed to that Anthropic account and stored only in this browser. Each of you enters it once on your own phone.</p>'
+    + '<label><span>Claude API key</span><input type="password" data-field="apikey" value="'+esc(apiKey())+'" placeholder="sk-ant-..." autocomplete="off"></label>'
+    + '<label><span>Model</span><input type="text" data-field="model" value="'+esc(apiModel())+'"></label>'
+    + '<button class="btn ghost" data-act="savekey">Save settings</button>'
+    + '<p class="tiny muted" style="margin-top:14px">Signed in as '+esc(S.user && S.user.email)+'</p>'
+    + '<button class="btn ghost" data-act="signout">Sign out</button></div>';
+  return h;
+}
+
+/* ============ render (keeps typing focus across redraws) ============ */
+function render(){
+  const app = document.getElementById("app");
+  const a = document.activeElement;
+  const field = a && a.getAttribute ? a.getAttribute("data-field") : null;
+  let sel = null; try { sel = field ? [a.selectionStart, a.selectionEnd] : null; } catch {}
+
+  if (S.phase !== "app") { app.innerHTML = viewGate(); return; }
+
+  let body = "";
+  if(S.openId && S.tab==="log") body = viewDetail();
+  else if(S.tab==="log") body = viewLog();
+  else if(S.tab==="add") body = viewAdd();
+  else body = viewSeason();
+
+  let head = '<div class="row"><h1>Curtain Call</h1></div><div class="meta" style="margin:4px 0 16px">'
+    + S.entries.length + (S.entries.length===1 ? " performance" : " performances") + " · shared log"
+    + (S.syncing ? " · syncing…" : " · up to date") + '</div>';
+  if(S.error) head += '<div class="notice"><div class="row"><span>'+esc(S.error)+'</span><button class="btn sm ghost" data-act="clearerr">Dismiss</button></div></div>';
+  if(S.toast) head += '<div class="toast">'+esc(S.toast)+'</div>';
+  const tabs = [["log","The log"],["add","Add a show"],["season","Season"]].map(t =>
+    '<button class="tab'+(S.tab===t[0]?" on":"")+'" data-act="tab:'+t[0]+'">'+t[1]+'</button>').join("");
+  const light = S.lightbox ? '<div class="lightbox" data-act="closelight"><img src="'+S.lightbox+'" alt="Program page"></div>' : "";
+  app.innerHTML = head + '<div class="tabs">'+tabs+'</div>' + body + light;
+
+  if (field){
+    const el = app.querySelector('[data-field="'+field+'"]');
+    if (el){ el.focus(); if (sel) { try { el.setSelectionRange(sel[0], sel[1]); } catch {} } }
+  }
+}
+
+/* ============ actions ============ */
+function newDraft(base){
+  base = base || {};
+  return {
+    id: base.id || newId(), title: base.title||"", company: base.company||"", venue: base.venue||"",
+    city: base.city||"", dateSeen: base.dateSeen||"", datePrecision: base.datePrecision||"day",
+    dateInfo: base.dateInfo || { exact:"", rangeStart:"", rangeEnd:"", printed:"" },
+    creatives: base.creatives||[], castText: castToText(base.cast), notes: base.notes||"",
+    pageViews: base.pageViews||[], pagesNew: !!base.pagesNew,
+    addedBy: base.addedBy, addedByName: base.addedByName, savedAt: base.savedAt
+  };
+}
+
+async function scanPending(){
+  if(!S.pending.length) return;
+  S.busy = true; S.error = ""; render();
+  try {
+    const parsed = await readProgram(S.pending.map(p => p.read));
+    const di = parsed.dateInfo || {};
+    const info = { exact:di.exact||"", rangeStart:di.rangeStart||"", rangeEnd:di.rangeEnd||"", printed:di.printed||"" };
+    let seen = "";
+    if(info.exact) seen = info.exact;
+    else if(info.rangeStart && info.rangeStart.slice(0,7) === (info.rangeEnd||info.rangeStart).slice(0,7)) seen = info.rangeStart.slice(0,7);
+    else if(info.rangeStart) seen = info.rangeStart.slice(0,4);
+    S.draft = newDraft({
+      title:parsed.title, company:parsed.company, venue:parsed.venue, city:parsed.city,
+      dateSeen:seen, dateInfo:info,
+      creatives:(parsed.creatives||[]).filter(c => c && c.name),
+      cast:(parsed.cast||[]).filter(c => c && c.actor),
+      notes:parsed.notes,
+      pageViews:S.pending.map(p => ({ thumb:p.thumb, full:p.full })), pagesNew:true
+    });
+    S.pending = [];
+  } catch(err){ S.error = err.message || "Something went wrong reading that program."; }
+  S.busy = false; render();
+}
+
+function saveDraft(){
+  const d = S.draft;
+  if(!d.title.trim()) return fail("A show needs a title before it goes in the log.");
+  const isNew = !S.entries.some(e => e.id === d.id);
+  const rec = {
+    id:d.id, title:d.title.trim(), company:d.company, venue:d.venue, city:d.city,
+    dateSeen:d.dateSeen, datePrecision:precisionOf(d.dateSeen) || d.datePrecision,
+    dateInfo:d.dateInfo, creatives:d.creatives, cast:textToCast(d.castText), notes:d.notes,
+    pageCount:(d.pageViews||[]).length, savedAt:d.savedAt || Date.now(), updatedAt:Date.now(),
+    addedBy:d.addedBy || S.user.email, addedByName:d.addedByName || firstName(S.user)
+  };
+  if(!isNew) rec.editedBy = firstName(S.user);
+  const pages = d.pagesNew ? d.pageViews : null;
+  S.draft = null; S.tab = "log";
+  say(rec.title + " filed");
+  // Firestore shows the change locally at once and syncs in the background, even offline.
+  (pages ? writeShow(rec, pages) : writeShow(rec, []))
+    .catch(err => fail("That show did not reach the shared log: " + (err.message || err.code)));
+}
+
+async function buildBackup(withPages){
+  const payload = { app:"curtain-call", version:2, exportedAt:new Date().toISOString(), entries:S.entries, pages:{} };
+  if(withPages) for (const e of S.entries){
+    if(e.pageCount) payload.pages[e.id] = (await loadPages(e.id)).map(p => ({ thumb:p.thumb, full:p.full }));
+  }
+  return JSON.stringify(payload);
+}
+
+async function restoreFromText(text){
+  let data;
+  try { data = JSON.parse(text); } catch { return fail("That text is not a Curtain Call backup."); }
+  if(!data || !Array.isArray(data.entries)) return fail("That text is not a Curtain Call backup.");
+  S.moving = true; S.error = ""; render();
+  try {
+    const n = await importShows(data.entries, data.pages || {});
+    S.pasteText = "";
+    say("Restored " + n + " show" + (n===1?"":"s") + " into the shared log");
+  } catch(err){ S.error = "Restore stopped partway: " + (err.message || err.code); }
+  S.moving = false; render();
+}
+
+async function moveLegacy(){
+  const list = legacyLog(); if(!list) return;
+  const pages = {};
+  list.forEach(e => { try { const p = JSON.parse(lsGet(LK.legacyPages + e.id) || "null"); if(p && p.length) pages[e.id] = p; } catch {} });
+  S.moving = true; render();
+  try {
+    const n = await importShows(list, pages);
+    lsSet(LK.moved, String(Date.now()));
+    say("Moved " + n + " show" + (n===1?"":"s") + " into the shared log");
+  } catch(err){ S.error = "The move stopped partway: " + (err.message || err.code) + ". Tap it again to finish."; }
+  S.moving = false; render();
+}
+
+function exportCsv(){
+  const rows = [["Date seen","Printed on program","Title","Venue","City","Company","Cast","Notes","Filed by"]];
+  S.entries.forEach(e => rows.push([e.dateSeen, (e.dateInfo&&e.dateInfo.printed)||"", e.title, e.venue, e.city, e.company,
+    (e.cast||[]).map(c => c.actor + (c.role?" as "+c.role:"")).join("; "), e.notes, e.addedByName]));
+  S.backupText = rows.map(r => r.map(v => '"' + String(v==null?"":v).replace(/"/g,'""') + '"').join(",")).join("\n");
+  download(S.backupText, "curtain-call.csv", "text/csv");
+  render();
+}
+
+function authMessage(err){
+  const c = err && err.code;
+  if (c === "auth/unauthorized-domain") return "This web address is not on Firebase's list yet. In Firebase → Authentication → Settings → Authorized domains, add " + location.hostname + ".";
+  if (c === "auth/popup-blocked") return "The sign-in window was blocked. Allow pop-ups for this site, or open it in Safari rather than from the home-screen icon.";
+  if (c === "auth/operation-not-allowed") return "Google sign-in is not switched on. In Firebase → Authentication → Sign-in method, enable Google.";
+  return (err && err.message) || "Sign-in did not work.";
+}
+
+/* ============ events ============ */
+const appEl = document.getElementById("app");
+
+appEl.addEventListener("click", async ev => {
+  const el = ev.target.closest("[data-act]"); if(!el) return;
+  const [act, ...rest] = el.getAttribute("data-act").split(":");
+  const arg = rest.join(":");
+
+  if(act==="signin"){
+    S.error = "";
+    try { await signInWithPopup(auth, new GoogleAuthProvider()); }
+    catch(err){ if(err.code !== "auth/popup-closed-by-user" && err.code !== "auth/cancelled-popup-request") { S.error = authMessage(err); render(); } }
+    return;
+  }
+  if(act==="signout"){ await signOut(auth); return; }
+  if(act==="tab"){ S.tab = arg; S.openId = null; S.error = ""; return render(); }
+  if(act==="clearerr"){ S.error = ""; return render(); }
+  if(act==="open"){
+    S.openId = arg; S.openPages = null; render();
+    try { S.openPages = await loadPages(arg); } catch { S.openPages = []; }
+    if (S.openId === arg) render();
+    return;
+  }
+  if(act==="back"){ S.openId = null; S.openPages = null; return render(); }
+  if(act==="edit"){
+    const e = S.entries.find(x => x.id===S.openId);
+    S.draft = newDraft(Object.assign({}, e, { pageViews:(S.openPages||[]).map(p => ({ thumb:p.thumb, full:p.full })), pagesNew:false }));
+    S.openId = null; S.tab = "add"; return render();
+  }
+  if(act==="del"){
+    if(!confirm("Remove this show from the shared log? It disappears for both of you.")) return;
+    const id = S.openId; S.openId = null; S.openPages = null;
+    say("Removed");
+    removeShow(id).catch(err => fail("Could not remove it: " + (err.message || err.code)));
+    return;
+  }
+  if(act==="movelegacy") return moveLegacy();
+  if(act==="addpages"){ document.getElementById("pageInput").click(); return; }
+  if(act==="rmpage"){ S.pending = S.pending.filter(p => p.id!==arg); return render(); }
+  if(act==="scan") return scanPending();
+  if(act==="manual"){ S.draft = newDraft(null); return render(); }
+  if(act==="save") return saveDraft();
+  if(act==="discard"){ S.draft = null; S.error = ""; return render(); }
+  if(act==="prec"){
+    const v = S.draft.dateSeen;
+    if(v){
+      if(arg==="year") S.draft.dateSeen = v.slice(0,4);
+      else if(arg==="month") S.draft.dateSeen = v.length>=7 ? v.slice(0,7) : v.slice(0,4)+"-01";
+      else S.draft.dateSeen = v.length>=10 ? v : (v.length===7 ? v : v.slice(0,4)+"-01") + "-01";
+    }
+    S.draft.datePrecision = arg; return render();
+  }
+  if(act==="chip"){ S.draft.dateSeen = arg; S.draft.datePrecision = precisionOf(arg); return render(); }
+  if(act==="light"){ S.lightbox = (S.openPages||[])[+arg].full; return render(); }
+  if(act==="lightp"){ S.lightbox = S.pending[+arg].full; return render(); }
+  if(act==="lightd"){ S.lightbox = S.draft.pageViews[+arg].full; return render(); }
+  if(act==="closelight"){ S.lightbox = null; return render(); }
+  if(act==="backup"){
+    if(!S.entries.length) return fail("Nothing to back up yet.");
+    say(arg==="full" ? "Gathering every page…" : "Preparing backup…");
+    S.backupText = await buildBackup(arg==="full");
+    download(S.backupText, "curtain-call-" + new Date().toISOString().slice(0,10) + ".json", "application/json");
+    return render();
+  }
+  if(act==="csv") return exportCsv();
+  if(act==="copy") return copyText(S.backupText);
+  if(act==="closebackup"){ S.backupText = ""; return render(); }
+  if(act==="restorepaste") return restoreFromText(S.pasteText);
+  if(act==="restorefile"){ document.getElementById("restoreInput").click(); return; }
+  if(act==="savekey"){
+    const k = appEl.querySelector('[data-field="apikey"]'), m = appEl.querySelector('[data-field="model"]');
+    const ok = lsSet(LK.key, k ? k.value.trim() : "") && lsSet(LK.model, (m && m.value.trim()) || "claude-sonnet-5");
+    return ok ? say("Settings saved on this device") : fail("Could not save settings — this browser is blocking storage.");
+  }
+});
+
+appEl.addEventListener("input", ev => {
+  const f = ev.target.getAttribute("data-field"); if(!f) return;
+  const val = ev.target.value;
+  if(f==="query"){ S.query = val; return render(); }
+  if(f==="paste"){ S.pasteText = val; return; }
+  if(f==="apikey" || f==="model") return;
+  if(!S.draft) return;
+  if(f==="date"){
+    S.draft.dateSeen = S.draft.datePrecision==="year" ? val.slice(0,4) : val;
+    const fa = document.getElementById("filedAs"); if(fa) fa.textContent = fmtDate(S.draft.dateSeen);
+    return;
+  }
+  S.draft[f] = val;
+});
+
+document.getElementById("pageInput").addEventListener("change", async ev => {
+  const files = Array.from(ev.target.files || []); ev.target.value = "";
+  if(!files.length) return;
+  const room = 8 - S.pending.length;
+  if(room <= 0) return fail("Eight pages is the limit for one show.");
+  S.adding = true; S.error = ""; render();
+  try {
+    const added = await Promise.all(files.slice(0, room).map(preparePage));
+    S.pending = S.pending.concat(added);
+    if(files.length > room) S.error = "Added " + room + " — eight pages is the limit.";
+  } catch(err){ S.error = err.message || "One of those images would not open."; }
+  S.adding = false; render();
+});
+
+document.getElementById("restoreInput").addEventListener("change", ev => {
+  const file = (ev.target.files || [])[0]; ev.target.value = "";
+  if(!file) return;
+  const r = new FileReader();
+  r.onload = () => restoreFromText(r.result);
+  r.onerror = () => fail("That file could not be opened.");
+  r.readAsText(file);
+});
+
+/* ============ boot ============ */
+const configured = CONFIG.firebase.projectId && !String(CONFIG.firebase.apiKey).startsWith("PASTE");
+if (!configured) { S.phase = "setup"; render(); }
+else {
+  const fb = initializeApp(CONFIG.firebase);
+  auth = getAuth(fb);
+  try { db = initializeFirestore(fb, { localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }) }); }
+  catch { db = getFirestore(fb); }
+  render();
+
+  onAuthStateChanged(auth, user => {
+    if (unsub) { unsub(); unsub = null; }
+    S.user = user; S.entries = []; S.openId = null; S.draft = null;
+    if (!user) { S.phase = "signin"; return render(); }
+    S.phase = "loading"; render();
+    unsub = onSnapshot(collection(db, "shows"), { includeMetadataChanges: true }, snap => {
+      S.entries = sortEntries(snap.docs.map(d => d.data()));
+      S.syncing = snap.metadata.hasPendingWrites;
+      S.phase = "app";
+      // don't yank the form out from under someone mid-edit
+      if (!(S.tab === "add" && S.draft)) render();
+    }, err => {
+      if (err.code === "permission-denied") { S.phase = "denied"; render(); }
+      else { S.phase = "app"; fail("Could not open the shared log: " + (err.message || err.code)); }
+    });
+  });
+}
+</script>
+</body>
+</html>
