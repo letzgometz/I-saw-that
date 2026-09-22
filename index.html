@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#1E1620">
-<title>Curtain Call</title>
+<title>I Saw That</title>
 <style>
   :root{
     --house:#1E1620; --velvet:#2B1D2C; --line:#43303F;
@@ -279,13 +279,13 @@ async function importShows(entries, pagesMap){
 
 /* ============ views ============ */
 function viewGate(){
-  if (S.phase === "setup") return '<div class="gate"><h1 style="margin-bottom:14px">Curtain Call</h1>'
+  if (S.phase === "setup") return '<div class="gate"><h1 style="margin-bottom:14px">I Saw That</h1>'
     + '<p class="muted">This copy is not connected to Firebase yet. Open index.html, find the CONFIG block near the top of the script, paste in your Firebase web config, and upload it again.</p></div>';
-  if (S.phase === "signin") return '<div class="gate"><h1 style="margin-bottom:14px">Curtain Call</h1>'
+  if (S.phase === "signin") return '<div class="gate"><h1 style="margin-bottom:14px">I Saw That</h1>'
     + '<p class="muted">A shared log of every show you have seen. Sign in to open it.</p>'
     + '<button class="btn" style="max-width:260px;margin:0 auto" data-act="signin">Sign in with Google</button>'
     + (S.error ? '<p class="small" style="color:var(--brass);margin-top:18px">'+esc(S.error)+'</p>' : '') + '</div>';
-  if (S.phase === "denied") return '<div class="gate"><h1 style="margin-bottom:14px">Curtain Call</h1>'
+  if (S.phase === "denied") return '<div class="gate"><h1 style="margin-bottom:14px">I Saw That</h1>'
     + '<p class="muted">You are signed in as '+esc(S.user && S.user.email)+', but this account is not allowed into the log. '
     + 'The allowed addresses are set in the Firestore rules in the Firebase console.</p>'
     + '<button class="btn ghost" style="max-width:260px;margin:0 auto" data-act="signout">Sign out</button></div>';
@@ -459,7 +459,7 @@ function render(){
   else if(S.tab==="add") body = viewAdd();
   else body = viewSeason();
 
-  let head = '<div class="row"><h1>Curtain Call</h1></div><div class="meta" style="margin:4px 0 16px">'
+  let head = '<div class="row"><h1>I Saw That</h1></div><div class="meta" style="margin:4px 0 16px">'
     + S.entries.length + (S.entries.length===1 ? " performance" : " performances") + " · shared log"
     + (S.syncing ? " · syncing…" : " · up to date") + '</div>';
   if(S.error) head += '<div class="notice"><div class="row"><span>'+esc(S.error)+'</span><button class="btn sm ghost" data-act="clearerr">Dismiss</button></div></div>';
@@ -533,7 +533,7 @@ function saveDraft(){
 }
 
 async function buildBackup(withPages){
-  const payload = { app:"curtain-call", version:2, exportedAt:new Date().toISOString(), entries:S.entries, pages:{} };
+  const payload = { app:"i-saw-that", version:2, exportedAt:new Date().toISOString(), entries:S.entries, pages:{} };
   if(withPages) for (const e of S.entries){
     if(e.pageCount) payload.pages[e.id] = (await loadPages(e.id)).map(p => ({ thumb:p.thumb, full:p.full }));
   }
@@ -542,8 +542,8 @@ async function buildBackup(withPages){
 
 async function restoreFromText(text){
   let data;
-  try { data = JSON.parse(text); } catch { return fail("That text is not a Curtain Call backup."); }
-  if(!data || !Array.isArray(data.entries)) return fail("That text is not a Curtain Call backup.");
+  try { data = JSON.parse(text); } catch { return fail("That text is not a backup file."); }
+  if(!data || !Array.isArray(data.entries)) return fail("That text is not a backup file.");
   S.moving = true; S.error = ""; render();
   try {
     const n = await importShows(data.entries, data.pages || {});
@@ -571,7 +571,7 @@ function exportCsv(){
   S.entries.forEach(e => rows.push([e.dateSeen, (e.dateInfo&&e.dateInfo.printed)||"", e.title, e.venue, e.city, e.company,
     (e.cast||[]).map(c => c.actor + (c.role?" as "+c.role:"")).join("; "), e.notes, e.addedByName]));
   S.backupText = rows.map(r => r.map(v => '"' + String(v==null?"":v).replace(/"/g,'""') + '"').join(",")).join("\n");
-  download(S.backupText, "curtain-call.csv", "text/csv");
+  download(S.backupText, "i-saw-that.csv", "text/csv");
   render();
 }
 
@@ -644,7 +644,7 @@ appEl.addEventListener("click", async ev => {
     if(!S.entries.length) return fail("Nothing to back up yet.");
     say(arg==="full" ? "Gathering every page…" : "Preparing backup…");
     S.backupText = await buildBackup(arg==="full");
-    download(S.backupText, "curtain-call-" + new Date().toISOString().slice(0,10) + ".json", "application/json");
+    download(S.backupText, "i-saw-that-" + new Date().toISOString().slice(0,10) + ".json", "application/json");
     return render();
   }
   if(act==="csv") return exportCsv();
