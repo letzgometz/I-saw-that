@@ -187,8 +187,8 @@ async function preparePage(file, i){
 
 /* ============ reading a program ============ */
 const PROMPT = 'These images are pages from a single theatre, opera, dance or concert program, in the order they were added. Details are scattered across pages: the title may be on the cover, the run of dates inside, the cast elsewhere, an understudy slip loose in the book. Read every image and merge what you find into one record. When pages disagree, prefer the page specific to this performance (an insert or slip) over the general season book. Return ONLY a JSON object, no markdown fences and no commentary:\n' +
-'{"title":"","company":"","venue":"","city":"","dateInfo":{"exact":"","rangeStart":"","rangeEnd":"","printed":""},"creatives":[{"role":"","name":""}],"cast":[{"actor":"","role":""}],"notes":""}\n' +
-'Rules: title is the production name. company is the producing theatre or opera company if named. dateInfo: hunt for dates everywhere including small print, cover, title page, the run of performances, a season line, and any copyright or issue date. "exact" is YYYY-MM-DD only when one single performance date is printed. "rangeStart" and "rangeEnd" are YYYY-MM-DD when a run or repertory span is printed. "printed" is the date text copied exactly as it appears, for example "March 4-22, 2019" or "2011-2012 Season". Never guess a date that is not printed. creatives: up to 6. cast: up to 40 performers, principals first, with the character each plays. notes: one short line if anything is notable, else "". Use "" for anything unreadable.';
+'{"title":"","company":"","venue":"","city":"","dateInfo":{"exact":"","rangeStart":"","rangeEnd":"","printed":""},"creatives":[{"role":"","name":""}],"cast":[{"actor":"","role":""}],"understudies":[{"actor":"","role":""}],"notes":""}\n' +
+'Rules: title is the production name. company is the producing theatre or opera company if named. dateInfo: hunt for dates everywhere including small print, cover, title page, the run of performances, a season line, and any copyright or issue date. "exact" is YYYY-MM-DD only when one single performance date is printed. "rangeStart" and "rangeEnd" are YYYY-MM-DD when a run or repertory span is printed. "printed" is the date text copied exactly as it appears, for example "March 4-22, 2019" or "2011-2012 Season". Never guess a date that is not printed. creatives: up to 6. cast: up to 40 performers who appeared, principals first, with the character each plays. understudies: up to 25 entries from the understudy, standby, swing or cover list, each with the performer and the role or roles they cover; leave empty if no such list is printed. IMPORTANT: if a loose slip or insert announces that a role is played by someone else at this performance, put that performer in "cast" for that role instead of the printed name, and say so plainly in "notes", for example "Slip: Elphaba played by Jane Doe". notes: one short line, else "". Use "" for anything unreadable.';
 
 async function readProgram(images){
   const key = apiKey();
@@ -302,7 +302,7 @@ function viewLog(){
   const list = S.entries.filter(e => {
     if(!q) return true;
     if([e.title,e.venue,e.city,e.company,e.notes,e.addedByName].join(" ").toLowerCase().includes(q)) return true;
-    return (e.cast||[]).some(c => (c.actor+" "+c.role).toLowerCase().includes(q));
+    return (e.cast||[]).concat(e.understudies||[]).some(c => (c.actor+" "+c.role).toLowerCase().includes(q));
   });
   let h = "";
   const legacy = legacyLog();
@@ -348,6 +348,8 @@ function viewDetail(){
   h += '<div class="hr"></div><div class="eyebrow">Cast</div>';
   h += (e.cast||[]).length ? e.cast.map(c => '<div class="kv"><span>'+esc(c.actor)+'</span><span class="muted" style="text-align:right">'+esc(c.role)+'</span></div>').join("")
     : '<p class="small muted">No cast recorded.</p>';
+  if((e.understudies||[]).length) h += '<div class="hr"></div><div class="eyebrow">Understudies and standbys</div>'
+    + e.understudies.map(c => '<div class="kv"><span class="muted">'+esc(c.actor)+'</span><span class="muted" style="text-align:right">'+esc(c.role)+'</span></div>').join("");
   if(e.addedByName) h += '<p class="tiny muted" style="margin-top:14px">Filed by '+esc(e.addedByName)+(e.editedBy && e.editedBy!==e.addedByName ? ', edited by '+esc(e.editedBy) : '')+'</p>';
   h += '<div style="display:flex;gap:10px;margin-top:18px">'
     + '<button class="btn ghost" style="margin:0" data-act="edit"'+(S.openPages===null&&e.pageCount?" disabled":"")+'>Edit</button>'
@@ -402,6 +404,7 @@ function viewReview(){
     + '<label><span>Company</span><input type="text" data-field="company" value="'+esc(d.company)+'"></label>'
     + '<label><span>Creative team — one per line, “Director: Name”</span><textarea rows="4" data-field="creativesText">'+esc(d.creativesText)+'</textarea></label>'
     + '<label><span>Cast — one per line, “Actor as Role”</span><textarea rows="8" data-field="castText">'+esc(d.castText)+'</textarea></label>'
+    + '<label><span>Understudies and standbys — “Actor as Role”</span><textarea rows="5" data-field="understudyText">'+esc(d.understudyText)+'</textarea></label>'
     + '<label><span>Notes</span><input type="text" data-field="notes" value="'+esc(d.notes)+'" placeholder="Understudy on, seats, who came along"></label>'
     + '<div style="display:flex;gap:10px"><button class="btn" style="margin:0" data-act="save">File this show</button>'
     + '<button class="btn ghost" style="margin:0;width:auto;padding:14px 18px" data-act="discard">Discard</button></div></div>';
@@ -494,7 +497,7 @@ function newDraft(base){
     city: base.city||"", dateSeen: base.dateSeen||"", datePrecision: base.datePrecision||"day",
     dateInfo: base.dateInfo || { exact:"", rangeStart:"", rangeEnd:"", printed:"" },
     creativesText: (base.creatives||[]).map(c => (c.role ? c.role + ": " : "") + c.name).join("\n"),
-    castText: castToText(base.cast), notes: base.notes||"",
+    castText: castToText(base.cast), understudyText: castToText(base.understudies), notes: base.notes||"",
     pageViews: base.pageViews||[], pagesNew: !!base.pagesNew,
     addedBy: base.addedBy, addedByName: base.addedByName, savedAt: base.savedAt
   };
@@ -522,6 +525,7 @@ async function scanPending(){
       dateSeen:seen, dateInfo:info,
       creatives:(parsed.creatives||[]).filter(c => c && c.name),
       cast:(parsed.cast||[]).filter(c => c && c.actor),
+      understudies:(parsed.understudies||[]).filter(c => c && c.actor),
       notes:parsed.notes,
       pageViews:S.pending.map(p => ({ thumb:p.thumb, full:p.full })), pagesNew:true
     });
@@ -537,7 +541,8 @@ function saveDraft(){
   const rec = {
     id:d.id, title:d.title.trim(), company:d.company, venue:d.venue, city:d.city,
     dateSeen:d.dateSeen, datePrecision:precisionOf(d.dateSeen) || d.datePrecision,
-    dateInfo:d.dateInfo, creatives:textToCreatives(d.creativesText), cast:textToCast(d.castText), notes:d.notes,
+    dateInfo:d.dateInfo, creatives:textToCreatives(d.creativesText), cast:textToCast(d.castText),
+    understudies:textToCast(d.understudyText), notes:d.notes,
     pageCount:(d.pageViews||[]).length, savedAt:d.savedAt || Date.now(), updatedAt:Date.now(),
     addedBy:d.addedBy || S.user.email, addedByName:d.addedByName || firstName(S.user)
   };
@@ -585,9 +590,10 @@ async function moveLegacy(){
 }
 
 function exportCsv(){
-  const rows = [["Date seen","Printed on program","Title","Venue","City","Company","Cast","Notes","Filed by"]];
+  const rows = [["Date seen","Printed on program","Title","Venue","City","Company","Cast","Understudies","Notes","Filed by"]];
   S.entries.forEach(e => rows.push([e.dateSeen, (e.dateInfo&&e.dateInfo.printed)||"", e.title, e.venue, e.city, e.company,
-    (e.cast||[]).map(c => c.actor + (c.role?" as "+c.role:"")).join("; "), e.notes, e.addedByName]));
+    (e.cast||[]).map(c => c.actor + (c.role?" as "+c.role:"")).join("; "),
+    (e.understudies||[]).map(c => c.actor + (c.role?" as "+c.role:"")).join("; "), e.notes, e.addedByName]));
   S.backupText = rows.map(r => r.map(v => '"' + String(v==null?"":v).replace(/"/g,'""') + '"').join(",")).join("\n");
   download(S.backupText, "i-saw-that.csv", "text/csv");
   render();
