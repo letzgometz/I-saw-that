@@ -118,7 +118,8 @@ const S = {
   phase: "loading", user: null, tab: "log", entries: [], pending: [], draft: null,
   openId: null, openPages: null, query: "", lightbox: null, backupText: "", pasteText: "",
   busy: false, adding: false, moving: false, error: "", toast: "", syncing: false,
-  cfg: { key:"", model:"claude-sonnet-5" }, keyDraft: null, modelDraft: null, pageTarget: "tray"
+  cfg: { key:"", model:"claude-sonnet-5" }, keyDraft: null, modelDraft: null, pageTarget: "tray",
+  kindFilter: "All", sort: "new"
 };
 let db = null, auth = null, unsub = null, unsubCfg = null, toastTimer = null;
 
@@ -186,9 +187,11 @@ async function preparePage(file, i){
 }
 
 /* ============ reading a program ============ */
+const KINDS = ["Theatre", "Musical", "Opera", "Classical", "Jazz", "Cabaret", "Dance", "Other"];
+
 const PROMPT = 'These images are pages from a single theatre, opera, dance or concert program, in the order they were added. Details are scattered across pages: the title may be on the cover, the run of dates inside, the cast elsewhere, an understudy slip loose in the book. Read every image and merge what you find into one record. When pages disagree, prefer the page specific to this performance (an insert or slip) over the general season book. Return ONLY a JSON object, no markdown fences and no commentary:\n' +
-'{"title":"","company":"","venue":"","city":"","dateInfo":{"exact":"","rangeStart":"","rangeEnd":"","printed":""},"creatives":[{"role":"","name":""}],"cast":[{"actor":"","role":""}],"understudies":[{"actor":"","role":""}],"notes":""}\n' +
-'Rules: title is the production name. company is the producing theatre or opera company if named. dateInfo: hunt for dates everywhere including small print, cover, title page, the run of performances, a season line, and any copyright or issue date. "exact" is YYYY-MM-DD only when one single performance date is printed. "rangeStart" and "rangeEnd" are YYYY-MM-DD when a run or repertory span is printed. "printed" is the date text copied exactly as it appears, for example "March 4-22, 2019" or "2011-2012 Season". Never guess a date that is not printed. creatives: up to 6. cast: up to 40 performers who appeared, principals first, with the character each plays. understudies: up to 25 entries from the understudy, standby, swing or cover list, each with the performer and the role or roles they cover; leave empty if no such list is printed. IMPORTANT: if a loose slip or insert announces that a role is played by someone else at this performance, put that performer in "cast" for that role instead of the printed name, and say so plainly in "notes", for example "Slip: Elphaba played by Jane Doe". notes: one short line, else "". Use "" for anything unreadable.';
+'{"title":"","kind":"","company":"","venue":"","city":"","dateInfo":{"exact":"","rangeStart":"","rangeEnd":"","printed":""},"creatives":[{"role":"","name":""}],"cast":[{"actor":"","role":""}],"understudies":[{"actor":"","role":""}],"notes":""}\n' +
+'Rules: title is the production name. kind is exactly one of Theatre, Musical, Opera, Classical, Jazz, Cabaret, Dance, Other — judge from the program (a play is Theatre, a book musical is Musical, a symphony or recital is Classical, a jazz club or festival set is Jazz, a solo song evening is Cabaret, ballet or contemporary dance is Dance). company is the producing theatre or opera company if named. dateInfo: hunt for dates everywhere including small print, cover, title page, the run of performances, a season line, and any copyright or issue date. "exact" is YYYY-MM-DD only when one single performance date is printed. "rangeStart" and "rangeEnd" are YYYY-MM-DD when a run or repertory span is printed. "printed" is the date text copied exactly as it appears, for example "March 4-22, 2019" or "2011-2012 Season". Never guess a date that is not printed. creatives: up to 6. cast: up to 40 performers who appeared, principals first, with the character each plays. understudies: up to 25 entries from the understudy, standby, swing or cover list, each with the performer and the role or roles they cover; leave empty if no such list is printed. IMPORTANT: if a loose slip or insert announces that a role is played by someone else at this performance, put that performer in "cast" for that role instead of the printed name, and say so plainly in "notes", for example "Slip: Elphaba played by Jane Doe". notes: one short line, else "". Use "" for anything unreadable.';
 
 async function readProgram(images){
   const key = apiKey();
@@ -299,21 +302,56 @@ function viewGate(){
 
 function viewLog(){
   const q = S.query.trim().toLowerCase();
-  const list = S.entries.filter(e => {
-    if(!q) return true;
-    if([e.title,e.venue,e.city,e.company,e.notes,e.addedByName].join(" ").toLowerCase().includes(q)) return true;
+  let list = S.entries.slice();
+  if (S.kindFilter !== "All") list = list.filter(e => (e.kind || "Other") === S.kindFilter);
+  if (q) list = list.filter(e => {
+    if([e.title,e.venue,e.city,e.company,e.notes,e.addedByName,e.kind].join(" ").toLowerCase().includes(q)) return true;
+    if((e.creatives||[]).some(c => (c.name+" "+c.role).toLowerCase().includes(q))) return true;
     return (e.cast||[]).concat(e.understudies||[]).some(c => (c.actor+" "+c.role).toLowerCase().includes(q));
   });
+  const undatedLast = (a,b,dir) => {
+    if(!a.dateSeen && !b.dateSeen) return 0;
+    if(!a.dateSeen) return 1;
+    if(!b.dateSeen) return -1;
+    return dir * a.dateSeen.localeCompare(b.dateSeen);
+  };
+  if(S.sort==="new") list.sort((a,b) => undatedLast(a,b,-1));
+  else if(S.sort==="old") list.sort((a,b) => undatedLast(a,b,1));
+  else if(S.sort==="title") list.sort((a,b) => a.title.localeCompare(b.title));
+  else if(S.sort==="kind") list.sort((a,b) => (a.kind||"Other").localeCompare(b.kind||"Other") || undatedLast(a,b,-1));
+
   let h = "";
   const legacy = legacyLog();
   if (legacy) h += '<div class="notice">This browser still holds '+legacy.length+' show'+(legacy.length===1?"":"s")
     + ' from the earlier, unshared version. <button class="btn sm" style="margin-top:10px" data-act="movelegacy"'
     + (S.moving?" disabled":"")+'>'+(S.moving?"Moving…":"Move them into the shared log")+'</button></div>';
-  h += '<label style="margin-bottom:16px"><input type="text" placeholder="Search shows, venues, actors" value="'+esc(S.query)+'" data-field="query"></label>';
+
+  h += '<label style="margin-bottom:10px"><input type="text" placeholder="Search titles, people, venues, notes" value="'+esc(S.query)+'" data-field="query"></label>';
+
+  if(S.entries.length){
+    const counts = {};
+    S.entries.forEach(e => { const k = e.kind || "Other"; counts[k] = (counts[k]||0)+1; });
+    const present = KINDS.filter(k => counts[k]);
+    if(present.length > 1){
+      h += '<div style="margin-bottom:10px">'
+        + '<button class="seg'+(S.kindFilter==="All"?" on":"")+'" data-act="kind:All">All '+S.entries.length+'</button>'
+        + present.map(k => '<button class="seg'+(S.kindFilter===k?" on":"")+'" data-act="kind:'+k+'">'+k+' '+counts[k]+'</button>').join("")
+        + '</div>';
+    }
+    h += '<div class="row" style="margin-bottom:14px"><span class="tiny muted">'
+      + (q || S.kindFilter!=="All" ? list.length + " of " + S.entries.length + " shows" : list.length + (list.length===1?" show":" shows"))
+      + (q ? ' · <button class="tab" style="border:0;padding:0;font-size:11px" data-act="clearq">clear</button>' : '')
+      + '</span><span>'
+      + [["new","Newest"],["old","Oldest"],["title","A–Z"],["kind","Kind"]].map(o =>
+          '<button class="seg'+(S.sort===o[0]?" on":"")+'" style="margin-right:4px" data-act="sort:'+o[0]+'">'+o[1]+'</button>').join("")
+      + '</span></div>';
+  }
+
   if(!S.entries.length) return h + '<div class="gate" style="padding:40px 0"><div class="serif" style="font-size:22px;margin-bottom:6px">The log is empty</div>'
     + '<p class="small muted">Start with the last playbill in your bag.</p>'
     + '<button class="btn" style="max-width:200px;margin:0 auto" data-act="tab:add">Add a show</button></div>';
-  if(!list.length) return h + '<p class="small muted" style="text-align:center;padding:32px 0">Nothing matches that.</p>';
+  if(!list.length) return h + '<p class="small muted" style="text-align:center;padding:32px 0">Nothing here matches.</p>';
+
   return h + list.map(e => {
     const s = stubParts(e.dateSeen);
     let names = (e.cast||[]).slice(0,3).map(c => c.actor).join(", ");
@@ -324,7 +362,9 @@ function viewLog(){
       + (s.sub ? '<span class="tiny muted">'+esc(s.sub)+'</span>' : '')
       + '</div><div class="perf"></div><div class="body">'
       + '<div class="serif truncate" style="font-size:17px">'+esc(e.title)+'</div>'
-      + '<div class="tiny muted truncate" style="margin-top:4px">'+esc([e.venue,e.city].filter(Boolean).join(" · ") || "Venue not recorded")+'</div>'
+      + '<div class="tiny muted truncate" style="margin-top:4px">'
+      + (e.kind ? '<span style="color:var(--brassDim)">'+esc(e.kind)+'</span> · ' : '')
+      + esc([e.venue,e.city].filter(Boolean).join(" · ") || "Venue not recorded")+'</div>'
       + (names ? '<div class="tiny dim truncate" style="margin-top:3px">'+esc(names)+'</div>' : '')
       + '</div></button>';
   }).join("");
@@ -338,7 +378,7 @@ function viewDetail(){
   if((S.openPages||[]).length) h += '<div class="strip">' + S.openPages.map((p,i) =>
       '<img src="'+p.thumb+'" alt="Page '+(i+1)+'" data-act="light:'+i+'">').join("") + '</div>';
   h += '<h2>'+esc(e.title)+'</h2>'
-    + '<div class="small muted" style="margin-top:4px">'+esc([e.venue,e.city].filter(Boolean).join(" · "))+'</div>'
+    + '<div class="small muted" style="margin-top:4px">'+esc([e.kind,e.venue,e.city].filter(Boolean).join(" · "))+'</div>'
     + '<div class="meta" style="color:var(--brass);margin-top:8px">'+esc(fmtDate(e.dateSeen))+'</div>';
   if(e.dateInfo && e.dateInfo.printed) h += '<div class="tiny muted" style="margin-top:4px">Program reads: '+esc(e.dateInfo.printed)+'</div>';
   if(e.company) h += '<div class="small dim" style="margin-top:8px">'+esc(e.company)+'</div>';
@@ -383,6 +423,8 @@ function viewReview(){
   h += '<button class="btn ghost" style="margin-bottom:14px" data-act="addtodraft"'+(S.adding?" disabled":"")+'>'
     + (S.adding ? "Adding pages…" : ((d.pageViews||[]).length ? "Add more program pages" : "Add program pages")) + '</button>';
   h += '<label><span>Show</span><input type="text" data-field="title" value="'+esc(d.title)+'" placeholder="Production title"></label>';
+  h += '<div style="margin-bottom:14px"><span style="display:block;font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:6px">Kind of performance</span>'
+    + KINDS.map(k => '<button class="seg'+(d.kind===k?" on":"")+'" style="margin-bottom:6px" data-act="setkind:'+k+'">'+k+'</button>').join("") + '</div>';
   h += '<div style="background:var(--house);border:1px solid var(--line);border-radius:6px;padding:12px;margin-bottom:14px"><div class="meta" style="margin-bottom:8px">Date you saw it</div>';
   h += info.printed
     ? '<p class="small dim" style="margin:0 0 10px">On the program: <span style="color:var(--brass)">'+esc(info.printed)+'</span>'+(info.rangeStart ? ' — a run of performances, so pick the night you were there.' : '')+'</p>'
@@ -423,13 +465,17 @@ function viewSeason(){
       S.entries.forEach(e => fn(e).forEach(v => { if(v) m[v] = (m[v]||0)+1; }));
       return Object.entries(m).sort((a,b) => b[1]-a[1]).slice(0,6); };
     const list = (title, rows, unit) => '<div style="margin-top:22px"><div class="eyebrow">'+title+'</div>'
-      + (rows.length ? rows.map(r => '<div class="kv" style="border-bottom:1px solid var(--line)"><span class="truncate">'+esc(r[0])
-        + '</span><span class="muted">'+r[1]+' '+unit+(r[1]>1?"s":"")+'</span></div>').join("") : '<p class="small muted">Not recorded yet.</p>') + '</div>';
+      + (rows.length ? rows.map(r => '<button class="kv" style="width:100%;background:none;border:0;border-bottom:1px solid var(--line);color:inherit;text-align:left;padding:7px 0" data-act="find:'+encodeURIComponent(r[0])+'">'
+        + '<span class="truncate">'+esc(r[0])+'</span><span class="muted">'+r[1]+' '+unit+(r[1]>1?"s":"")+' &rsaquo;</span></button>').join("")
+        : '<p class="small muted">Not recorded yet.</p>') + '</div>';
     h += '<div class="grid3"><div class="stat"><b>'+S.entries.length+'</b><span class="meta">Total</span></div>'
       + '<div class="stat"><b>'+thisYear+'</b><span class="meta">In '+year+'</span></div>'
       + '<div class="stat"><b>'+titles+'</b><span class="meta">Distinct</span></div></div>';
     if(dates.length) h += '<p class="tiny muted" style="margin-top:12px">Logged from '+esc(fmtDate(dates[0]))+' to '+esc(fmtDate(dates[dates.length-1]))+'.</p>';
     if(S.entries.length - dates.length > 0) h += '<p class="tiny" style="color:var(--brass);margin-top:4px">'+(S.entries.length-dates.length)+' still undated.</p>';
+    h += '<div style="margin-top:22px"><div class="eyebrow">By kind</div>'
+      + tally(e => [e.kind || "Other"]).map(r => '<button class="kv" style="width:100%;background:none;border:0;border-bottom:1px solid var(--line);color:inherit;text-align:left;padding:7px 0" data-act="bykind:'+encodeURIComponent(r[0])+'">'
+        + '<span>'+esc(r[0])+'</span><span class="muted">'+r[1]+' &rsaquo;</span></button>').join("") + '</div>';
     h += list("Most-visited venues", tally(e => [e.venue]), "visit");
     h += list("Performers seen most", tally(e => (e.cast||[]).map(c => c.actor)), "show");
     h += list("Filed by", tally(e => [e.addedByName]), "show");
@@ -493,7 +539,7 @@ function render(){
 function newDraft(base){
   base = base || {};
   return {
-    id: base.id || newId(), title: base.title||"", company: base.company||"", venue: base.venue||"",
+    id: base.id || newId(), title: base.title||"", kind: base.kind || "Theatre", company: base.company||"", venue: base.venue||"",
     city: base.city||"", dateSeen: base.dateSeen||"", datePrecision: base.datePrecision||"day",
     dateInfo: base.dateInfo || { exact:"", rangeStart:"", rangeEnd:"", printed:"" },
     creativesText: (base.creatives||[]).map(c => (c.role ? c.role + ": " : "") + c.name).join("\n"),
@@ -521,7 +567,8 @@ async function scanPending(){
     else if(info.rangeStart && info.rangeStart.slice(0,7) === (info.rangeEnd||info.rangeStart).slice(0,7)) seen = info.rangeStart.slice(0,7);
     else if(info.rangeStart) seen = info.rangeStart.slice(0,4);
     S.draft = newDraft({
-      title:parsed.title, company:parsed.company, venue:parsed.venue, city:parsed.city,
+      title:parsed.title, kind:(KINDS.includes(parsed.kind) ? parsed.kind : "Theatre"),
+      company:parsed.company, venue:parsed.venue, city:parsed.city,
       dateSeen:seen, dateInfo:info,
       creatives:(parsed.creatives||[]).filter(c => c && c.name),
       cast:(parsed.cast||[]).filter(c => c && c.actor),
@@ -539,7 +586,7 @@ function saveDraft(){
   if(!d.title.trim()) return fail("A show needs a title before it goes in the log.");
   const isNew = !S.entries.some(e => e.id === d.id);
   const rec = {
-    id:d.id, title:d.title.trim(), company:d.company, venue:d.venue, city:d.city,
+    id:d.id, title:d.title.trim(), kind:d.kind || "Theatre", company:d.company, venue:d.venue, city:d.city,
     dateSeen:d.dateSeen, datePrecision:precisionOf(d.dateSeen) || d.datePrecision,
     dateInfo:d.dateInfo, creatives:textToCreatives(d.creativesText), cast:textToCast(d.castText),
     understudies:textToCast(d.understudyText), notes:d.notes,
@@ -590,8 +637,8 @@ async function moveLegacy(){
 }
 
 function exportCsv(){
-  const rows = [["Date seen","Printed on program","Title","Venue","City","Company","Cast","Understudies","Notes","Filed by"]];
-  S.entries.forEach(e => rows.push([e.dateSeen, (e.dateInfo&&e.dateInfo.printed)||"", e.title, e.venue, e.city, e.company,
+  const rows = [["Date seen","Printed on program","Title","Kind","Venue","City","Company","Cast","Understudies","Notes","Filed by"]];
+  S.entries.forEach(e => rows.push([e.dateSeen, (e.dateInfo&&e.dateInfo.printed)||"", e.title, e.kind||"", e.venue, e.city, e.company,
     (e.cast||[]).map(c => c.actor + (c.role?" as "+c.role:"")).join("; "),
     (e.understudies||[]).map(c => c.actor + (c.role?" as "+c.role:"")).join("; "), e.notes, e.addedByName]));
   S.backupText = rows.map(r => r.map(v => '"' + String(v==null?"":v).replace(/"/g,'""') + '"').join(",")).join("\n");
@@ -644,6 +691,12 @@ appEl.addEventListener("click", async ev => {
     return;
   }
   if(act==="movelegacy") return moveLegacy();
+  if(act==="kind"){ S.kindFilter = arg; return render(); }
+  if(act==="sort"){ S.sort = arg; return render(); }
+  if(act==="clearq"){ S.query = ""; return render(); }
+  if(act==="setkind"){ S.draft.kind = arg; return render(); }
+  if(act==="find"){ S.query = decodeURIComponent(arg); S.kindFilter = "All"; S.tab = "log"; S.openId = null; return render(); }
+  if(act==="bykind"){ S.kindFilter = decodeURIComponent(arg); S.query = ""; S.tab = "log"; S.openId = null; return render(); }
   if(act==="addpages"){ S.pageTarget = "tray"; document.getElementById("pageInput").click(); return; }
   if(act==="addtodraft"){ S.pageTarget = "draft"; document.getElementById("pageInput").click(); return; }
   if(act==="rmdpage"){
