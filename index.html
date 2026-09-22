@@ -110,16 +110,17 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut }
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { initializeFirestore, getFirestore, persistentLocalCache, persistentMultipleTabManager,
-  collection, doc, onSnapshot, getDocs, writeBatch }
+  collection, doc, onSnapshot, getDocs, setDoc, writeBatch }
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 /* ============ state ============ */
 const S = {
   phase: "loading", user: null, tab: "log", entries: [], pending: [], draft: null,
   openId: null, openPages: null, query: "", lightbox: null, backupText: "", pasteText: "",
-  busy: false, adding: false, moving: false, error: "", toast: "", syncing: false
+  busy: false, adding: false, moving: false, error: "", toast: "", syncing: false,
+  cfg: { key:"", model:"claude-sonnet-5" }, keyDraft: null, modelDraft: null
 };
-let db = null, auth = null, unsub = null, toastTimer = null;
+let db = null, auth = null, unsub = null, unsubCfg = null, toastTimer = null;
 
 function say(msg){ S.toast = msg; render();
   clearTimeout(toastTimer); toastTimer = setTimeout(() => { S.toast = ""; render(); }, 4000); }
@@ -133,8 +134,8 @@ function clean(o){ return JSON.parse(JSON.stringify(o)); } // Firestore rejects 
 const LK = { key: "cc:apikey", model: "cc:model", legacy: "cc:entries", legacyPages: "cc:pages:", moved: "cc:moved" };
 function lsGet(k){ try { return localStorage.getItem(k); } catch { return null; } }
 function lsSet(k, v){ try { localStorage.setItem(k, v); return true; } catch { return false; } }
-function apiKey(){ return (lsGet(LK.key) || "").trim(); }
-function apiModel(){ return (lsGet(LK.model) || "claude-sonnet-5").trim(); }
+function apiKey(){ return (S.cfg.key || lsGet(LK.key) || "").trim(); }
+function apiModel(){ return (S.cfg.model || lsGet(LK.model) || "claude-sonnet-5").trim(); }
 function legacyLog(){
   if (lsGet(LK.moved)) return null;
   try { const l = JSON.parse(lsGet(LK.legacy) || "[]"); return l.length ? l : null; } catch { return null; }
@@ -434,11 +435,13 @@ function viewSeason(){
     + '<textarea rows="3" data-field="paste" placeholder="Paste a backup here">'+esc(S.pasteText)+'</textarea>'
     + '<button class="btn ghost" style="margin-top:10px" data-act="restorepaste"'+(S.moving?" disabled":"")+'>Restore from pasted text</button>'
     + '<button class="btn ghost" data-act="restorefile"'+(S.moving?" disabled":"")+'>Restore from a file</button>';
-  h += '<div class="hr"></div><div class="eyebrow">Settings on this device</div>'
-    + '<p class="small muted" style="margin-top:0">Reading playbills uses a Claude API key, billed to that Anthropic account and stored only in this browser. Each of you enters it once on your own phone.</p>'
-    + '<label><span>Claude API key</span><input type="password" data-field="apikey" value="'+esc(apiKey())+'" placeholder="sk-ant-..." autocomplete="off"></label>'
-    + '<label><span>Model</span><input type="text" data-field="model" value="'+esc(apiModel())+'"></label>'
-    + '<button class="btn ghost" data-act="savekey">Save settings</button>'
+  h += '<div class="hr"></div><div class="eyebrow">Settings</div>'
+    + '<p class="small muted" style="margin-top:0">Reading playbills uses a Claude API key, billed to that Anthropic account. It is stored in your shared database, so you enter it once and it works on every device for both of you.</p>'
+    + '<p class="small" style="color:'+(apiKey()?'var(--brass)':'var(--muted)')+'">'
+    + (apiKey() ? 'A key is saved, ending ' + esc(apiKey().slice(-6)) + '.' : 'No key saved yet — scanning is off, but typing shows in works.') + '</p>'
+    + '<label><span>Claude API key</span><input type="text" data-field="apikey" placeholder="sk-ant-..." autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" value="'+esc(S.keyDraft === null ? apiKey() : S.keyDraft)+'"></label>'
+    + '<label><span>Model</span><input type="text" data-field="model" autocapitalize="off" autocorrect="off" spellcheck="false" value="'+esc(S.modelDraft === null ? apiModel() : S.modelDraft)+'"></label>'
+    + '<button class="btn" data-act="savekey">Save key for both of us</button>'
     + '<p class="tiny muted" style="margin-top:14px">Signed in as '+esc(S.user && S.user.email)+'</p>'
     + '<button class="btn ghost" data-act="signout">Sign out</button></div>';
   return h;
@@ -653,9 +656,15 @@ appEl.addEventListener("click", async ev => {
   if(act==="restorepaste") return restoreFromText(S.pasteText);
   if(act==="restorefile"){ document.getElementById("restoreInput").click(); return; }
   if(act==="savekey"){
-    const k = appEl.querySelector('[data-field="apikey"]'), m = appEl.querySelector('[data-field="model"]');
-    const ok = lsSet(LK.key, k ? k.value.trim() : "") && lsSet(LK.model, (m && m.value.trim()) || "claude-sonnet-5");
-    return ok ? say("Settings saved on this device") : fail("Could not save settings — this browser is blocking storage.");
+    const key = (S.keyDraft === null ? apiKey() : S.keyDraft).trim();
+    const model = (S.modelDraft === null ? apiModel() : S.modelDraft).trim() || "claude-sonnet-5";
+    if(!key) return fail("Paste a key into the box first.");
+    lsSet(LK.key, key); lsSet(LK.model, model);          // cached here for offline use
+    S.cfg = { key, model }; S.keyDraft = null; S.modelDraft = null;
+    say("Key saved — it works on both your phones now");
+    setDoc(doc(db, "config", "claude"), { key, model, updatedAt: Date.now(), setBy: firstName(S.user) })
+      .catch(err => fail("Saved on this device, but it did not reach the shared database: " + (err.message || err.code)));
+    return;
   }
 });
 
@@ -664,7 +673,8 @@ appEl.addEventListener("input", ev => {
   const val = ev.target.value;
   if(f==="query"){ S.query = val; return render(); }
   if(f==="paste"){ S.pasteText = val; return; }
-  if(f==="apikey" || f==="model") return;
+  if(f==="apikey"){ S.keyDraft = val; return; }
+  if(f==="model"){ S.modelDraft = val; return; }
   if(!S.draft) return;
   if(f==="date"){
     S.draft.dateSeen = S.draft.datePrecision==="year" ? val.slice(0,4) : val;
@@ -709,15 +719,26 @@ else {
 
   onAuthStateChanged(auth, user => {
     if (unsub) { unsub(); unsub = null; }
+    if (unsubCfg) { unsubCfg(); unsubCfg = null; }
     S.user = user; S.entries = []; S.openId = null; S.draft = null;
     if (!user) { S.phase = "signin"; return render(); }
     S.phase = "loading"; render();
+
+    // the Claude key, shared between both of you
+    S.cfg = { key: lsGet(LK.key) || "", model: lsGet(LK.model) || "claude-sonnet-5" };
+    unsubCfg = onSnapshot(doc(db, "config", "claude"), snap => {
+      if (!snap.exists()) return;
+      const d = snap.data() || {};
+      if (d.key) { S.cfg = { key: d.key, model: d.model || "claude-sonnet-5" };
+        lsSet(LK.key, d.key); lsSet(LK.model, S.cfg.model); }
+      if (S.tab === "season" && S.keyDraft === null) render();
+    }, () => {});
     unsub = onSnapshot(collection(db, "shows"), { includeMetadataChanges: true }, snap => {
       S.entries = sortEntries(snap.docs.map(d => d.data()));
       S.syncing = snap.metadata.hasPendingWrites;
       S.phase = "app";
-      // don't yank the form out from under someone mid-edit
-      if (!(S.tab === "add" && S.draft)) render();
+      // don't yank a form out from under someone mid-edit
+      if (!(S.tab === "add" && S.draft) && !(S.tab === "season" && (S.keyDraft !== null || S.modelDraft !== null))) render();
     }, err => {
       if (err.code === "permission-denied") { S.phase = "denied"; render(); }
       else { S.phase = "app"; fail("Could not open the shared log: " + (err.message || err.code)); }
