@@ -188,6 +188,7 @@ async function preparePage(file, i){
 
 /* ============ reading a program ============ */
 const KINDS = ["Theatre", "Musical", "Opera", "Classical", "Jazz", "Cabaret", "Dance", "Other"];
+function kindOf(e){ return (e && KINDS.includes(e.kind)) ? e.kind : "Unsorted"; }
 
 const PROMPT = 'These images are pages from a single theatre, opera, dance or concert program, in the order they were added. Details are scattered across pages: the title may be on the cover, the run of dates inside, the cast elsewhere, an understudy slip loose in the book. Read every image and merge what you find into one record. When pages disagree, prefer the page specific to this performance (an insert or slip) over the general season book. Return ONLY a JSON object, no markdown fences and no commentary:\n' +
 '{"title":"","kind":"","company":"","venue":"","city":"","dateInfo":{"exact":"","rangeStart":"","rangeEnd":"","printed":""},"creatives":[{"role":"","name":""}],"cast":[{"actor":"","role":""}],"understudies":[{"actor":"","role":""}],"notes":""}\n' +
@@ -221,6 +222,16 @@ async function readProgram(images){
 /* ============ helpers ============ */
 function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;")
   .replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;"); }
+function groupCast(list){
+  const order = [], byActor = {};
+  (list||[]).forEach(c => {
+    const name = (c.actor||"").trim();
+    if(!name) return;
+    if(!byActor[name]){ byActor[name] = []; order.push(name); }
+    if(c.role && c.role.trim()) byActor[name].push(c.role.trim());
+  });
+  return order.map(name => ({ actor:name, role:byActor[name].join(", ") }));
+}
 function castToText(cast){ return (cast||[]).map(c => c.actor + (c.role ? " as " + c.role : "")).join("\n"); }
 function textToCast(t){
   return (t||"").split("\n").filter(l => l.trim()).map(l => {
@@ -303,7 +314,7 @@ function viewGate(){
 function viewLog(){
   const q = S.query.trim().toLowerCase();
   let list = S.entries.slice();
-  if (S.kindFilter !== "All") list = list.filter(e => (e.kind || "Other") === S.kindFilter);
+  if (S.kindFilter !== "All") list = list.filter(e => kindOf(e) === S.kindFilter);
   if (q) list = list.filter(e => {
     if([e.title,e.venue,e.city,e.company,e.notes,e.addedByName,e.kind].join(" ").toLowerCase().includes(q)) return true;
     if((e.creatives||[]).some(c => (c.name+" "+c.role).toLowerCase().includes(q))) return true;
@@ -318,7 +329,7 @@ function viewLog(){
   if(S.sort==="new") list.sort((a,b) => undatedLast(a,b,-1));
   else if(S.sort==="old") list.sort((a,b) => undatedLast(a,b,1));
   else if(S.sort==="title") list.sort((a,b) => a.title.localeCompare(b.title));
-  else if(S.sort==="kind") list.sort((a,b) => (a.kind||"Other").localeCompare(b.kind||"Other") || undatedLast(a,b,-1));
+  else if(S.sort==="kind") list.sort((a,b) => kindOf(a).localeCompare(kindOf(b)) || undatedLast(a,b,-1));
 
   let h = "";
   const legacy = legacyLog();
@@ -330,9 +341,9 @@ function viewLog(){
 
   if(S.entries.length){
     const counts = {};
-    S.entries.forEach(e => { const k = e.kind || "Other"; counts[k] = (counts[k]||0)+1; });
-    const present = KINDS.filter(k => counts[k]);
-    if(present.length > 1){
+    S.entries.forEach(e => { const k = kindOf(e); counts[k] = (counts[k]||0)+1; });
+    const present = KINDS.filter(k => counts[k]).concat(counts["Unsorted"] ? ["Unsorted"] : []);
+    if(present.length >= 1 && S.entries.length > 1){
       h += '<div style="margin-bottom:10px">'
         + '<button class="seg'+(S.kindFilter==="All"?" on":"")+'" data-act="kind:All">All '+S.entries.length+'</button>'
         + present.map(k => '<button class="seg'+(S.kindFilter===k?" on":"")+'" data-act="kind:'+k+'">'+k+' '+counts[k]+'</button>').join("")
@@ -354,8 +365,9 @@ function viewLog(){
 
   return h + list.map(e => {
     const s = stubParts(e.dateSeen);
-    let names = (e.cast||[]).slice(0,3).map(c => c.actor).join(", ");
-    if((e.cast||[]).length>3) names += " +" + (e.cast.length-3);
+    const distinct = groupCast(e.cast);
+    let names = distinct.slice(0,3).map(c => c.actor).join(", ");
+    if(distinct.length>3) names += " +" + (distinct.length-3);
     return '<button class="stub" data-act="open:'+e.id+'"><div class="date">'
       + (s.eyebrow ? '<span class="meta" style="color:var(--brass)">'+s.eyebrow+'</span>' : '')
       + '<span class="serif" style="font-size:'+(s.big.length>2?"17px":"21px")+';line-height:1;'+(s.sub==="undated"?"color:var(--muted)":"")+'">'+esc(s.big)+'</span>'
@@ -363,7 +375,7 @@ function viewLog(){
       + '</div><div class="perf"></div><div class="body">'
       + '<div class="serif truncate" style="font-size:17px">'+esc(e.title)+'</div>'
       + '<div class="tiny muted truncate" style="margin-top:4px">'
-      + (e.kind ? '<span style="color:var(--brassDim)">'+esc(e.kind)+'</span> · ' : '')
+      + '<span style="color:var(--brassDim)">'+esc(kindOf(e))+'</span> · '
       + esc([e.venue,e.city].filter(Boolean).join(" · ") || "Venue not recorded")+'</div>'
       + (names ? '<div class="tiny dim truncate" style="margin-top:3px">'+esc(names)+'</div>' : '')
       + '</div></button>';
@@ -378,7 +390,7 @@ function viewDetail(){
   if((S.openPages||[]).length) h += '<div class="strip">' + S.openPages.map((p,i) =>
       '<img src="'+p.thumb+'" alt="Page '+(i+1)+'" data-act="light:'+i+'">').join("") + '</div>';
   h += '<h2>'+esc(e.title)+'</h2>'
-    + '<div class="small muted" style="margin-top:4px">'+esc([e.kind,e.venue,e.city].filter(Boolean).join(" · "))+'</div>'
+    + '<div class="small muted" style="margin-top:4px">'+esc([kindOf(e)==="Unsorted"?"":e.kind,e.venue,e.city].filter(Boolean).join(" · "))+'</div>'
     + '<div class="meta" style="color:var(--brass);margin-top:8px">'+esc(fmtDate(e.dateSeen))+'</div>';
   if(e.dateInfo && e.dateInfo.printed) h += '<div class="tiny muted" style="margin-top:4px">Program reads: '+esc(e.dateInfo.printed)+'</div>';
   if(e.company) h += '<div class="small dim" style="margin-top:8px">'+esc(e.company)+'</div>';
@@ -386,10 +398,10 @@ function viewDetail(){
   if((e.creatives||[]).length) h += '<div class="hr"></div>' + e.creatives.map(c =>
       '<div class="kv"><span class="muted">'+esc(c.role)+'</span><span>'+esc(c.name)+'</span></div>').join("");
   h += '<div class="hr"></div><div class="eyebrow">Cast</div>';
-  h += (e.cast||[]).length ? e.cast.map(c => '<div class="kv"><span>'+esc(c.actor)+'</span><span class="muted" style="text-align:right">'+esc(c.role)+'</span></div>').join("")
+  h += (e.cast||[]).length ? groupCast(e.cast).map(c => '<div class="kv"><span>'+esc(c.actor)+'</span><span class="muted" style="text-align:right">'+esc(c.role)+'</span></div>').join("")
     : '<p class="small muted">No cast recorded.</p>';
   if((e.understudies||[]).length) h += '<div class="hr"></div><div class="eyebrow">Understudies and standbys</div>'
-    + e.understudies.map(c => '<div class="kv"><span class="muted">'+esc(c.actor)+'</span><span class="muted" style="text-align:right">'+esc(c.role)+'</span></div>').join("");
+    + groupCast(e.understudies).map(c => '<div class="kv"><span class="muted">'+esc(c.actor)+'</span><span class="muted" style="text-align:right">'+esc(c.role)+'</span></div>').join("");
   if(e.addedByName) h += '<p class="tiny muted" style="margin-top:14px">Filed by '+esc(e.addedByName)+(e.editedBy && e.editedBy!==e.addedByName ? ', edited by '+esc(e.editedBy) : '')+'</p>';
   h += '<div style="display:flex;gap:10px;margin-top:18px">'
     + '<button class="btn ghost" style="margin:0" data-act="edit"'+(S.openPages===null&&e.pageCount?" disabled":"")+'>Edit</button>'
@@ -462,7 +474,8 @@ function viewSeason(){
     const titles = new Set(S.entries.map(e => e.title.toLowerCase())).size;
     const dates = S.entries.map(e => e.dateSeen).filter(Boolean).sort();
     const tally = fn => { const m = {};
-      S.entries.forEach(e => fn(e).forEach(v => { if(v) m[v] = (m[v]||0)+1; }));
+      // one show counts once per name, even if they played five roles in it
+      S.entries.forEach(e => new Set(fn(e).filter(Boolean)).forEach(v => { m[v] = (m[v]||0)+1; }));
       return Object.entries(m).sort((a,b) => b[1]-a[1]).slice(0,6); };
     const list = (title, rows, unit) => '<div style="margin-top:22px"><div class="eyebrow">'+title+'</div>'
       + (rows.length ? rows.map(r => '<button class="kv" style="width:100%;background:none;border:0;border-bottom:1px solid var(--line);color:inherit;text-align:left;padding:7px 0" data-act="find:'+encodeURIComponent(r[0])+'">'
@@ -474,8 +487,12 @@ function viewSeason(){
     if(dates.length) h += '<p class="tiny muted" style="margin-top:12px">Logged from '+esc(fmtDate(dates[0]))+' to '+esc(fmtDate(dates[dates.length-1]))+'.</p>';
     if(S.entries.length - dates.length > 0) h += '<p class="tiny" style="color:var(--brass);margin-top:4px">'+(S.entries.length-dates.length)+' still undated.</p>';
     h += '<div style="margin-top:22px"><div class="eyebrow">By kind</div>'
-      + tally(e => [e.kind || "Other"]).map(r => '<button class="kv" style="width:100%;background:none;border:0;border-bottom:1px solid var(--line);color:inherit;text-align:left;padding:7px 0" data-act="bykind:'+encodeURIComponent(r[0])+'">'
-        + '<span>'+esc(r[0])+'</span><span class="muted">'+r[1]+' &rsaquo;</span></button>').join("") + '</div>';
+      + tally(e => [kindOf(e)]).map(r => '<button class="kv" style="width:100%;background:none;border:0;border-bottom:1px solid var(--line);color:inherit;text-align:left;padding:7px 0" data-act="bykind:'+encodeURIComponent(r[0])+'">'
+        + '<span>'+esc(r[0])+'</span><span class="muted">'+r[1]+' &rsaquo;</span></button>').join("") + (S.entries.filter(e => kindOf(e)==="Unsorted").length
+        ? '<button class="btn outline" style="margin-top:10px" data-act="classify"'+(S.moving?" disabled":"")+'>'
+          + (S.moving ? "Sorting…" : "Let Claude sort the " + S.entries.filter(e => kindOf(e)==="Unsorted").length + " unsorted")
+          + '</button>' : '')
+      + '</div>';
     h += list("Most-visited venues", tally(e => [e.venue]), "visit");
     h += list("Performers seen most", tally(e => (e.cast||[]).map(c => c.actor)), "show");
     h += list("Filed by", tally(e => [e.addedByName]), "show");
@@ -636,6 +653,42 @@ async function moveLegacy(){
   S.moving = false; render();
 }
 
+async function classifyUnsorted(){
+  const todo = S.entries.filter(e => kindOf(e) === "Unsorted");
+  if(!todo.length) return fail("Every show already has a kind.");
+  if(!apiKey()) return fail("Classifying uses the Claude API key — add one in Settings below.");
+  S.moving = true; S.error = ""; render();
+  try {
+    const brief = todo.map(e => ({ id:e.id, title:e.title, venue:e.venue||"", company:e.company||"",
+      cast:(e.cast||[]).slice(0,3).map(c => c.actor).join(", ") }));
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method:"POST",
+      headers:{ "Content-Type":"application/json", "x-api-key":apiKey(), "anthropic-version":"2023-06-01",
+        "anthropic-dangerous-direct-browser-access":"true" },
+      body: JSON.stringify({ model:apiModel(), max_tokens:2000, messages:[{ role:"user", content:
+        'Classify each live performance below as exactly one of: ' + KINDS.join(", ") + '. '
+        + 'A play is Theatre, a book musical is Musical, a symphony or recital is Classical, a jazz set is Jazz, '
+        + 'a solo song evening is Cabaret, ballet or contemporary dance is Dance. Use what you know about these productions. '
+        + 'Return ONLY a JSON object mapping each id to its kind, no commentary:\n' + JSON.stringify(brief) }] })
+    });
+    if(!res.ok) throw new Error("Claude returned " + res.status);
+    const data = await res.json();
+    const text = (data.content||[]).filter(b => b.type==="text").map(b => b.text).join("");
+    const c = text.replace(/```json/g,"").replace(/```/g,"").trim();
+    const map = JSON.parse(c.slice(c.indexOf("{"), c.lastIndexOf("}")+1));
+    const b = writeBatch(db);
+    let n = 0;
+    todo.forEach(e => {
+      const k = map[e.id];
+      if(KINDS.includes(k)){ b.set(doc(db, "shows", e.id), { kind:k }, { merge:true }); n++; }
+    });
+    if(!n) throw new Error("Nothing came back that I could use.");
+    await b.commit();
+    say("Sorted " + n + " show" + (n===1?"":"s") + " by kind — check them and fix any that look wrong");
+  } catch(err){ S.error = "Could not classify: " + (err.message || err.code); }
+  S.moving = false; render();
+}
+
 function exportCsv(){
   const rows = [["Date seen","Printed on program","Title","Kind","Venue","City","Company","Cast","Understudies","Notes","Filed by"]];
   S.entries.forEach(e => rows.push([e.dateSeen, (e.dateInfo&&e.dateInfo.printed)||"", e.title, e.kind||"", e.venue, e.city, e.company,
@@ -730,6 +783,7 @@ appEl.addEventListener("click", async ev => {
     download(S.backupText, "i-saw-that-" + new Date().toISOString().slice(0,10) + ".json", "application/json");
     return render();
   }
+  if(act==="classify") return classifyUnsorted();
   if(act==="csv") return exportCsv();
   if(act==="copy") return copyText(S.backupText);
   if(act==="closebackup"){ S.backupText = ""; return render(); }
