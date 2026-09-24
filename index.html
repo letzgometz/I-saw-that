@@ -510,8 +510,11 @@ function viewReview(){
     ? '<p class="small dim" style="margin:0 0 10px">On the program: <span style="color:var(--brass)">'+esc(info.printed)+'</span>'+(info.rangeStart ? ' — a run of performances, so pick the night you were there.' : '')+'</p>'
     : '<p class="small muted" style="margin:0 0 10px">No date printed on this program. Add what you know — a year alone is fine.</p>';
   const chips = [];
-  if(info.exact) chips.push(["Use the printed date", info.exact]);
+  if(info.exact && info.exact !== d.dateSeen) chips.push(["Use the printed date", info.exact]);
   if(info.monthYear && info.monthYear !== d.dateSeen) chips.push([fmtDate(info.monthYear), info.monthYear]);
+  const fromLine = inferFromPrinted(info.printed);
+  if(fromLine && fromLine !== d.dateSeen && fromLine !== info.monthYear && fromLine !== info.exact)
+    chips.push(["Use " + fmtDate(fromLine), fromLine]);
   if(info.rangeStart) chips.push(["First night · " + fmtDate(info.rangeStart), info.rangeStart]);
   if(info.rangeEnd && info.rangeEnd !== info.rangeStart) chips.push(["Last night · " + fmtDate(info.rangeEnd), info.rangeEnd]);
   if(info.rangeStart) chips.push(["Just " + fmtDate(info.rangeStart.slice(0,7)), info.rangeStart.slice(0,7)]);
@@ -609,7 +612,7 @@ function render(){
 
   let head = '<div class="row"><h1>I Saw That</h1></div><div class="meta" style="margin:4px 0 16px">'
     + S.entries.length + (S.entries.length===1 ? " performance" : " performances") + " · shared log"
-    + (S.syncing ? " · syncing…" : " · up to date") + '</div>';
+    + (S.syncing ? " · syncing…" : " · up to date") + " · v7" + '</div>';
   if(S.error) head += '<div class="notice"><div class="row"><span>'+esc(S.error)+'</span><button class="btn sm ghost" data-act="clearerr">Dismiss</button></div></div>';
   if(S.toast) head += '<div class="toast">'+esc(S.toast)+'</div>';
   const tabs = [["log","The log"],["add","Add a show"],["season","Season"]].map(t =>
@@ -637,14 +640,23 @@ window.addEventListener("popstate", () => {
 
 function newDraft(base){
   base = base || {};
+  // a fresh scan should never land with an empty date when the program says one
+  let ds = base.dateSeen || "";
+  let auto = !!base.dateAuto;
+  if (!ds && base.pagesNew && base.dateInfo){
+    ds = (base.dateInfo.exact || "")
+      || (/^\d{4}-\d{2}$/.test(base.dateInfo.monthYear || "") ? base.dateInfo.monthYear : "")
+      || inferFromPrinted(base.dateInfo.printed);
+    if (ds) auto = true;
+  }
   return {
     id: base.id || newId(), title: base.title||"", kind: base.kind || "Theatre", company: base.company||"", venue: base.venue||"",
-    city: base.city||"", dateSeen: base.dateSeen||"", datePrecision: base.datePrecision||"day",
+    city: base.city||"", dateSeen: ds, datePrecision: precisionOf(ds) || base.datePrecision || "day",
     dateInfo: base.dateInfo || { exact:"", rangeStart:"", rangeEnd:"", printed:"" },
     creativesText: (base.creatives||[]).map(c => (c.role ? c.role + ": " : "") + c.name).join("\n"),
     castText: castToText(base.cast), understudyText: castToText(base.understudies), notes: base.notes||"",
     pageViews: base.pageViews||[], pagesNew: !!base.pagesNew,
-    dateAuto: !!base.dateAuto,
+    dateAuto: auto,
     addedBy: base.addedBy, addedByName: base.addedByName, savedAt: base.savedAt
   };
 }
