@@ -214,8 +214,8 @@ const KINDS = ["Theatre", "Musical", "Opera", "Classical", "Jazz", "Cabaret", "D
 function kindOf(e){ return (e && KINDS.includes(e.kind)) ? e.kind : "Unsorted"; }
 
 const PROMPT = 'These images relate to a single live performance the user attended, in the order they were added. Most are pages from its program: the title may be on the cover, the run of dates inside, the cast elsewhere, an understudy slip loose in the book. One may instead be a TICKET, ticket stub, box-office receipt, will-call slip or booking confirmation. Read every image and merge what you find into one record. Where images disagree, this is the order of authority: (1) a ticket or booking confirmation, (2) a slip or insert printed for this performance, (3) the program pages, (4) a season or repertory book covering many productions. Return ONLY a JSON object, no markdown fences and no commentary:\n' +
-'{"title":"","kind":"","company":"","venue":"","city":"","dateInfo":{"exact":"","monthYear":"","rangeStart":"","rangeEnd":"","printed":""},"creatives":[{"role":"","name":""}],"cast":[{"actor":"","role":""}],"understudies":[{"actor":"","role":""}],"notes":""}\n' +
-'Rules: title is the production name. kind is exactly one of Theatre, Musical, Opera, Classical, Jazz, Cabaret, Dance, Other — judge from the program (a play is Theatre, a book musical is Musical, a symphony or recital is Classical, a jazz club or festival set is Jazz, a solo song evening is Cabaret, ballet or contemporary dance is Dance). company is the producing theatre or opera company if named. dateInfo: hunt for dates everywhere including small print, cover, title page, the run of performances, a season line, and any copyright or issue date. IMPORTANT: if any image is a ticket, stub, receipt or booking confirmation, the performance date printed on it is the date the user attended — put it in "exact" and let it override any date from the program, even a printed run or a slip. Put the performance time and the seat from a ticket into "notes" if legible, for example "Ticket: Fri 7:30pm, Orch H12". A ticket also settles the venue. "exact" is YYYY-MM-DD only when one single performance date is printed. "monthYear" is YYYY-MM and should be filled whenever the program names a month and year even without a day — Playbill and most house programs print the issue month and year on the cover or masthead (for example "DECEMBER 2013"), and that is the month of the performance, so capture it. A two-year season line such as "2011-2012 Season" is NOT a monthYear; leave it in printed only. "rangeStart" and "rangeEnd" are YYYY-MM-DD when a run or repertory span is printed. "printed" is the date text copied exactly as it appears, for example "March 4-22, 2019" or "2011-2012 Season". Never guess a date that is not printed. creatives: up to 6. cast: up to 40 performers who appeared, principals first, with the character each plays. understudies: up to 25 entries from the understudy, standby, swing or cover list, each with the performer and the role or roles they cover; leave empty if no such list is printed. IMPORTANT: if a loose slip or insert announces that a role is played by someone else at this performance, put that performer in "cast" for that role instead of the printed name, and say so plainly in "notes", for example "Slip: Elphaba played by Jane Doe". notes: one short line, else "". Use "" for anything unreadable.';
+'{"title":"","kind":"","director":"","company":"","venue":"","city":"","dateInfo":{"exact":"","monthYear":"","rangeStart":"","rangeEnd":"","printed":""},"creatives":[{"role":"","name":""}],"cast":[{"actor":"","role":""}],"understudies":[{"actor":"","role":""}],"notes":""}\n' +
+'Rules: title is the production name. kind is exactly one of Theatre, Musical, Opera, Classical, Jazz, Cabaret, Dance, Other — judge from the program (a play is Theatre, a book musical is Musical, a symphony or recital is Classical, a jazz club or festival set is Jazz, a solo song evening is Cabaret, ballet or contemporary dance is Dance). company is the producing theatre or opera company if named. dateInfo: hunt for dates everywhere including small print, cover, title page, the run of performances, a season line, and any copyright or issue date. IMPORTANT: if any image is a ticket, stub, receipt or booking confirmation, the performance date printed on it is the date the user attended — put it in "exact" and let it override any date from the program, even a printed run or a slip. Put the performance time and the seat from a ticket into "notes" if legible, for example "Ticket: Fri 7:30pm, Orch H12". A ticket also settles the venue. "exact" is YYYY-MM-DD only when one single performance date is printed. "monthYear" is YYYY-MM and should be filled whenever the program names a month and year even without a day — Playbill and most house programs print the issue month and year on the cover or masthead (for example "DECEMBER 2013"), and that is the month of the performance, so capture it. A two-year season line such as "2011-2012 Season" is NOT a monthYear; leave it in printed only. "rangeStart" and "rangeEnd" are YYYY-MM-DD when a run or repertory span is printed. "printed" is the date text copied exactly as it appears, for example "March 4-22, 2019" or "2011-2012 Season". Never guess a date that is not printed. director is the stage director of this production, the person credited "Directed by" — not the music director, artistic director or conductor; leave it "" for a concert or recital with no director. creatives: up to 6 others (writer, composer, conductor, choreographer, designer); do not repeat the director there. cast: up to 40 performers who appeared, principals first, with the character each plays. understudies: up to 25 entries from the understudy, standby, swing or cover list, each with the performer and the role or roles they cover; leave empty if no such list is printed. IMPORTANT: if a loose slip or insert announces that a role is played by someone else at this performance, put that performer in "cast" for that role instead of the printed name, and say so plainly in "notes", for example "Slip: Elphaba played by Jane Doe". notes: one short line, else "". Use "" for anything unreadable.';
 
 // A reply cut off mid-list leaves unclosed brackets. Trim to the last complete
 // entry and close what is open, so a long cast list is shortened rather than lost.
@@ -384,7 +384,7 @@ function viewLog(){
   let list = S.entries.slice();
   if (S.kindFilter !== "All") list = list.filter(e => kindOf(e) === S.kindFilter);
   if (q) list = list.filter(e => {
-    if([e.title,e.venue,e.city,e.company,e.notes,e.addedByName,e.kind].join(" ").toLowerCase().includes(q)) return true;
+    if([e.title,e.venue,e.city,e.company,e.notes,e.addedByName,e.kind,e.director].join(" ").toLowerCase().includes(q)) return true;
     if((e.creatives||[]).some(c => (c.name+" "+c.role).toLowerCase().includes(q))) return true;
     return (e.cast||[]).concat(e.understudies||[]).some(c => (c.actor+" "+c.role).toLowerCase().includes(q));
   });
@@ -461,7 +461,8 @@ function viewDetail(){
     + '<div class="small muted" style="margin-top:4px">'+esc([kindOf(e)==="Unsorted"?"":e.kind,e.venue,e.city].filter(Boolean).join(" · "))+'</div>'
     + '<div class="meta" style="color:var(--brass);margin-top:8px">'+esc(fmtDate(e.dateSeen))+'</div>';
   if(e.dateInfo && e.dateInfo.printed) h += '<div class="tiny muted" style="margin-top:4px">Program reads: '+esc(e.dateInfo.printed)+'</div>';
-  if(e.company) h += '<div class="small dim" style="margin-top:8px">'+esc(e.company)+'</div>';
+  if(e.director) h += '<div class="small dim" style="margin-top:8px">Directed by '+esc(e.director)+'</div>';
+  if(e.company) h += '<div class="small dim" style="margin-top:4px">'+esc(e.company)+'</div>';
   if(e.notes) h += '<div class="small dim" style="margin-top:8px">'+esc(e.notes)+'</div>';
   if((e.creatives||[]).length) h += '<div class="hr"></div>' + e.creatives.map(c =>
       '<div class="kv"><span class="muted">'+esc(c.role)+'</span><span>'+esc(c.name)+'</span></div>').join("");
@@ -530,6 +531,7 @@ function viewReview(){
   h += '<div class="grid2"><label><span>Venue</span><input type="text" data-field="venue" value="'+esc(d.venue)+'"></label>'
     + '<label><span>City</span><input type="text" data-field="city" value="'+esc(d.city)+'"></label></div>'
     + '<label><span>Company</span><input type="text" data-field="company" value="'+esc(d.company)+'"></label>'
+    + '<label><span>Director</span><input type="text" data-field="director" value="'+esc(d.director)+'" placeholder="Leave blank if none"></label>'
     + '<label><span>Creative team — one per line, “Director: Name”</span><textarea rows="4" data-field="creativesText">'+esc(d.creativesText)+'</textarea></label>'
     + '<label><span>Cast — one per line, “Actor as Role”</span><textarea rows="8" data-field="castText">'+esc(d.castText)+'</textarea></label>'
     + '<label><span>Understudies and standbys — “Actor as Role”</span><textarea rows="5" data-field="understudyText">'+esc(d.understudyText)+'</textarea></label>'
@@ -568,6 +570,7 @@ function viewSeason(){
           + '</button>' : '')
       + '</div>';
     h += list("Most-visited venues", tally(e => [e.venue]), "visit");
+    h += list("Directors seen most", tally(e => [e.director]), "show");
     h += list("Performers seen most", tally(e => (e.cast||[]).map(c => c.actor)), "show");
     h += list("Filed by", tally(e => [e.addedByName]), "show");
   }
@@ -612,7 +615,7 @@ function render(){
 
   let head = '<div class="row"><h1>I Saw That</h1></div><div class="meta" style="margin:4px 0 16px">'
     + S.entries.length + (S.entries.length===1 ? " performance" : " performances") + " · shared log"
-    + (S.syncing ? " · syncing…" : " · up to date") + " · v7" + '</div>';
+    + (S.syncing ? " · syncing…" : " · up to date") + " · v8" + '</div>';
   if(S.error) head += '<div class="notice"><div class="row"><span>'+esc(S.error)+'</span><button class="btn sm ghost" data-act="clearerr">Dismiss</button></div></div>';
   if(S.toast) head += '<div class="toast">'+esc(S.toast)+'</div>';
   const tabs = [["log","The log"],["add","Add a show"],["season","Season"]].map(t =>
@@ -638,6 +641,12 @@ window.addEventListener("popstate", () => {
   history.back();                           // nothing left to step back through
 });
 
+function directorFrom(creatives){
+  const hit = (creatives||[]).find(c => /direct/i.test(c.role || "")
+    && !/music|musical|artistic|casting|technical|associate|assistant/i.test(c.role || ""));
+  return hit ? (hit.name || "") : "";
+}
+
 function newDraft(base){
   base = base || {};
   // a fresh scan should never land with an empty date when the program says one
@@ -650,7 +659,8 @@ function newDraft(base){
     if (ds) auto = true;
   }
   return {
-    id: base.id || newId(), title: base.title||"", kind: base.kind || "Theatre", company: base.company||"", venue: base.venue||"",
+    id: base.id || newId(), title: base.title||"", kind: base.kind || "Theatre",
+    director: base.director || directorFrom(base.creatives), company: base.company||"", venue: base.venue||"",
     city: base.city||"", dateSeen: ds, datePrecision: precisionOf(ds) || base.datePrecision || "day",
     dateInfo: base.dateInfo || { exact:"", rangeStart:"", rangeEnd:"", printed:"" },
     creativesText: (base.creatives||[]).map(c => (c.role ? c.role + ": " : "") + c.name).join("\n"),
@@ -681,7 +691,7 @@ async function scanPending(){
     else if(info.rangeStart && info.rangeStart.slice(0,4) === (info.rangeEnd||info.rangeStart).slice(0,4)) seen = info.rangeStart.slice(0,4);
     else seen = inferFromPrinted(info.printed);                        // anything legible in the date line
     S.draft = newDraft({
-      title:parsed.title, kind:(KINDS.includes(parsed.kind) ? parsed.kind : "Theatre"),
+      title:parsed.title, kind:(KINDS.includes(parsed.kind) ? parsed.kind : "Theatre"), director:parsed.director||"",
       company:parsed.company, venue:parsed.venue, city:parsed.city,
       dateSeen:seen, dateInfo:info,
       creatives:(parsed.creatives||[]).filter(c => c && c.name),
@@ -701,7 +711,8 @@ function saveDraft(){
   if(!d.title.trim()) return fail("A show needs a title before it goes in the log.");
   const isNew = !S.entries.some(e => e.id === d.id);
   const rec = {
-    id:d.id, title:d.title.trim(), kind:d.kind || "Theatre", company:d.company, venue:d.venue, city:d.city,
+    id:d.id, title:d.title.trim(), kind:d.kind || "Theatre", director:(d.director||"").trim(),
+    company:d.company, venue:d.venue, city:d.city,
     dateSeen:d.dateSeen, datePrecision:precisionOf(d.dateSeen) || d.datePrecision,
     dateInfo:d.dateInfo, creatives:textToCreatives(d.creativesText), cast:textToCast(d.castText),
     understudies:textToCast(d.understudyText), notes:d.notes,
@@ -788,8 +799,8 @@ async function classifyUnsorted(){
 }
 
 function exportCsv(){
-  const rows = [["Date seen","Printed on program","Title","Kind","Venue","City","Company","Cast","Understudies","Notes","Filed by"]];
-  S.entries.forEach(e => rows.push([e.dateSeen, (e.dateInfo&&e.dateInfo.printed)||"", e.title, e.kind||"", e.venue, e.city, e.company,
+  const rows = [["Date seen","Printed on program","Title","Kind","Director","Venue","City","Company","Cast","Understudies","Notes","Filed by"]];
+  S.entries.forEach(e => rows.push([e.dateSeen, (e.dateInfo&&e.dateInfo.printed)||"", e.title, e.kind||"", e.director||"", e.venue, e.city, e.company,
     (e.cast||[]).map(c => c.actor + (c.role?" as "+c.role:"")).join("; "),
     (e.understudies||[]).map(c => c.actor + (c.role?" as "+c.role:"")).join("; "), e.notes, e.addedByName]));
   S.backupText = rows.map(r => r.map(v => '"' + String(v==null?"":v).replace(/"/g,'""') + '"').join(",")).join("\n");
