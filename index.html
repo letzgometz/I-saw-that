@@ -6,7 +6,17 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#1E1620">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="I Saw That">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
 <title>I Saw That</title>
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAI1klEQVR42u3dwW2DQBRFUYiQ6IAloik6oQw6oUJWpIDEiAjZYeads8xyxPy5xoa04zAdDQAQ5csSAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAAAQAJYAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAADgPTpLUK9t7S0CcNu87BahQu04TIdlcOADCAIBgIMfQAgIABz8AEJAAODgBxACxfMUgMMfwHwSANhcAOZUAl8B2FAAb+ErAXcAcPgD5hcCAJsHMMcQAACAAEA1A+YZAsBmATDXEAA2CYD5hgAAAASAOgYw5xAAAIAAUMUA5h0CAAAEAGoYwNwTAACAAAAABAAAIAC4w/dggPmHAAAABAAAIAAAAAEAAAgAAEAAAACvdZYA8szL/uNvHskCdwCAsMP/7O+AAAAqPfxFAAgAIPTwFwEgAAAAAQAACAAAQAAAAAIAeKirz/l7HwAIACAsAhz+IACAsAhw+EMWrwIGEQC4AwAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAAAgAAEAAAgAAAAKrRjsN0WIbn2NbeIgDVmpfdIggAhADg4EcAIAT412HsWsPBn8VvAGweXFOuNcwvAYBNRPK15FrD3BIA2EyEXkOuNcwrAYBNBWBOCQBsLgDzSQBgkwGYSwIAABAAqG0e5upz/t4HgHkkALDpCIsAhz/mkAAAwiLA4Q9ZvAo44FMdgE//uAMAAAgAFQ5g7ggAAEAAAAACgAdzOw4wbxAAAIAAAAAEQLXclgPMGQQAACAAAAABUC235wDzBQEAAAgAAEAAAIAAAAAEAAXzQx3AXEEAAAACAAAQAAAgAAAAAQAACABK4he7gHnCmc4SgIHeNE2zrb2FAXcAgLRPcz7lgQAAwg5/EQACAAg9/EUACAAAQAAAAAIAABAAAIAAAB7q6nP+3gcAAgAIiwCHPwgAICwCHP6QxauAQQQA7gAAAAIAABAAAIAAAAAEAAAgAAAAAcBnecwLME8QAACAAAAAAQAACAAAQAAAAAKAEvjFLmCuIAAAAAEAAAgAABAAAIAAoEB+qAOYLwgAAEAAAAACoDpuzwHmDAIAAHipswSQZ152n+zAHQBqYHhz5/A/+zuYNwIAqPTwFwEgAIDQw18EgACgMG7HAeYOAgAAEAAqHMD8QQAAAAJAfeN6cV1hDgkAbDrCrxvXFeaRAADChrUhDlnacZgOy6C2Ae7yDgl3AHD4A+YTAgCbCzCnEADYVIB5hQDAZgLMLQQANhFgfvEBngKwcQDezhMCAgAHPyAEEAA48AFBwH/wGwAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAD8VWcJIM9v/4LVv6YGdwCAsMP/7O+AAAAqPfxFAAgAIPTwFwEgAAAAAQAACAAAQAAAAAIAeKirz/l7HwAIACAsAhz+IACAsAhw+EMWrwIGEQC4AwAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAZZuX3SIA5h8CAAAQAACAAAAABEAlfA8GmHsIAABAAKhhAPMOAQAACABVDGDOIQAAAAGgjgHMNwSATQJgriEAbBYA80wAAAACANUMYI4JAGweAPOrKu04TIdlKMO29hYBcPDjDoBNBWBOIQBsLgDziYt8BVAwXwkADn4EgBAAcPAjAIQAgIMfASAIABz4CAAAyOYpAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAAPAZ382PWkLB5PCRAAAAAElFTkSuQmCC">
+<link rel="icon" type="image/png" href="data:image/png;base64,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AAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAAPAZ382PWkLB5PCRAAAAAElFTkSuQmCC">
+<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%20%22I%20Saw%20That%22%2C%20%22short_name%22%3A%20%22I%20Saw%20That%22%2C%20%22start_url%22%3A%20%22.%22%2C%20%22scope%22%3A%20%22.%22%2C%20%22display%22%3A%20%22standalone%22%2C%20%22background_color%22%3A%20%22%231E1620%22%2C%20%22theme_color%22%3A%20%22%231E1620%22%2C%20%22icons%22%3A%20%5B%7B%22src%22%3A%20%22data%3Aimage/png%3Bbase64%2CiVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAI1klEQVR42u3dwW2DQBRFUYiQ6IAloik6oQw6oUJWpIDEiAjZYeads8xyxPy5xoa04zAdDQAQ5csSAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAAAQAJYAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAADgPTpLUK9t7S0CcNu87BahQu04TIdlcOADCAIBgIMfQAgIABz8AEJAAODgBxACxfMUgMMfwHwSANhcAOZUAl8B2FAAb%2BErAXcAcPgD5hcCAJsHMMcQAACAAEA1A%2BYZAsBmATDXEAA2CYD5hgAAAASAOgYw5xAAAIAAUMUA5h0CAAAEAGoYwNwTAACAAAAABAAAIAC4w/dggPmHAAAABAAAIAAAAAEAAAgAAEAAAACvdZYA8szL/uNvHskCdwCAsMP/7O%2BAAAAqPfxFAAgAIPTwFwEgAAAAAQAACAAAQAAAAAIAeKirz/l7HwAIACAsAhz%2BIACAsAhw%2BEMWrwIGEQC4AwAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAAAgAAEAAAgAAAAKrRjsN0WIbn2NbeIgDVmpfdIggAhADg4EcAIAT412HsWsPBn8VvAGweXFOuNcwvAYBNRPK15FrD3BIA2EyEXkOuNcwrAYBNBWBOCQBsLgDzSQBgkwGYSwIAABAAqG0e5upz/t4HgHkkALDpCIsAhz/mkAAAwiLA4Q9ZvAo44FMdgE//uAMAAAgAFQ5g7ggAAEAAAAACgAdzOw4wbxAAAIAAAAAEQLXclgPMGQQAACAAAAABUC235wDzBQEAAAgAAEAAAIAAAAAEAAXzQx3AXEEAAAACAAAQAAAgAAAAAQAACABK4he7gHnCmc4SgIHeNE2zrb2FAXcAgLRPcz7lgQAAwg5/EQACAAg9/EUACAAAQAAAAAIAABAAAIAAAB7q6nP%2B3gcAAgAIiwCHPwgAICwCHP6QxauAQQQA7gAAAAIAABAAAIAAAAAEAAAgAAAAAcBnecwLME8QAACAAAAAAQAACAAAQAAAAAKAEvjFLmCuIAAAAAEAAAgAABAAAIAAoEB%2BqAOYLwgAAEAAAAACoDpuzwHmDAIAAHipswSQZ152n%2BzAHQBqYHhz5/A/%2BzuYNwIAqPTwFwEgAIDQw18EgACgMG7HAeYOAgAAEAAqHMD8QQAAAAJAfeN6cV1hDgkAbDrCrxvXFeaRAADChrUhDlnacZgOy6C2Ae7yDgl3AHD4A%2BYTAgCbCzCnEADYVIB5hQDAZgLMLQQANhFgfvEBngKwcQDezhMCAgAHPyAEEAA48AFBwH/wGwAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAD8VWcJIM9v/4LVv6YGdwCAsMP/7O%2BAAAAqPfxFAAgAIPTwFwEgAAAAAQAACAAAQAAAAAIAeKirz/l7HwAIACAsAhz%2BIACAsAhw%2BEMWrwIGEQC4AwAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAZZuX3SIA5h8CAAAQAACAAAAABEAlfA8GmHsIAABAAKhhAPMOAQAACABVDGDOIQAAAAGgjgHMNwSATQJgriEAbBYA80wAAAACANUMYI4JAGweAPOrKu04TIdlKMO29hYBcPDjDoBNBWBOIQBsLgDziYt8BVAwXwkADn4EgBAAcPAjAIQAgIMfASAIABz4CAAAyOYpAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAAPAZ382PWkLB5PCRAAAAAElFTkSuQmCC%22%2C%20%22sizes%22%3A%20%22512x512%22%2C%20%22type%22%3A%20%22image/png%22%2C%20%22purpose%22%3A%20%22any%22%7D%2C%20%7B%22src%22%3A%20%22data%3Aimage/png%3Bbase64%2CiVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAI1klEQVR42u3dwW2DQBRFUYiQ6IAloik6oQw6oUJWpIDEiAjZYeads8xyxPy5xoa04zAdDQAQ5csSAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAAAQAJYAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAADgPTpLUK9t7S0CcNu87BahQu04TIdlcOADCAIBgIMfQAgIABz8AEJAAODgBxACxfMUgMMfwHwSANhcAOZUAl8B2FAAb%2BErAXcAcPgD5hcCAJsHMMcQAACAAEA1A%2BYZAsBmATDXEAA2CYD5hgAAAASAOgYw5xAAAIAAUMUA5h0CAAAEAGoYwNwTAACAAAAABAAAIAC4w/dggPmHAAAABAAAIAAAAAEAAAgAAEAAAACvdZYA8szL/uNvHskCdwCAsMP/7O%2BAAAAqPfxFAAgAIPTwFwEgAAAAAQAACAAAQAAAAAIAeKirz/l7HwAIACAsAhz%2BIACAsAhw%2BEMWrwIGEQC4AwAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAAAgAAEAAAgAAAAKrRjsN0WIbn2NbeIgDVmpfdIggAhADg4EcAIAT412HsWsPBn8VvAGweXFOuNcwvAYBNRPK15FrD3BIA2EyEXkOuNcwrAYBNBWBOCQBsLgDzSQBgkwGYSwIAABAAqG0e5upz/t4HgHkkALDpCIsAhz/mkAAAwiLA4Q9ZvAo44FMdgE//uAMAAAgAFQ5g7ggAAEAAAAACgAdzOw4wbxAAAIAAAAAEQLXclgPMGQQAACAAAAABUC235wDzBQEAAAgAAEAAAIAAAAAEAAXzQx3AXEEAAAACAAAQAAAgAAAAAQAACABK4he7gHnCmc4SgIHeNE2zrb2FAXcAgLRPcz7lgQAAwg5/EQACAAg9/EUACAAAQAAAAAIAABAAAIAAAB7q6nP%2B3gcAAgAIiwCHPwgAICwCHP6QxauAQQQA7gAAAAIAABAAAIAAAAAEAAAgAAAAAcBnecwLME8QAACAAAAAAQAACAAAQAAAAAKAEvjFLmCuIAAAAAEAAAgAABAAAIAAoEB%2BqAOYLwgAAEAAAAACoDpuzwHmDAIAAHipswSQZ152n%2BzAHQBqYHhz5/A/%2BzuYNwIAqPTwFwEgAIDQw18EgACgMG7HAeYOAgAAEAAqHMD8QQAAAAJAfeN6cV1hDgkAbDrCrxvXFeaRAADChrUhDlnacZgOy6C2Ae7yDgl3AHD4A%2BYTAgCbCzCnEADYVIB5hQDAZgLMLQQANhFgfvEBngKwcQDezhMCAgAHPyAEEAA48AFBwH/wGwAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAD8VWcJIM9v/4LVv6YGdwCAsMP/7O%2BAAAAqPfxFAAgAIPTwFwEgAAAAAQAACAAAQAAAAAIAeKirz/l7HwAIACAsAhz%2BIACAsAhw%2BEMWrwIGEQC4AwAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAZZuX3SIA5h8CAAAQAACAAAAABEAlfA8GmHsIAABAAKhhAPMOAQAACABVDGDOIQAAAAGgjgHMNwSATQJgriEAbBYA80wAAAACANUMYI4JAGweAPOrKu04TIdlKMO29hYBcPDjDoBNBWBOIQBsLgDziYt8BVAwXwkADn4EgBAAcPAjAIQAgIMfASAIABz4CAAAyOYpAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAAPAZ382PWkLB5PCRAAAAAElFTkSuQmCC%22%2C%20%22sizes%22%3A%20%22192x192%22%2C%20%22type%22%3A%20%22image/png%22%2C%20%22purpose%22%3A%20%22any%22%7D%5D%7D">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="application-name" content="I Saw That">
 <style>
   :root{
     --house:#1E1620; --velvet:#2B1D2C; --line:#43303F;
@@ -34,9 +44,9 @@
   .notice{background:var(--velvet);border:1px solid var(--brass);border-radius:8px;padding:12px;margin-bottom:16px;font-size:14px;line-height:1.45}
   .toast{background:var(--velvet);border:1px solid var(--brassDim);color:var(--brass);
     border-radius:8px;padding:10px 12px;margin-bottom:16px;font-size:14px}
-  button{font:inherit;cursor:pointer;border-radius:6px}
+  button{font:inherit;cursor:pointer;border-radius:6px;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
   .btn{display:block;width:100%;padding:14px;background:var(--brass);color:var(--house);
-    border:0;font-weight:600;font-size:15px;margin-bottom:10px}
+    border:0;font-weight:600;font-size:15px;margin-bottom:10px;min-height:46px}
   .btn.ghost{background:none;border:1px solid var(--line);color:var(--muted);font-weight:400}
   .btn.outline{background:none;border:1px solid var(--brass);color:var(--brass);font-weight:400}
   .btn:disabled{opacity:.5;cursor:default}
@@ -167,7 +177,7 @@ function loadImage(file){
     const r = new FileReader();
     r.onerror = () => reject(new Error("Could not read that image."));
     r.onload = () => { const img = new Image();
-      img.onerror = () => reject(new Error("Could not open that image."));
+      img.onerror = () => reject(new Error("That photo would not open — if it is a HEIC file, open it in Photos and share it as JPEG, or take the shot with your camera set to Most Compatible."));
       img.onload = () => resolve(img); img.src = r.result; };
     r.readAsDataURL(file);
   });
@@ -194,6 +204,28 @@ const PROMPT = 'These images are pages from a single theatre, opera, dance or co
 '{"title":"","kind":"","company":"","venue":"","city":"","dateInfo":{"exact":"","rangeStart":"","rangeEnd":"","printed":""},"creatives":[{"role":"","name":""}],"cast":[{"actor":"","role":""}],"understudies":[{"actor":"","role":""}],"notes":""}\n' +
 'Rules: title is the production name. kind is exactly one of Theatre, Musical, Opera, Classical, Jazz, Cabaret, Dance, Other — judge from the program (a play is Theatre, a book musical is Musical, a symphony or recital is Classical, a jazz club or festival set is Jazz, a solo song evening is Cabaret, ballet or contemporary dance is Dance). company is the producing theatre or opera company if named. dateInfo: hunt for dates everywhere including small print, cover, title page, the run of performances, a season line, and any copyright or issue date. "exact" is YYYY-MM-DD only when one single performance date is printed. "rangeStart" and "rangeEnd" are YYYY-MM-DD when a run or repertory span is printed. "printed" is the date text copied exactly as it appears, for example "March 4-22, 2019" or "2011-2012 Season". Never guess a date that is not printed. creatives: up to 6. cast: up to 40 performers who appeared, principals first, with the character each plays. understudies: up to 25 entries from the understudy, standby, swing or cover list, each with the performer and the role or roles they cover; leave empty if no such list is printed. IMPORTANT: if a loose slip or insert announces that a role is played by someone else at this performance, put that performer in "cast" for that role instead of the printed name, and say so plainly in "notes", for example "Slip: Elphaba played by Jane Doe". notes: one short line, else "". Use "" for anything unreadable.';
 
+// A reply cut off mid-list leaves unclosed brackets. Trim to the last complete
+// entry and close what is open, so a long cast list is shortened rather than lost.
+function repairJson(text){
+  const cut = Math.max(text.lastIndexOf("}"), text.lastIndexOf("]"));
+  if (cut < 0) return null;
+  let out = text.slice(0, cut + 1);
+  const stack = []; let inStr = false, esc = false;
+  for (const ch of out){
+    if (esc) { esc = false; continue; }
+    if (ch === "\\") { if (inStr) esc = true; continue; }
+    if (ch === '"') { inStr = !inStr; continue; }
+    if (inStr) continue;
+    if (ch === "{" || ch === "[") stack.push(ch === "{" ? "}" : "]");
+    else if (ch === "}" || ch === "]") stack.pop();
+  }
+  out = out.replace(/,\s*$/, "");
+  while (stack.length) out += stack.pop();
+  return out;
+}
+
+let lastReadTruncated = false;
+
 async function readProgram(images){
   const key = apiKey();
   if(!key) throw new Error("Add a Claude API key in Season → Settings, or type the show in by hand.");
@@ -203,7 +235,7 @@ async function readProgram(images){
     method:"POST",
     headers:{ "Content-Type":"application/json", "x-api-key":key, "anthropic-version":"2023-06-01",
       "anthropic-dangerous-direct-browser-access":"true" },
-    body: JSON.stringify({ model:apiModel(), max_tokens:2000, messages:[{ role:"user", content }] })
+    body: JSON.stringify({ model:apiModel(), max_tokens:8000, messages:[{ role:"user", content }] })
   });
   if(!res.ok){
     const t = await res.text();
@@ -214,9 +246,18 @@ async function readProgram(images){
   const data = await res.json();
   const text = (data.content||[]).filter(b => b.type==="text").map(b => b.text).join("\n");
   const c = text.replace(/```json/g,"").replace(/```/g,"").trim();
-  const a = c.indexOf("{"), b = c.lastIndexOf("}");
-  if(a<0||b<0) throw new Error("Nothing readable came back. Try a brighter, straighter photo.");
-  return JSON.parse(c.slice(a, b+1));
+  const a = c.indexOf("{");
+  if(a<0) throw new Error("Nothing readable came back. Try a brighter, straighter photo.");
+  const body = c.slice(a);
+  lastReadTruncated = data.stop_reason === "max_tokens";
+  try {
+    return JSON.parse(body.slice(0, body.lastIndexOf("}") + 1));
+  } catch {
+    const repaired = repairJson(body);
+    if(!repaired) throw new Error("The reply came back unreadable. Try again, or with fewer pages at once.");
+    lastReadTruncated = true;
+    return JSON.parse(repaired);   // throws only if it is beyond saving
+  }
 }
 
 /* ============ helpers ============ */
@@ -298,8 +339,22 @@ async function importShows(entries, pagesMap){
 
 /* ============ views ============ */
 function viewGate(){
-  if (S.phase === "setup") return '<div class="gate"><h1 style="margin-bottom:14px">I Saw That</h1>'
-    + '<p class="muted">This copy is not connected to Firebase yet. Open index.html, find the CONFIG block near the top of the script, paste in your Firebase web config, and upload it again.</p></div>';
+  if (S.phase === "setup") return '<div class="gate" style="text-align:left;max-width:520px;margin:0 auto">'
+    + '<h1 style="margin-bottom:6px">I Saw That</h1>'
+    + '<p class="small muted" style="margin:0 0 20px">A log of every show you have seen — scanned from the program, searchable by actor, kept for good.</p>'
+    + '<div class="card"><div class="eyebrow">One-time setup, about fifteen minutes</div>'
+    + '<p class="small dim" style="margin-top:0">This copy is not connected to a database yet. Everything below is free and needs no credit card.</p>'
+    + '<ol class="small muted" style="padding-left:18px;line-height:1.6">'
+    + '<li>At <b>console.firebase.google.com</b>, create a project. Keep the free Spark plan; skip Analytics.</li>'
+    + '<li>Open <b>Authentication</b> → Get started → enable <b>Google</b> sign-in.</li>'
+    + '<li>In Authentication → <b>Settings → Authorized domains</b>, add the web address you will open this from.</li>'
+    + '<li>Open <b>Firestore Database</b> → Create database → production mode.</li>'
+    + '<li>In its <b>Rules</b> tab, paste the rules from the setup guide, with your own email address, and Publish.</li>'
+    + '<li>Gear icon → <b>Project settings</b> → Your apps → the <b>&lt;/&gt;</b> web icon → copy the config.</li>'
+    + '<li>Open this file in a text editor, find <b>CONFIG</b> near the top of the script, paste the config in, and save.</li>'
+    + '</ol>'
+    + '<p class="small muted">Then reload. Scanning programs also needs a Claude API key from console.anthropic.com, which you add inside the app afterwards — everything else works without one.</p>'
+    + '</div></div>';
   if (S.phase === "signin") return '<div class="gate"><h1 style="margin-bottom:14px">I Saw That</h1>'
     + '<p class="muted">A shared log of every show you have seen. Sign in to open it.</p>'
     + '<button class="btn" style="max-width:260px;margin:0 auto" data-act="signin">Sign in with Google</button>'
@@ -553,6 +608,17 @@ function render(){
 }
 
 /* ============ actions ============ */
+function pushView(){ try { history.pushState({ cc:1 }, ""); } catch {} }
+
+window.addEventListener("popstate", () => {
+  // Android's back button walks back through the app before leaving it
+  if (S.lightbox) { S.lightbox = null; return render(); }
+  if (S.openId) { S.openId = null; S.openPages = null; return render(); }
+  if (S.draft) { return render(); }        // keep an in-progress entry on screen
+  if (S.tab !== "log") { S.tab = "log"; return render(); }
+  history.back();                           // nothing left to step back through
+});
+
 function newDraft(base){
   base = base || {};
   return {
@@ -594,6 +660,7 @@ async function scanPending(){
       pageViews:S.pending.map(p => ({ thumb:p.thumb, full:p.full })), pagesNew:true
     });
     S.pending = [];
+    if(lastReadTruncated) S.error = "That program was long enough that the reading was cut short — check the cast and understudy lists and add anyone missing.";
   } catch(err){ S.error = err.message || "Something went wrong reading that program."; }
   S.busy = false; render();
 }
@@ -722,10 +789,10 @@ appEl.addEventListener("click", async ev => {
     return;
   }
   if(act==="signout"){ await signOut(auth); return; }
-  if(act==="tab"){ S.tab = arg; S.openId = null; S.error = ""; return render(); }
+  if(act==="tab"){ if(S.tab==="log" && arg!=="log") pushView(); S.tab = arg; S.openId = null; S.error = ""; return render(); }
   if(act==="clearerr"){ S.error = ""; return render(); }
   if(act==="open"){
-    S.openId = arg; S.openPages = null; render();
+    pushView(); S.openId = arg; S.openPages = null; render();
     try { S.openPages = await loadPages(arg); } catch { S.openPages = []; }
     if (S.openId === arg) render();
     return;
@@ -772,9 +839,9 @@ appEl.addEventListener("click", async ev => {
     S.draft.datePrecision = arg; return render();
   }
   if(act==="chip"){ S.draft.dateSeen = arg; S.draft.datePrecision = precisionOf(arg); return render(); }
-  if(act==="light"){ S.lightbox = (S.openPages||[])[+arg].full; return render(); }
-  if(act==="lightp"){ S.lightbox = S.pending[+arg].full; return render(); }
-  if(act==="lightd"){ S.lightbox = S.draft.pageViews[+arg].full; return render(); }
+  if(act==="light"){ pushView(); S.lightbox = (S.openPages||[])[+arg].full; return render(); }
+  if(act==="lightp"){ pushView(); S.lightbox = S.pending[+arg].full; return render(); }
+  if(act==="lightd"){ pushView(); S.lightbox = S.draft.pageViews[+arg].full; return render(); }
   if(act==="closelight"){ S.lightbox = null; return render(); }
   if(act==="backup"){
     if(!S.entries.length) return fail("Nothing to back up yet.");
