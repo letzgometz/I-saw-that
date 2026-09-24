@@ -154,6 +154,19 @@ function legacyLog(){
 
 /* ============ dates ============ */
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+// If the model only left us the printed text, read a month and year out of it.
+function inferFromPrinted(text){
+  if(!text) return "";
+  const t = String(text).toLowerCase();
+  const years = (t.match(/\b(?:19|20)\d{2}\b/g) || []);
+  if(!years.length) return "";
+  // "2011-2012 Season" spans two years — too vague to file as either
+  if(years.length > 1 && years[0] !== years[1]) return "";
+  const months = ["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"];
+  const i = months.findIndex(m => t.includes(m));
+  return i > -1 ? years[0] + "-" + String(i + 1).padStart(2, "0") : years[0];
+}
+
 function precisionOf(v){ if(!v) return null; if(v.length>=10) return "day"; if(v.length===7) return "month"; return "year"; }
 function fmtDate(v){
   const p = precisionOf(v); if(!p) return "Date not recorded";
@@ -200,9 +213,9 @@ async function preparePage(file, i){
 const KINDS = ["Theatre", "Musical", "Opera", "Classical", "Jazz", "Cabaret", "Dance", "Other"];
 function kindOf(e){ return (e && KINDS.includes(e.kind)) ? e.kind : "Unsorted"; }
 
-const PROMPT = 'These images are pages from a single theatre, opera, dance or concert program, in the order they were added. Details are scattered across pages: the title may be on the cover, the run of dates inside, the cast elsewhere, an understudy slip loose in the book. Read every image and merge what you find into one record. When pages disagree, prefer the page specific to this performance (an insert or slip) over the general season book. Return ONLY a JSON object, no markdown fences and no commentary:\n' +
-'{"title":"","kind":"","company":"","venue":"","city":"","dateInfo":{"exact":"","rangeStart":"","rangeEnd":"","printed":""},"creatives":[{"role":"","name":""}],"cast":[{"actor":"","role":""}],"understudies":[{"actor":"","role":""}],"notes":""}\n' +
-'Rules: title is the production name. kind is exactly one of Theatre, Musical, Opera, Classical, Jazz, Cabaret, Dance, Other — judge from the program (a play is Theatre, a book musical is Musical, a symphony or recital is Classical, a jazz club or festival set is Jazz, a solo song evening is Cabaret, ballet or contemporary dance is Dance). company is the producing theatre or opera company if named. dateInfo: hunt for dates everywhere including small print, cover, title page, the run of performances, a season line, and any copyright or issue date. "exact" is YYYY-MM-DD only when one single performance date is printed. "rangeStart" and "rangeEnd" are YYYY-MM-DD when a run or repertory span is printed. "printed" is the date text copied exactly as it appears, for example "March 4-22, 2019" or "2011-2012 Season". Never guess a date that is not printed. creatives: up to 6. cast: up to 40 performers who appeared, principals first, with the character each plays. understudies: up to 25 entries from the understudy, standby, swing or cover list, each with the performer and the role or roles they cover; leave empty if no such list is printed. IMPORTANT: if a loose slip or insert announces that a role is played by someone else at this performance, put that performer in "cast" for that role instead of the printed name, and say so plainly in "notes", for example "Slip: Elphaba played by Jane Doe". notes: one short line, else "". Use "" for anything unreadable.';
+const PROMPT = 'These images relate to a single live performance the user attended, in the order they were added. Most are pages from its program: the title may be on the cover, the run of dates inside, the cast elsewhere, an understudy slip loose in the book. One may instead be a TICKET, ticket stub, box-office receipt, will-call slip or booking confirmation. Read every image and merge what you find into one record. Where images disagree, this is the order of authority: (1) a ticket or booking confirmation, (2) a slip or insert printed for this performance, (3) the program pages, (4) a season or repertory book covering many productions. Return ONLY a JSON object, no markdown fences and no commentary:\n' +
+'{"title":"","kind":"","company":"","venue":"","city":"","dateInfo":{"exact":"","monthYear":"","rangeStart":"","rangeEnd":"","printed":""},"creatives":[{"role":"","name":""}],"cast":[{"actor":"","role":""}],"understudies":[{"actor":"","role":""}],"notes":""}\n' +
+'Rules: title is the production name. kind is exactly one of Theatre, Musical, Opera, Classical, Jazz, Cabaret, Dance, Other — judge from the program (a play is Theatre, a book musical is Musical, a symphony or recital is Classical, a jazz club or festival set is Jazz, a solo song evening is Cabaret, ballet or contemporary dance is Dance). company is the producing theatre or opera company if named. dateInfo: hunt for dates everywhere including small print, cover, title page, the run of performances, a season line, and any copyright or issue date. IMPORTANT: if any image is a ticket, stub, receipt or booking confirmation, the performance date printed on it is the date the user attended — put it in "exact" and let it override any date from the program, even a printed run or a slip. Put the performance time and the seat from a ticket into "notes" if legible, for example "Ticket: Fri 7:30pm, Orch H12". A ticket also settles the venue. "exact" is YYYY-MM-DD only when one single performance date is printed. "monthYear" is YYYY-MM and should be filled whenever the program names a month and year even without a day — Playbill and most house programs print the issue month and year on the cover or masthead (for example "DECEMBER 2013"), and that is the month of the performance, so capture it. A two-year season line such as "2011-2012 Season" is NOT a monthYear; leave it in printed only. "rangeStart" and "rangeEnd" are YYYY-MM-DD when a run or repertory span is printed. "printed" is the date text copied exactly as it appears, for example "March 4-22, 2019" or "2011-2012 Season". Never guess a date that is not printed. creatives: up to 6. cast: up to 40 performers who appeared, principals first, with the character each plays. understudies: up to 25 entries from the understudy, standby, swing or cover list, each with the performer and the role or roles they cover; leave empty if no such list is printed. IMPORTANT: if a loose slip or insert announces that a role is played by someone else at this performance, put that performer in "cast" for that role instead of the printed name, and say so plainly in "notes", for example "Slip: Elphaba played by Jane Doe". notes: one short line, else "". Use "" for anything unreadable.';
 
 // A reply cut off mid-list leaves unclosed brackets. Trim to the last complete
 // entry and close what is open, so a long cast list is shortened rather than lost.
@@ -467,7 +480,7 @@ function viewDetail(){
 function viewAdd(){
   if(S.draft) return viewReview();
   let h = '<div class="eyebrow">Photograph the program</div>'
-    + '<p class="small muted" style="margin-top:0">Add pages one at a time or in batches — cover, title page, cast list, the run of dates, an understudy slip. Up to eight, read together as one program.</p>';
+    + '<p class="small muted" style="margin-top:0">Add pages one at a time or in batches — cover, title page, cast list, the run of dates, an understudy slip, and the ticket if you kept it. Up to eight, read together. A ticket settles the date.</p>';
   if(S.pending.length) h += '<div class="pages">' + S.pending.map((p,i) =>
       '<div class="page"><img src="'+p.thumb+'" data-act="lightp:'+i+'"><span class="num">'+(i+1)+'</span>'
       + '<button class="x" data-act="rmpage:'+p.id+'">&times;</button></div>').join("")
@@ -498,6 +511,7 @@ function viewReview(){
     : '<p class="small muted" style="margin:0 0 10px">No date printed on this program. Add what you know — a year alone is fine.</p>';
   const chips = [];
   if(info.exact) chips.push(["Use the printed date", info.exact]);
+  if(info.monthYear && info.monthYear !== d.dateSeen) chips.push([fmtDate(info.monthYear), info.monthYear]);
   if(info.rangeStart) chips.push(["First night · " + fmtDate(info.rangeStart), info.rangeStart]);
   if(info.rangeEnd && info.rangeEnd !== info.rangeStart) chips.push(["Last night · " + fmtDate(info.rangeEnd), info.rangeEnd]);
   if(info.rangeStart) chips.push(["Just " + fmtDate(info.rangeStart.slice(0,7)), info.rangeStart.slice(0,7)]);
@@ -507,7 +521,9 @@ function viewReview(){
   if(p==="day") h += '<input type="date" data-field="date" value="'+esc(d.dateSeen.length>=10?d.dateSeen:"")+'">';
   else if(p==="month") h += '<input type="month" data-field="date" value="'+esc(d.dateSeen.length>=7?d.dateSeen.slice(0,7):"")+'">';
   else h += '<input type="number" data-field="date" min="1850" max="2100" placeholder="1998" value="'+esc(d.dateSeen?d.dateSeen.slice(0,4):"")+'">';
-  h += '<p class="tiny muted" style="margin:8px 0 0">Filed as: <span id="filedAs" style="color:var(--paper)">'+esc(fmtDate(d.dateSeen))+'</span></p></div>';
+  h += '<p class="tiny muted" style="margin:8px 0 0">Filed as: <span id="filedAs" style="color:var(--paper)">'+esc(fmtDate(d.dateSeen))+'</span>'
+    + (d.dateAuto && d.dateSeen ? ' — taken from the program. Change it if you were there on another night.' : '')
+    + '</p></div>';
   h += '<div class="grid2"><label><span>Venue</span><input type="text" data-field="venue" value="'+esc(d.venue)+'"></label>'
     + '<label><span>City</span><input type="text" data-field="city" value="'+esc(d.city)+'"></label></div>'
     + '<label><span>Company</span><input type="text" data-field="company" value="'+esc(d.company)+'"></label>'
@@ -628,6 +644,7 @@ function newDraft(base){
     creativesText: (base.creatives||[]).map(c => (c.role ? c.role + ": " : "") + c.name).join("\n"),
     castText: castToText(base.cast), understudyText: castToText(base.understudies), notes: base.notes||"",
     pageViews: base.pageViews||[], pagesNew: !!base.pagesNew,
+    dateAuto: !!base.dateAuto,
     addedBy: base.addedBy, addedByName: base.addedByName, savedAt: base.savedAt
   };
 }
@@ -644,11 +661,13 @@ async function scanPending(){
   try {
     const parsed = await readProgram(S.pending.map(p => p.read));
     const di = parsed.dateInfo || {};
-    const info = { exact:di.exact||"", rangeStart:di.rangeStart||"", rangeEnd:di.rangeEnd||"", printed:di.printed||"" };
+    const info = { exact:di.exact||"", monthYear:di.monthYear||"", rangeStart:di.rangeStart||"", rangeEnd:di.rangeEnd||"", printed:di.printed||"" };
     let seen = "";
-    if(info.exact) seen = info.exact;
+    if(info.exact) seen = info.exact;                                  // one printed performance date
+    else if(/^\d{4}-\d{2}$/.test(info.monthYear || "")) seen = info.monthYear;   // masthead month and year
     else if(info.rangeStart && info.rangeStart.slice(0,7) === (info.rangeEnd||info.rangeStart).slice(0,7)) seen = info.rangeStart.slice(0,7);
-    else if(info.rangeStart) seen = info.rangeStart.slice(0,4);
+    else if(info.rangeStart && info.rangeStart.slice(0,4) === (info.rangeEnd||info.rangeStart).slice(0,4)) seen = info.rangeStart.slice(0,4);
+    else seen = inferFromPrinted(info.printed);                        // anything legible in the date line
     S.draft = newDraft({
       title:parsed.title, kind:(KINDS.includes(parsed.kind) ? parsed.kind : "Theatre"),
       company:parsed.company, venue:parsed.venue, city:parsed.city,
@@ -656,7 +675,7 @@ async function scanPending(){
       creatives:(parsed.creatives||[]).filter(c => c && c.name),
       cast:(parsed.cast||[]).filter(c => c && c.actor),
       understudies:(parsed.understudies||[]).filter(c => c && c.actor),
-      notes:parsed.notes,
+      notes:parsed.notes, dateAuto: !!seen,
       pageViews:S.pending.map(p => ({ thumb:p.thumb, full:p.full })), pagesNew:true
     });
     S.pending = [];
