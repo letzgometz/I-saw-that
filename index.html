@@ -45,10 +45,17 @@
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0;background:var(--house);color:var(--paper);
-    font-family:var(--text);font-size:16px;line-height:1.55;-webkit-text-size-adjust:100%;
-    font-variant-numeric:oldstyle-nums}
+    font-family:var(--text);font-size:16px;font-weight:450;line-height:1.55;
+    -webkit-text-size-adjust:100%;font-variant-numeric:oldstyle-nums}
   body{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
-  #app{max-width:660px;margin:0 auto;padding:26px 20px 90px}
+  #app{max-width:660px;margin:0 auto;padding:0 20px 90px}
+  .marquee{background:#F2CE1B;color:#14110E;border-bottom:3px solid #14110E;
+    margin:0 -20px 16px;padding:14px 16px 12px;text-align:center}
+  .marquee span{display:block;font-family:var(--text);font-stretch:62%;font-weight:700;
+    font-size:38px;line-height:.95;letter-spacing:.015em;text-transform:uppercase}
+  .marquee small{display:block;font-size:10px;font-stretch:70%;font-weight:600;
+    letter-spacing:.34em;text-transform:uppercase;margin-top:5px}
+  @media (max-width:380px){ .marquee span{font-size:32px} }
 
   /* --- masthead: a title page, centred --- */
   h1{font-family:var(--display);font-weight:600;font-size:36px;line-height:1;margin:0;
@@ -67,12 +74,12 @@
     @keyframes raise{from{max-width:0}to{max-width:100%}}
   }
 
-  h2{font-family:var(--display);font-weight:600;font-size:28px;line-height:1.12;margin:0 0 4px;
-    text-align:center;font-variant-numeric:lining-nums;font-variation-settings:"opsz" 88}
+  h2{font-family:var(--display);font-weight:700;font-size:29px;line-height:1.14;margin:0 0 4px;
+    text-align:center;font-variant-numeric:lining-nums;font-variation-settings:"opsz" 30}
 
   /* --- navigation: the three sections of the book --- */
   .tabs{display:flex;justify-content:center;gap:26px;margin:18px 0 22px}
-  .tab{background:none;border:0;padding:0 0 6px;font:inherit;font-size:13px;font-stretch:80%;
+  .tab{background:none;border:0;padding:0 0 6px;font:inherit;font-size:14px;font-stretch:84%;font-weight:500;
     letter-spacing:.06em;color:var(--muted);border-bottom:1px solid transparent;cursor:pointer}
   .tab.on{color:var(--paper);border-bottom-color:var(--brass)}
   .tab:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{
@@ -83,7 +90,7 @@
     letter-spacing:0;text-transform:none;margin:0 0 10px;padding-bottom:5px;
     border-bottom:1px solid var(--line)}
 
-  .meta{font-size:12px;font-stretch:80%;color:var(--muted);letter-spacing:.02em}
+  .meta{font-size:12px;font-stretch:82%;font-weight:500;color:var(--muted);letter-spacing:.02em}
   .muted{color:var(--muted)} .dim{color:var(--paperDim)}
   .small{font-size:14px} .tiny{font-size:12px}
   .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
@@ -117,32 +124,34 @@
   input:focus,textarea:focus{border-color:var(--brassDim)}
   ::placeholder{color:var(--muted);opacity:.8}
 
-  .chip,.seg{background:none;border:1px solid var(--line);color:var(--muted);
-    padding:6px 11px;font-size:13px;font-stretch:85%;border-radius:2px;margin:0 6px 6px 0}
+  .chip,.seg{background:none;border:1px solid var(--line);color:var(--paperDim);
+    padding:6px 11px;font-size:13px;font-stretch:88%;font-weight:500;border-radius:2px;margin:0 6px 6px 0}
   .chip{border-color:var(--brassDim);color:var(--brass)}
   .seg.on{border-color:var(--brass);color:var(--brass);background:var(--stock)}
 
   /* --- the log: an index of performances, ruled, not boxed --- */
-  .stub{display:flex;align-items:baseline;width:100%;background:none;border:0;
+  .stub{display:flex;align-items:flex-start;width:100%;background:none;border:0;
     border-bottom:1px solid var(--line);text-align:left;padding:14px 2px;color:inherit;gap:16px}
   .stub:hover{background:var(--stock)}
-  .stub .date{min-width:58px;display:block;text-align:right;flex:0 0 auto}
+  .stub .date{min-width:58px;display:block;text-align:right;flex:0 0 auto;padding-top:3px}
   .stub .perf{display:none}
   .stub .body{min-width:0;flex:1}
-  .d-day{font-family:var(--display);font-size:21px;line-height:1;display:block;
-    font-variant-numeric:lining-nums}
+  .d-day{font-family:var(--display);font-size:22px;font-weight:700;line-height:1;display:block;
+    font-variant-numeric:lining-nums;font-variation-settings:"opsz" 14}
   .d-mon{font-size:11px;font-stretch:78%;letter-spacing:.08em;color:var(--brass);display:block;
     text-transform:uppercase}
   .d-yr{font-size:11px;font-stretch:78%;color:var(--muted);display:block;margin-top:2px;
     font-variant-numeric:lining-nums}
-  .title{font-family:var(--display);font-size:20px;line-height:1.2;display:block;
-    font-variation-settings:"opsz" 40}
-  .credit{font-size:13px;font-stretch:82%;color:var(--muted);margin-top:3px}
+  .title{font-family:var(--display);font-size:20px;font-weight:700;line-height:1.22;display:block;
+    font-variation-settings:"opsz" 16;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .credit{display:block;font-size:13px;font-stretch:84%;font-weight:500;color:var(--paperDim);margin-top:4px}
   .credit .k{color:var(--paperDim);text-transform:uppercase;letter-spacing:.09em;font-size:11px}
-  .players{font-size:13px;font-stretch:82%;color:var(--paperDim);margin-top:2px}
+  .players{display:block;font-size:13px;font-stretch:84%;color:var(--muted);margin-top:3px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
   /* --- the signature: a cast list with dot leaders --- */
-  .kv{display:flex;align-items:baseline;width:100%;font-size:15px;padding:5px 0;
+  .kv{display:flex;align-items:baseline;width:100%;font-size:15px;font-weight:500;padding:6px 0;
     background:none;border:0;color:inherit;text-align:left}
   .kv .lead{flex:1 1 auto;min-width:16px;margin:0 7px;
     border-bottom:1px dotted var(--line);transform:translateY(-4px)}
@@ -167,8 +176,8 @@
     background:var(--stock);padding:3px}
 
   .stat{background:var(--stock);border:1px solid var(--line);padding:14px 12px;text-align:center}
-  .stat b{font-family:var(--display);font-size:32px;font-weight:600;color:var(--brass);display:block;
-    line-height:1;font-variant-numeric:lining-nums;font-variation-settings:"opsz" 72}
+  .stat b{font-family:var(--display);font-size:32px;font-weight:700;color:var(--brass);display:block;
+    line-height:1;font-variant-numeric:lining-nums;font-variation-settings:"opsz" 24}
   .stat .meta{display:block;margin-top:6px}
 
   .lightbox{position:fixed;inset:0;background:rgba(18,14,12,.94);display:flex;align-items:center;
@@ -715,7 +724,8 @@ function render(){
   else body = viewSeason();
 
   const lightsDown = document.documentElement.getAttribute("data-lights") === "down";
-  let head = '<h1>I Saw That</h1><div class="colophon">'
+  let head = '<div class="marquee"><span>I Saw That</span><small>A record of performances</small></div>'
+    + '<div class="colophon">'
     + '<span>' + S.entries.length + (S.entries.length===1 ? " performance" : " performances") + '</span>'
     + '<span>shared log</span>'
     + '<span>' + (S.syncing ? "syncing" : "saved") + '</span></div>'
