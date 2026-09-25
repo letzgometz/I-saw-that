@@ -19,7 +19,7 @@
 <meta name="application-name" content="I Saw That">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..600&family=Archivo:wdth,wght@62..125,400..700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..600&family=Archivo:wdth,wght@62..125,400..700&family=Anton&display=swap" rel="stylesheet">
 <style>
   /* ---------------------------------------------------------------
      The house program: program stock, letterpress ink, curtain red.
@@ -51,7 +51,7 @@
   #app{max-width:660px;margin:0 auto;padding:0 20px 90px}
   .marquee{background:#F2CE1B;color:#14110E;border-bottom:3px solid #14110E;
     margin:0 -20px 16px;padding:14px 16px 12px;text-align:center}
-  .marquee span{display:block;font-family:var(--text);font-stretch:62%;font-weight:700;
+  .marquee span{display:block;font-family:"Anton","Archivo Narrow",var(--text);font-stretch:100%;font-weight:400;
     font-size:38px;line-height:.95;letter-spacing:.015em;text-transform:uppercase}
   .marquee small{display:block;font-size:10px;font-stretch:70%;font-weight:600;
     letter-spacing:.34em;text-transform:uppercase;margin-top:5px}
@@ -95,6 +95,10 @@
   .small{font-size:14px} .tiny{font-size:12px}
   .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
   .truncate{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  /* long titles and single long words break instead of pushing the page sideways */
+  html,body{overflow-x:hidden}
+  #app,.card,.stub,.stub .body,.notice{min-width:0;max-width:100%}
+  h2,.title,.eyebrow,p,li,td{overflow-wrap:break-word}
 
   .card{background:var(--stock);border:1px solid var(--line);padding:20px 18px}
   .notice{background:var(--stock);border-left:3px solid var(--brass);border-top:1px solid var(--line);
@@ -142,7 +146,8 @@
     text-transform:uppercase}
   .d-yr{font-size:11px;font-stretch:78%;color:var(--muted);display:block;margin-top:2px;
     font-variant-numeric:lining-nums}
-  .title{font-family:var(--display);font-size:20px;font-weight:700;line-height:1.22;display:block;
+  .title{font-family:var(--display);font-size:20px;font-weight:700;line-height:1.22;
+    max-width:100%;overflow-wrap:break-word;
     font-variation-settings:"opsz" 16;
     display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   .credit{display:block;font-size:13px;font-stretch:84%;font-weight:500;color:var(--paperDim);margin-top:4px}
@@ -151,12 +156,17 @@
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
   /* --- the signature: a cast list with dot leaders --- */
-  .kv{display:flex;align-items:baseline;width:100%;font-size:15px;font-weight:500;padding:6px 0;
-    background:none;border:0;color:inherit;text-align:left}
-  .kv .lead{flex:1 1 auto;min-width:16px;margin:0 7px;
+  .kv{display:flex;flex-wrap:wrap;align-items:baseline;width:100%;font-size:15px;font-weight:500;
+    padding:6px 0;background:none;border:0;color:inherit;text-align:left;row-gap:0}
+  .kv .lead{flex:1 1 auto;min-width:14px;margin:0 7px;
     border-bottom:1px dotted var(--line);transform:translateY(-4px)}
-  .kv > span:first-child{flex:0 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .kv > span:last-child{flex:0 0 auto;color:var(--muted);font-size:14px;font-stretch:88%}
+  /* the name is never abbreviated: it keeps its width and wraps if it must */
+  .kv > span:first-child{flex:0 1 auto;min-width:9ch;white-space:normal;overflow-wrap:break-word}
+  /* the role keeps a readable column; when that will not fit beside a long name it
+     drops to its own line, right-aligned, the way a programme sets a long credit */
+  .kv > span:last-child{flex:0 1 auto;min-width:13ch;margin-left:auto;text-align:right;
+    color:var(--muted);font-size:14px;font-stretch:88%;white-space:normal;overflow-wrap:break-word}
+  .kv > span:last-child:only-child{margin-left:0}
   button.kv{cursor:pointer;border-bottom:1px solid transparent}
   button.kv:hover{color:var(--brass)}
 
