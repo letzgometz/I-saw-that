@@ -17,77 +17,169 @@
 <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%20%22I%20Saw%20That%22%2C%20%22short_name%22%3A%20%22I%20Saw%20That%22%2C%20%22start_url%22%3A%20%22.%22%2C%20%22scope%22%3A%20%22.%22%2C%20%22display%22%3A%20%22standalone%22%2C%20%22background_color%22%3A%20%22%231E1620%22%2C%20%22theme_color%22%3A%20%22%231E1620%22%2C%20%22icons%22%3A%20%5B%7B%22src%22%3A%20%22data%3Aimage/png%3Bbase64%2CiVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAI1klEQVR42u3dwW2DQBRFUYiQ6IAloik6oQw6oUJWpIDEiAjZYeads8xyxPy5xoa04zAdDQAQ5csSAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAAAQAJYAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAADgPTpLUK9t7S0CcNu87BahQu04TIdlcOADCAIBgIMfQAgIABz8AEJAAODgBxACxfMUgMMfwHwSANhcAOZUAl8B2FAAb%2BErAXcAcPgD5hcCAJsHMMcQAACAAEA1A%2BYZAsBmATDXEAA2CYD5hgAAAASAOgYw5xAAAIAAUMUA5h0CAAAEAGoYwNwTAACAAAAABAAAIAC4w/dggPmHAAAABAAAIAAAAAEAAAgAAEAAAACvdZYA8szL/uNvHskCdwCAsMP/7O%2BAAAAqPfxFAAgAIPTwFwEgAAAAAQAACAAAQAAAAAIAeKirz/l7HwAIACAsAhz%2BIACAsAhw%2BEMWrwIGEQC4AwAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAAAgAAEAAAgAAAAKrRjsN0WIbn2NbeIgDVmpfdIggAhADg4EcAIAT412HsWsPBn8VvAGweXFOuNcwvAYBNRPK15FrD3BIA2EyEXkOuNcwrAYBNBWBOCQBsLgDzSQBgkwGYSwIAABAAqG0e5upz/t4HgHkkALDpCIsAhz/mkAAAwiLA4Q9ZvAo44FMdgE//uAMAAAgAFQ5g7ggAAEAAAAACgAdzOw4wbxAAAIAAAAAEQLXclgPMGQQAACAAAAABUC235wDzBQEAAAgAAEAAAIAAAAAEAAXzQx3AXEEAAAACAAAQAAAgAAAAAQAACABK4he7gHnCmc4SgIHeNE2zrb2FAXcAgLRPcz7lgQAAwg5/EQACAAg9/EUACAAAQAAAAAIAABAAAIAAAB7q6nP%2B3gcAAgAIiwCHPwgAICwCHP6QxauAQQQA7gAAAAIAABAAAIAAAAAEAAAgAAAAAcBnecwLME8QAACAAAAAAQAACAAAQAAAAAKAEvjFLmCuIAAAAAEAAAgAABAAAIAAoEB%2BqAOYLwgAAEAAAAACoDpuzwHmDAIAAHipswSQZ152n%2BzAHQBqYHhz5/A/%2BzuYNwIAqPTwFwEgAIDQw18EgACgMG7HAeYOAgAAEAAqHMD8QQAAAAJAfeN6cV1hDgkAbDrCrxvXFeaRAADChrUhDlnacZgOy6C2Ae7yDgl3AHD4A%2BYTAgCbCzCnEADYVIB5hQDAZgLMLQQANhFgfvEBngKwcQDezhMCAgAHPyAEEAA48AFBwH/wGwAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAD8VWcJIM9v/4LVv6YGdwCAsMP/7O%2BAAAAqPfxFAAgAIPTwFwEgAAAAAQAACAAAQAAAAAIAeKirz/l7HwAIACAsAhz%2BIACAsAhw%2BEMWrwIGEQC4AwAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAZZuX3SIA5h8CAAAQAACAAAAABEAlfA8GmHsIAABAAKhhAPMOAQAACABVDGDOIQAAAAGgjgHMNwSATQJgriEAbBYA80wAAAACANUMYI4JAGweAPOrKu04TIdlKMO29hYBcPDjDoBNBWBOIQBsLgDziYt8BVAwXwkADn4EgBAAcPAjAIQAgIMfASAIABz4CAAAyOYpAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAAPAZ382PWkLB5PCRAAAAAElFTkSuQmCC%22%2C%20%22sizes%22%3A%20%22512x512%22%2C%20%22type%22%3A%20%22image/png%22%2C%20%22purpose%22%3A%20%22any%22%7D%2C%20%7B%22src%22%3A%20%22data%3Aimage/png%3Bbase64%2CiVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAI1klEQVR42u3dwW2DQBRFUYiQ6IAloik6oQw6oUJWpIDEiAjZYeads8xyxPy5xoa04zAdDQAQ5csSAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAAAQAJYAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAADgPTpLUK9t7S0CcNu87BahQu04TIdlcOADCAIBgIMfQAgIABz8AEJAAODgBxACxfMUgMMfwHwSANhcAOZUAl8B2FAAb%2BErAXcAcPgD5hcCAJsHMMcQAACAAEA1A%2BYZAsBmATDXEAA2CYD5hgAAAASAOgYw5xAAAIAAUMUA5h0CAAAEAGoYwNwTAACAAAAABAAAIAC4w/dggPmHAAAABAAAIAAAAAEAAAgAAEAAAACvdZYA8szL/uNvHskCdwCAsMP/7O%2BAAAAqPfxFAAgAIPTwFwEgAAAAAQAACAAAQAAAAAIAeKirz/l7HwAIACAsAhz%2BIACAsAhw%2BEMWrwIGEQC4AwAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAAAgAAEAAAgAAAAKrRjsN0WIbn2NbeIgDVmpfdIggAhADg4EcAIAT412HsWsPBn8VvAGweXFOuNcwvAYBNRPK15FrD3BIA2EyEXkOuNcwrAYBNBWBOCQBsLgDzSQBgkwGYSwIAABAAqG0e5upz/t4HgHkkALDpCIsAhz/mkAAAwiLA4Q9ZvAo44FMdgE//uAMAAAgAFQ5g7ggAAEAAAAACgAdzOw4wbxAAAIAAAAAEQLXclgPMGQQAACAAAAABUC235wDzBQEAAAgAAEAAAIAAAAAEAAXzQx3AXEEAAAACAAAQAAAgAAAAAQAACABK4he7gHnCmc4SgIHeNE2zrb2FAXcAgLRPcz7lgQAAwg5/EQACAAg9/EUACAAAQAAAAAIAABAAAIAAAB7q6nP%2B3gcAAgAIiwCHPwgAICwCHP6QxauAQQQA7gAAAAIAABAAAIAAAAAEAAAgAAAAAcBnecwLME8QAACAAAAAAQAACAAAQAAAAAKAEvjFLmCuIAAAAAEAAAgAABAAAIAAoEB%2BqAOYLwgAAEAAAAACoDpuzwHmDAIAAHipswSQZ152n%2BzAHQBqYHhz5/A/%2BzuYNwIAqPTwFwEgAIDQw18EgACgMG7HAeYOAgAAEAAqHMD8QQAAAAJAfeN6cV1hDgkAbDrCrxvXFeaRAADChrUhDlnacZgOy6C2Ae7yDgl3AHD4A%2BYTAgCbCzCnEADYVIB5hQDAZgLMLQQANhFgfvEBngKwcQDezhMCAgAHPyAEEAA48AFBwH/wGwAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAD8VWcJIM9v/4LVv6YGdwCAsMP/7O%2BAAAAqPfxFAAgAIPTwFwEgAAAAAQAACAAAQAAAAAIAeKirz/l7HwAIACAsAhz%2BIACAsAhw%2BEMWrwIGEQC4AwAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAZZuX3SIA5h8CAAAQAACAAAAABEAlfA8GmHsIAABAAKhhAPMOAQAACABVDGDOIQAAAAGgjgHMNwSATQJgriEAbBYA80wAAAACANUMYI4JAGweAPOrKu04TIdlKMO29hYBcPDjDoBNBWBOIQBsLgDziYt8BVAwXwkADn4EgBAAcPAjAIQAgIMfASAIABz4CAAAyOYpAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAAPAZ382PWkLB5PCRAAAAAElFTkSuQmCC%22%2C%20%22sizes%22%3A%20%22192x192%22%2C%20%22type%22%3A%20%22image/png%22%2C%20%22purpose%22%3A%20%22any%22%7D%5D%7D">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="application-name" content="I Saw That">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..600&family=Archivo:wdth,wght@62..125,400..700&display=swap" rel="stylesheet">
 <style>
+  /* ---------------------------------------------------------------
+     The house program: program stock, letterpress ink, curtain red.
+     Variable names are historical; values below are what matter.
+       --house    page       --velvet  panel/quiet fill
+       --line     rule       --paper   ink (text)
+       --paperDim secondary  --brass   curtain red (accent)
+       --brassDim accent, quiet        --muted   small print
+     ----------------------------------------------------------------*/
   :root{
-    --house:#1E1620; --velvet:#2B1D2C; --line:#43303F;
-    --paper:#F3EDE1; --paperDim:#D9D0C0; --brass:#C9A227; --brassDim:#8C7220; --muted:#A2919F;
+    --house:#EFE9DC; --velvet:#E7DFCF; --line:#C7BCA6;
+    --paper:#171310; --paperDim:#3D352C; --muted:#6E6455;
+    --brass:#8C1D2A; --brassDim:#A84450;
+    --stock:#F6F1E6;
+    --display:"Bodoni Moda", Didot, "Playfair Display", Georgia, serif;
+    --text:"Archivo", "Helvetica Neue", Arial, sans-serif;
+  }
+  html[data-lights="down"]{
+    --house:#14100F; --velvet:#1F1A18; --line:#3B322D;
+    --paper:#EFE7D9; --paperDim:#CFC4B2; --muted:#968B7C;
+    --brass:#CE5B62; --brassDim:#9E454C;
+    --stock:#1A1513;
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0;background:var(--house);color:var(--paper);
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    -webkit-text-size-adjust:100%}
+    font-family:var(--text);font-size:16px;line-height:1.55;-webkit-text-size-adjust:100%;
+    font-variant-numeric:oldstyle-nums}
   body{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
-  #app{max-width:720px;margin:0 auto;padding:22px 16px 80px}
-  h1{font-family:Georgia,"Times New Roman",serif;font-size:30px;margin:0;letter-spacing:-.01em}
-  h2{font-family:Georgia,serif;font-size:22px;margin:0 0 2px;line-height:1.2}
-  .serif{font-family:Georgia,serif}
-  .eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:var(--brass);margin-bottom:8px}
-  .meta{font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:var(--muted)}
+  #app{max-width:660px;margin:0 auto;padding:26px 20px 90px}
+
+  /* --- masthead: a title page, centred --- */
+  h1{font-family:var(--display);font-weight:600;font-size:36px;line-height:1;margin:0;
+    text-align:center;letter-spacing:.005em;font-variant-numeric:lining-nums;
+    font-variation-settings:"opsz" 96}
+  .colophon{display:flex;justify-content:center;flex-wrap:wrap;margin:10px 0 0;
+    font-size:12px;font-stretch:80%;color:var(--muted);letter-spacing:.02em}
+  .colophon span + span{margin-left:11px;padding-left:11px;border-left:1px solid var(--line)}
+  .lights{background:none;border:0;color:var(--muted);font:inherit;font-size:11px;font-stretch:80%;
+    padding:4px 0;cursor:pointer;display:block;margin:6px auto 0;letter-spacing:.04em}
+  .lights:hover{color:var(--brass)}
+  .rule{height:0;border-top:1px solid var(--line);border-bottom:3px double var(--line);
+    margin:14px auto 0;max-width:100%}
+  @media (prefers-reduced-motion: no-preference){
+    .rule{animation:raise .7s ease-out both}
+    @keyframes raise{from{max-width:0}to{max-width:100%}}
+  }
+
+  h2{font-family:var(--display);font-weight:600;font-size:28px;line-height:1.12;margin:0 0 4px;
+    text-align:center;font-variant-numeric:lining-nums;font-variation-settings:"opsz" 88}
+
+  /* --- navigation: the three sections of the book --- */
+  .tabs{display:flex;justify-content:center;gap:26px;margin:18px 0 22px}
+  .tab{background:none;border:0;padding:0 0 6px;font:inherit;font-size:13px;font-stretch:80%;
+    letter-spacing:.06em;color:var(--muted);border-bottom:1px solid transparent;cursor:pointer}
+  .tab.on{color:var(--paper);border-bottom-color:var(--brass)}
+  .tab:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{
+    outline:2px solid var(--brassDim);outline-offset:2px}
+
+  /* --- section heads: how a program announces a section --- */
+  .eyebrow{font-family:var(--display);font-style:italic;font-size:15px;color:var(--paperDim);
+    letter-spacing:0;text-transform:none;margin:0 0 10px;padding-bottom:5px;
+    border-bottom:1px solid var(--line)}
+
+  .meta{font-size:12px;font-stretch:80%;color:var(--muted);letter-spacing:.02em}
   .muted{color:var(--muted)} .dim{color:var(--paperDim)}
-  .small{font-size:13px} .tiny{font-size:11px}
+  .small{font-size:14px} .tiny{font-size:12px}
   .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
-  .tabs{display:flex;gap:22px;margin:20px 0 18px}
-  .tab{background:none;border:0;padding:0 0 8px;font:inherit;font-size:11px;text-transform:uppercase;
-    letter-spacing:.16em;color:var(--muted);border-bottom:2px solid transparent;cursor:pointer}
-  .tab.on{color:var(--brass);border-bottom-color:var(--brass)}
-  .card{background:var(--velvet);border:1px solid var(--line);border-radius:8px;padding:16px}
-  .notice{background:var(--velvet);border:1px solid var(--brass);border-radius:8px;padding:12px;margin-bottom:16px;font-size:14px;line-height:1.45}
-  .toast{background:var(--velvet);border:1px solid var(--brassDim);color:var(--brass);
-    border-radius:8px;padding:10px 12px;margin-bottom:16px;font-size:14px}
-  button{font:inherit;cursor:pointer;border-radius:6px;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
-  .btn{display:block;width:100%;padding:14px;background:var(--brass);color:var(--house);
-    border:0;font-weight:600;font-size:15px;margin-bottom:10px;min-height:46px}
-  .btn.ghost{background:none;border:1px solid var(--line);color:var(--muted);font-weight:400}
-  .btn.outline{background:none;border:1px solid var(--brass);color:var(--brass);font-weight:400}
-  .btn:disabled{opacity:.5;cursor:default}
-  .btn.sm{padding:7px 12px;width:auto;display:inline-block;font-size:12px;margin:0}
+  .truncate{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+  .card{background:var(--stock);border:1px solid var(--line);padding:20px 18px}
+  .notice{background:var(--stock);border-left:3px solid var(--brass);border-top:1px solid var(--line);
+    border-right:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:12px 14px;margin-bottom:16px;font-size:14px}
+  .toast{border-left:3px solid var(--brassDim);background:var(--stock);color:var(--paperDim);
+    padding:10px 14px;margin-bottom:16px;font-size:14px}
+
+  /* --- buttons: set like a ticket --- */
+  button{font-family:var(--text);cursor:pointer}
+  .btn{display:block;width:100%;padding:13px;background:var(--brass);color:var(--stock);
+    border:0;border-radius:2px;font-size:14px;font-stretch:85%;font-weight:600;
+    letter-spacing:.05em;margin-bottom:10px}
+  .btn.ghost{background:none;border:1px solid var(--line);color:var(--paperDim);font-weight:400}
+  .btn.outline{background:none;border:1px solid var(--brass);color:var(--brass);font-weight:500}
+  .btn:disabled{opacity:.45;cursor:default}
+  .btn.sm{width:auto;display:inline-block;padding:6px 12px;font-size:12px;margin:0}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-  label{display:block;margin-bottom:12px}
-  label span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:5px}
-  input,textarea{width:100%;padding:11px;background:var(--house);color:var(--paper);
-    border:1px solid var(--line);border-radius:6px;font:inherit;font-size:16px;outline:none}
-  textarea{resize:vertical;font-size:14px;line-height:1.5}
+
+  label{display:block;margin-bottom:14px}
+  label span{display:block;font-family:var(--display);font-style:italic;font-size:14px;
+    color:var(--paperDim);margin-bottom:5px}
+  input,textarea{width:100%;padding:10px 11px;background:var(--house);color:var(--paper);
+    border:1px solid var(--line);border-radius:2px;font:inherit;font-size:16px;outline:none}
+  textarea{resize:vertical;font-size:15px;line-height:1.6}
   input:focus,textarea:focus{border-color:var(--brassDim)}
-  .chip{background:none;border:1px solid var(--brassDim);color:var(--brass);padding:6px 10px;font-size:12px;margin:0 6px 6px 0}
-  .seg{background:none;border:1px solid var(--line);color:var(--muted);padding:6px 10px;font-size:12px;margin-right:6px}
-  .seg.on{border-color:var(--brass);color:var(--brass)}
-  .stub{display:flex;align-items:stretch;width:100%;background:var(--velvet);border:1px solid var(--line);
-    border-radius:8px;overflow:hidden;text-align:left;padding:0;margin-bottom:10px;color:inherit}
-  .stub .date{background:var(--house);padding:12px 10px;min-width:76px;display:flex;flex-direction:column;
-    align-items:center;justify-content:center;gap:3px}
-  .stub .perf{width:1px;background-image:repeating-linear-gradient(to bottom,var(--line) 0 5px,transparent 5px 10px)}
-  .stub .body{padding:12px 14px;min-width:0;flex:1}
-  .truncate{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .hr{height:1px;margin:14px 0;background-image:repeating-linear-gradient(to right,var(--line) 0 6px,transparent 6px 12px)}
+  ::placeholder{color:var(--muted);opacity:.8}
+
+  .chip,.seg{background:none;border:1px solid var(--line);color:var(--muted);
+    padding:6px 11px;font-size:13px;font-stretch:85%;border-radius:2px;margin:0 6px 6px 0}
+  .chip{border-color:var(--brassDim);color:var(--brass)}
+  .seg.on{border-color:var(--brass);color:var(--brass);background:var(--stock)}
+
+  /* --- the log: an index of performances, ruled, not boxed --- */
+  .stub{display:flex;align-items:baseline;width:100%;background:none;border:0;
+    border-bottom:1px solid var(--line);text-align:left;padding:14px 2px;color:inherit;gap:16px}
+  .stub:hover{background:var(--stock)}
+  .stub .date{min-width:58px;display:block;text-align:right;flex:0 0 auto}
+  .stub .perf{display:none}
+  .stub .body{min-width:0;flex:1}
+  .d-day{font-family:var(--display);font-size:21px;line-height:1;display:block;
+    font-variant-numeric:lining-nums}
+  .d-mon{font-size:11px;font-stretch:78%;letter-spacing:.08em;color:var(--brass);display:block;
+    text-transform:uppercase}
+  .d-yr{font-size:11px;font-stretch:78%;color:var(--muted);display:block;margin-top:2px;
+    font-variant-numeric:lining-nums}
+  .title{font-family:var(--display);font-size:20px;line-height:1.2;display:block;
+    font-variation-settings:"opsz" 40}
+  .credit{font-size:13px;font-stretch:82%;color:var(--muted);margin-top:3px}
+  .credit .k{color:var(--paperDim);text-transform:uppercase;letter-spacing:.09em;font-size:11px}
+  .players{font-size:13px;font-stretch:82%;color:var(--paperDim);margin-top:2px}
+
+  /* --- the signature: a cast list with dot leaders --- */
+  .kv{display:flex;align-items:baseline;width:100%;font-size:15px;padding:5px 0;
+    background:none;border:0;color:inherit;text-align:left}
+  .kv .lead{flex:1 1 auto;min-width:16px;margin:0 7px;
+    border-bottom:1px dotted var(--line);transform:translateY(-4px)}
+  .kv > span:first-child{flex:0 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .kv > span:last-child{flex:0 0 auto;color:var(--muted);font-size:14px;font-stretch:88%}
+  button.kv{cursor:pointer;border-bottom:1px solid transparent}
+  button.kv:hover{color:var(--brass)}
+
+  .hr{height:0;border-top:1px solid var(--line);margin:18px 0}
+  .orn{text-align:center;color:var(--muted);font-size:18px;line-height:1;margin:20px 0 16px;
+    font-family:var(--display)}
+
   .pages{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-  .page{position:relative;border:1px solid var(--line);border-radius:6px;overflow:hidden}
-  .page img{width:100%;height:84px;object-fit:cover;display:block}
-  .page .num{position:absolute;left:0;bottom:0;background:var(--house);color:var(--brass);font-size:11px;padding:1px 5px}
-  .page .x{position:absolute;top:4px;right:4px;background:var(--house);color:var(--paper);
-    border:0;border-radius:50%;width:22px;height:22px;line-height:1;font-size:14px}
-  .strip{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px}
-  .strip img{height:120px;width:92px;object-fit:cover;border-radius:6px;border:1px solid var(--line);flex:0 0 auto}
-  .kv{display:flex;justify-content:space-between;gap:16px;font-size:14px;padding:4px 0}
-  .stat{background:var(--velvet);border:1px solid var(--line);border-radius:8px;padding:14px}
-  .stat b{font-family:Georgia,serif;font-size:28px;color:var(--brass);font-weight:400;display:block}
-  .lightbox{position:fixed;inset:0;background:rgba(12,8,13,.95);display:flex;align-items:center;
-    justify-content:center;padding:16px;z-index:50}
-  .lightbox img{max-width:100%;max-height:100%;border-radius:6px}
-  .gate{text-align:center;padding:48px 8px}
-  .gate p{max-width:420px;margin:0 auto 20px;line-height:1.5}
+  .page{position:relative;border:1px solid var(--line);background:var(--stock);padding:3px}
+  .page img{width:100%;height:80px;object-fit:cover;display:block}
+  .page .num{position:absolute;left:3px;bottom:3px;background:var(--house);color:var(--brass);
+    font-size:11px;padding:0 5px;font-variant-numeric:lining-nums}
+  .page .x{position:absolute;top:5px;right:5px;background:var(--house);color:var(--paper);
+    border:1px solid var(--line);border-radius:50%;width:22px;height:22px;line-height:1;font-size:13px}
+  .strip{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:16px}
+  .strip img{height:118px;width:88px;object-fit:cover;border:1px solid var(--line);flex:0 0 auto;
+    background:var(--stock);padding:3px}
+
+  .stat{background:var(--stock);border:1px solid var(--line);padding:14px 12px;text-align:center}
+  .stat b{font-family:var(--display);font-size:32px;font-weight:600;color:var(--brass);display:block;
+    line-height:1;font-variant-numeric:lining-nums;font-variation-settings:"opsz" 72}
+  .stat .meta{display:block;margin-top:6px}
+
+  .lightbox{position:fixed;inset:0;background:rgba(18,14,12,.94);display:flex;align-items:center;
+    justify-content:center;padding:18px;z-index:50}
+  .lightbox img{max-width:100%;max-height:100%;border:6px solid var(--stock)}
+
+  .gate{text-align:center;padding:40px 4px}
+  .gate p{max-width:40ch;margin:0 auto 20px;line-height:1.6}
   .spin{display:inline-block;animation:sp 1s linear infinite}
   @keyframes sp{to{transform:rotate(360deg)}}
+  @media (prefers-reduced-motion: reduce){.spin{animation:none}}
   .hidden{display:none}
 </style>
 </head>
@@ -122,6 +214,14 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signO
 import { initializeFirestore, getFirestore, persistentLocalCache, persistentMultipleTabManager,
   collection, doc, onSnapshot, getDocs, setDoc, writeBatch }
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// House lights: paper by default, lamplight when asked, remembered per device.
+(function(){
+  let pref = null;
+  try { pref = localStorage.getItem("cc:lights"); } catch {}
+  if (!pref && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) pref = "down";
+  if (pref === "down") document.documentElement.setAttribute("data-lights", "down");
+})();
 
 /* ============ state ============ */
 const S = {
@@ -436,17 +536,16 @@ function viewLog(){
     const distinct = groupCast(e.cast);
     let names = distinct.slice(0,3).map(c => c.actor).join(", ");
     if(distinct.length>3) names += " +" + (distinct.length-3);
-    return '<button class="stub" data-act="open:'+e.id+'"><div class="date">'
-      + (s.eyebrow ? '<span class="meta" style="color:var(--brass)">'+s.eyebrow+'</span>' : '')
-      + '<span class="serif" style="font-size:'+(s.big.length>2?"17px":"21px")+';line-height:1;'+(s.sub==="undated"?"color:var(--muted)":"")+'">'+esc(s.big)+'</span>'
-      + (s.sub ? '<span class="tiny muted">'+esc(s.sub)+'</span>' : '')
-      + '</div><div class="perf"></div><div class="body">'
-      + '<div class="serif truncate" style="font-size:17px">'+esc(e.title)+'</div>'
-      + '<div class="tiny muted truncate" style="margin-top:4px">'
-      + '<span style="color:var(--brassDim)">'+esc(kindOf(e))+'</span> · '
-      + esc([e.venue,e.city].filter(Boolean).join(" · ") || "Venue not recorded")+'</div>'
-      + (names ? '<div class="tiny dim truncate" style="margin-top:3px">'+esc(names)+'</div>' : '')
-      + '</div></button>';
+    const where = [e.venue, e.city].filter(Boolean).join(", ") || "Venue not recorded";
+    return '<button class="stub" data-act="open:'+e.id+'"><span class="date">'
+      + (s.eyebrow ? '<span class="d-mon">'+s.eyebrow+'</span>' : '')
+      + '<span class="d-day"'+(s.sub==="undated"?' style="color:var(--muted)"':'')+'>'+esc(s.big)+'</span>'
+      + (s.sub ? '<span class="d-yr">'+esc(s.sub)+'</span>' : '')
+      + '</span><span class="body">'
+      + '<span class="title truncate">'+esc(e.title)+'</span>'
+      + '<span class="credit truncate"><span class="k">'+esc(kindOf(e))+'</span> at '+esc(where)+'</span>'
+      + (names ? '<span class="players truncate">'+esc(names)+'</span>' : '')
+      + '</span></button>';
   }).join("");
 }
 
@@ -457,20 +556,22 @@ function viewDetail(){
   if(S.openPages === null && e.pageCount) h += '<p class="tiny muted">Loading pages…</p>';
   if((S.openPages||[]).length) h += '<div class="strip">' + S.openPages.map((p,i) =>
       '<img src="'+p.thumb+'" alt="Page '+(i+1)+'" data-act="light:'+i+'">').join("") + '</div>';
-  h += '<h2>'+esc(e.title)+'</h2>'
-    + '<div class="small muted" style="margin-top:4px">'+esc([kindOf(e)==="Unsorted"?"":e.kind,e.venue,e.city].filter(Boolean).join(" · "))+'</div>'
-    + '<div class="meta" style="color:var(--brass);margin-top:8px">'+esc(fmtDate(e.dateSeen))+'</div>';
+  const house = [e.venue, e.city].filter(Boolean).join(", ");
+  h += (house ? '<div class="meta" style="text-align:center;letter-spacing:.14em;text-transform:uppercase">'+esc(house)+'</div>' : '')
+    + '<h2>'+esc(e.title)+'</h2>'
+    + '<div class="small" style="text-align:center;color:var(--brass);font-family:var(--display);font-style:italic">'+esc(fmtDate(e.dateSeen))+'</div>'
+    + (kindOf(e)!=="Unsorted" ? '<div class="tiny muted" style="text-align:center;margin-top:3px">'+esc(e.kind)+'</div>' : '');
   if(e.dateInfo && e.dateInfo.printed) h += '<div class="tiny muted" style="margin-top:4px">Program reads: '+esc(e.dateInfo.printed)+'</div>';
-  if(e.director) h += '<div class="small dim" style="margin-top:8px">Directed by '+esc(e.director)+'</div>';
-  if(e.company) h += '<div class="small dim" style="margin-top:4px">'+esc(e.company)+'</div>';
+  if(e.director) h += '<div class="small dim" style="text-align:center;margin-top:12px">Directed by '+esc(e.director)+'</div>';
+  if(e.company) h += '<div class="tiny muted" style="text-align:center;margin-top:3px">'+esc(e.company)+'</div>';
   if(e.notes) h += '<div class="small dim" style="margin-top:8px">'+esc(e.notes)+'</div>';
   if((e.creatives||[]).length) h += '<div class="hr"></div>' + e.creatives.map(c =>
-      '<div class="kv"><span class="muted">'+esc(c.role)+'</span><span>'+esc(c.name)+'</span></div>').join("");
-  h += '<div class="hr"></div><div class="eyebrow">Cast</div>';
-  h += (e.cast||[]).length ? groupCast(e.cast).map(c => '<div class="kv"><span>'+esc(c.actor)+'</span><span class="muted" style="text-align:right">'+esc(c.role)+'</span></div>').join("")
+      '<div class="kv"><span class="muted">'+esc(c.role)+'</span><i class="lead"></i><span>'+esc(c.name)+'</span></div>').join("");
+  h += '<div class="orn">❧</div><div class="eyebrow">Cast</div>';
+  h += (e.cast||[]).length ? groupCast(e.cast).map(c => '<div class="kv"><span>'+esc(c.actor)+'</span><i class="lead"></i><span>'+esc(c.role)+'</span></div>').join("")
     : '<p class="small muted">No cast recorded.</p>';
   if((e.understudies||[]).length) h += '<div class="hr"></div><div class="eyebrow">Understudies and standbys</div>'
-    + groupCast(e.understudies).map(c => '<div class="kv"><span class="muted">'+esc(c.actor)+'</span><span class="muted" style="text-align:right">'+esc(c.role)+'</span></div>').join("");
+    + groupCast(e.understudies).map(c => '<div class="kv"><span class="muted">'+esc(c.actor)+'</span><i class="lead"></i><span>'+esc(c.role)+'</span></div>').join("");
   if(e.addedByName) h += '<p class="tiny muted" style="margin-top:14px">Filed by '+esc(e.addedByName)+(e.editedBy && e.editedBy!==e.addedByName ? ', edited by '+esc(e.editedBy) : '')+'</p>';
   h += '<div style="display:flex;gap:10px;margin-top:18px">'
     + '<button class="btn ghost" style="margin:0" data-act="edit"'+(S.openPages===null&&e.pageCount?" disabled":"")+'>Edit</button>'
@@ -554,8 +655,8 @@ function viewSeason(){
       S.entries.forEach(e => new Set(fn(e).filter(Boolean)).forEach(v => { m[v] = (m[v]||0)+1; }));
       return Object.entries(m).sort((a,b) => b[1]-a[1]).slice(0,6); };
     const list = (title, rows, unit) => '<div style="margin-top:22px"><div class="eyebrow">'+title+'</div>'
-      + (rows.length ? rows.map(r => '<button class="kv" style="width:100%;background:none;border:0;border-bottom:1px solid var(--line);color:inherit;text-align:left;padding:7px 0" data-act="find:'+encodeURIComponent(r[0])+'">'
-        + '<span class="truncate">'+esc(r[0])+'</span><span class="muted">'+r[1]+' '+unit+(r[1]>1?"s":"")+' &rsaquo;</span></button>').join("")
+      + (rows.length ? rows.map(r => '<button class="kv" style="border-bottom:1px solid var(--line)" data-act="find:'+encodeURIComponent(r[0])+'">'
+        + '<span>'+esc(r[0])+'</span><i class="lead"></i><span>'+r[1]+' '+unit+(r[1]>1?"s":"")+'</span></button>').join("")
         : '<p class="small muted">Not recorded yet.</p>') + '</div>';
     h += '<div class="grid3"><div class="stat"><b>'+S.entries.length+'</b><span class="meta">Total</span></div>'
       + '<div class="stat"><b>'+thisYear+'</b><span class="meta">In '+year+'</span></div>'
@@ -563,8 +664,8 @@ function viewSeason(){
     if(dates.length) h += '<p class="tiny muted" style="margin-top:12px">Logged from '+esc(fmtDate(dates[0]))+' to '+esc(fmtDate(dates[dates.length-1]))+'.</p>';
     if(S.entries.length - dates.length > 0) h += '<p class="tiny" style="color:var(--brass);margin-top:4px">'+(S.entries.length-dates.length)+' still undated.</p>';
     h += '<div style="margin-top:22px"><div class="eyebrow">By kind</div>'
-      + tally(e => [kindOf(e)]).map(r => '<button class="kv" style="width:100%;background:none;border:0;border-bottom:1px solid var(--line);color:inherit;text-align:left;padding:7px 0" data-act="bykind:'+encodeURIComponent(r[0])+'">'
-        + '<span>'+esc(r[0])+'</span><span class="muted">'+r[1]+' &rsaquo;</span></button>').join("") + (S.entries.filter(e => kindOf(e)==="Unsorted").length
+      + tally(e => [kindOf(e)]).map(r => '<button class="kv" style="border-bottom:1px solid var(--line)" data-act="bykind:'+encodeURIComponent(r[0])+'">'
+        + '<span>'+esc(r[0])+'</span><i class="lead"></i><span>'+r[1]+'</span></button>').join("") + (S.entries.filter(e => kindOf(e)==="Unsorted").length
         ? '<button class="btn outline" style="margin-top:10px" data-act="classify"'+(S.moving?" disabled":"")+'>'
           + (S.moving ? "Sorting…" : "Let Claude sort the " + S.entries.filter(e => kindOf(e)==="Unsorted").length + " unsorted")
           + '</button>' : '')
@@ -613,9 +714,13 @@ function render(){
   else if(S.tab==="add") body = viewAdd();
   else body = viewSeason();
 
-  let head = '<div class="row"><h1>I Saw That</h1></div><div class="meta" style="margin:4px 0 16px">'
-    + S.entries.length + (S.entries.length===1 ? " performance" : " performances") + " · shared log"
-    + (S.syncing ? " · syncing…" : " · up to date") + " · v8" + '</div>';
+  const lightsDown = document.documentElement.getAttribute("data-lights") === "down";
+  let head = '<h1>I Saw That</h1><div class="colophon">'
+    + '<span>' + S.entries.length + (S.entries.length===1 ? " performance" : " performances") + '</span>'
+    + '<span>shared log</span>'
+    + '<span>' + (S.syncing ? "syncing" : "saved") + '</span></div>'
+    + '<button class="lights" data-act="lights">' + (lightsDown ? "Raise the houselights" : "Dim the houselights") + '</button>'
+    + '<div class="rule"></div>';
   if(S.error) head += '<div class="notice"><div class="row"><span>'+esc(S.error)+'</span><button class="btn sm ghost" data-act="clearerr">Dismiss</button></div></div>';
   if(S.toast) head += '<div class="toast">'+esc(S.toast)+'</div>';
   const tabs = [["log","The log"],["add","Add a show"],["season","Season"]].map(t =>
@@ -832,6 +937,13 @@ appEl.addEventListener("click", async ev => {
   }
   if(act==="signout"){ await signOut(auth); return; }
   if(act==="tab"){ if(S.tab==="log" && arg!=="log") pushView(); S.tab = arg; S.openId = null; S.error = ""; return render(); }
+  if(act==="lights"){
+    const el = document.documentElement;
+    const down = el.getAttribute("data-lights") === "down";
+    if(down) el.removeAttribute("data-lights"); else el.setAttribute("data-lights","down");
+    try { localStorage.setItem("cc:lights", down ? "up" : "down"); } catch {}
+    return render();
+  }
   if(act==="clearerr"){ S.error = ""; return render(); }
   if(act==="open"){
     pushView(); S.openId = arg; S.openPages = null; render();
