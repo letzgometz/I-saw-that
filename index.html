@@ -249,7 +249,7 @@ const S = {
   openId: null, openPages: null, query: "", lightbox: null, backupText: "", pasteText: "",
   busy: false, adding: false, moving: false, error: "", toast: "", syncing: false,
   cfg: { key:"", model:"claude-sonnet-5" }, keyDraft: null, modelDraft: null, pageTarget: "tray",
-  kindFilter: "All", sort: "new", mergeWith: null, mergeChecked: false, busyNote: "", lastSkipped: null
+  kindFilter: "All", sort: "new", mergeWith: null, mergeChecked: false, busyNote: "", lastSkipped: null, dupDismissed: {}
 };
 let db = null, auth = null, unsub = null, unsubCfg = null, toastTimer = null;
 
@@ -330,7 +330,7 @@ async function preparePage(file, i){
 }
 
 /* ============ reading a program ============ */
-const BUILD = "v15";
+const BUILD = "v17";
 const KINDS = ["Theatre", "Musical", "Opera", "Classical", "Jazz", "Cabaret", "Dance", "Other"];
 function kindOf(e){ return (e && KINDS.includes(e.kind)) ? e.kind : "Unsorted"; }
 
@@ -550,7 +550,28 @@ function viewLog(){
   if(!S.entries.length) return h + '<div class="gate" style="padding:40px 0"><div class="serif" style="font-size:22px;margin-bottom:6px">The log is empty</div>'
     + '<p class="small muted">Start with the last playbill in your bag.</p>'
     + '<button class="btn" style="max-width:200px;margin:0 auto" data-act="tab:add">Add a show</button></div>';
-  if(!list.length) return h + '<p class="small muted" style="text-align:center;padding:32px 0">Nothing here matches.</p>';
+  if(!list.length){
+    // say which filter is doing the excluding, and offer the way out
+    const inKind = S.kindFilter === "All" ? S.entries
+      : S.entries.filter(e => kindOf(e) === S.kindFilter);
+    const qOnly = q ? S.entries.filter(e =>
+        [e.title,e.venue,e.city,e.company,e.notes,e.addedByName,e.kind,e.director].join(" ").toLowerCase().includes(q)
+        || (e.creatives||[]).some(c => (c.name+" "+c.role).toLowerCase().includes(q))
+        || (e.cast||[]).concat(e.understudies||[]).some(c => (c.actor+" "+c.role).toLowerCase().includes(q))) : [];
+    let msg, fix = "";
+    if(q && S.kindFilter !== "All" && qOnly.length){
+      msg = "No " + S.kindFilter + " shows match \u201c" + q + "\u201d, but " + qOnly.length
+          + " show" + (qOnly.length===1?"":"s") + " match" + (qOnly.length===1?"es":"") + " across all kinds.";
+      fix = '<button class="btn outline" style="max-width:280px;margin:14px auto 0" data-act="kind:All">Show all ' + qOnly.length + '</button>';
+    } else if(q){
+      msg = "Nothing matches \u201c" + q + "\u201d.";
+      fix = '<button class="btn ghost" style="max-width:280px;margin:14px auto 0" data-act="clearq">Clear the search</button>';
+    } else {
+      msg = "No " + S.kindFilter + " shows in the log yet.";
+      fix = '<button class="btn ghost" style="max-width:280px;margin:14px auto 0" data-act="kind:All">Show all ' + S.entries.length + '</button>';
+    }
+    return h + '<div style="text-align:center;padding:32px 0"><p class="small muted">' + esc(msg) + '</p>' + fix + '</div>';
+  }
 
   return h + list.map(e => {
     const s = stubParts(e.dateSeen);
@@ -680,6 +701,55 @@ function viewReview(){
   return h;
 }
 
+// Titles can differ wildly for the same show ("ROI" vs "R.O.I. (Return on Investment)").
+// Two entries on the same date, at the same venue, are almost always one performance.
+function findDuplicatePairs(){
+  const byDate = {};
+  S.entries.forEach(e => {
+    if(!e.dateSeen || e.dateSeen.length < 10) return;   // need a real day
+    (byDate[e.dateSeen] = byDate[e.dateSeen] || []).push(e);
+  });
+  const pairs = [];
+  Object.keys(byDate).forEach(d => {
+    const list = byDate[d];
+    for(let i = 0; i < list.length; i++){
+      for(let j = i + 1; j < list.length; j++){
+        const a = list[i], b = list[j];
+        const sameVenue = a.venue && b.venue && a.venue.toLowerCase() === b.venue.toLowerCase();
+        const alike = titleAlike(a.title, b.title);
+        if(!sameVenue && !alike) continue;
+        // the fuller record is the one worth keeping
+        const score = x => (x.cast||[]).length * 3 + (x.pageCount||0) * 5
+                         + ((x.creatives||[]).length) + (x.fromCalendar ? -10 : 0);
+        const keep = score(a) >= score(b) ? a : b;
+        const drop = keep === a ? b : a;
+        pairs.push({ keep, drop, why: sameVenue ? "same night, same venue" : "same night, similar title" });
+      }
+    }
+  });
+  return pairs;
+}
+
+async function mergePair(keepId, dropId){
+  const keep = S.entries.find(e => e.id === keepId);
+  const drop = S.entries.find(e => e.id === dropId);
+  if(!keep || !drop) return;
+  const merged = Object.assign({}, keep);
+  // take anything the kept record is missing
+  ["venue","city","company","director","kind"].forEach(f => { if(!merged[f] && drop[f]) merged[f] = drop[f]; });
+  if(!(merged.cast||[]).length && (drop.cast||[]).length) merged.cast = drop.cast;
+  if(!(merged.understudies||[]).length && (drop.understudies||[]).length) merged.understudies = drop.understudies;
+  if(!(merged.creatives||[]).length && (drop.creatives||[]).length) merged.creatives = drop.creatives;
+  const dn = (drop.notes||"").replace(/Imported from calendar[^.]*\.?/i,"").trim();
+  if(dn && !(merged.notes||"").includes(dn)) merged.notes = merged.notes ? merged.notes + " " + dn : dn;
+  merged.notes = (merged.notes||"").replace(/Imported from calendar[^.]*\.?/i,"").trim();
+  merged.fromCalendar = false;
+  merged.updatedAt = Date.now();
+  await writeShow(merged, null);
+  await removeShow(drop.id);
+  S.dupDismissed = S.dupDismissed || {};
+}
+
 function viewSeason(){
   let h = "";
   if(!S.entries.length) h += '<p class="small muted">Numbers appear once you have filed a show or two.</p>';
@@ -730,6 +800,30 @@ function viewSeason(){
       + (S.lastSkipped.length > 40 ? '<p class="tiny muted">and ' + (S.lastSkipped.length - 40) + ' more</p>' : '')
       + '<button class="btn ghost" style="margin-top:10px" data-act="clearskipped">Clear this list</button>';
   }
+  const dups = (findDuplicatePairs() || []).filter(p => !(S.dupDismissed||{})[p.keep.id + "|" + p.drop.id]);
+  h += '<div class="hr"></div><div class="eyebrow">Possible duplicates</div>';
+  if(!dups.length){
+    h += '<p class="small muted" style="margin-top:0">Nothing on the same night looks doubled up.</p>';
+  } else {
+    h += '<p class="small muted" style="margin-top:0">' + dups.length + ' pair' + (dups.length===1?"":"s")
+       + ' land on the same night. Merging keeps the fuller record and folds in anything the other one had.</p>';
+    dups.slice(0,25).forEach(function(pr){
+      h += '<div style="border:1px solid var(--line);padding:12px;margin-bottom:10px">'
+        + '<div class="tiny muted">' + esc(fmtDate(pr.keep.dateSeen)) + ' &middot; ' + esc(pr.why) + '</div>'
+        + '<div class="kv" style="margin-top:6px"><span><b>Keep</b> ' + esc(pr.keep.title) + '</span><i class="lead"></i><span>'
+        + ((pr.keep.cast||[]).length ? (pr.keep.cast.length + ' in cast') : 'no cast')
+        + ((pr.keep.pageCount||0) ? ', ' + pr.keep.pageCount + ' pages' : '') + '</span></div>'
+        + '<div class="kv"><span><b>Fold in</b> ' + esc(pr.drop.title) + '</span><i class="lead"></i><span>'
+        + ((pr.drop.cast||[]).length ? (pr.drop.cast.length + ' in cast') : 'no cast')
+        + ((pr.drop.pageCount||0) ? ', ' + pr.drop.pageCount + ' pages' : '') + '</span></div>'
+        + '<div style="display:flex;gap:10px;margin-top:10px">'
+        + '<button class="btn" style="margin:0" data-act="dupmerge:' + pr.keep.id + '|' + pr.drop.id + '">Merge them</button>'
+        + '<button class="btn ghost" style="margin:0;width:auto;padding:14px 16px" data-act="dupkeep:' + pr.keep.id + '|' + pr.drop.id + '">Keep both</button>'
+        + '</div></div>';
+    });
+    if(dups.length > 25) h += '<p class="tiny muted">and ' + (dups.length - 25) + ' more after these</p>';
+  }
+
   h += '<div class="hr"></div><div class="eyebrow">Restore into the shared log</div>'
     + '<textarea rows="3" data-field="paste" placeholder="Paste a backup here">'+esc(S.pasteText)+'</textarea>'
     + '<button class="btn ghost" style="margin-top:10px" data-act="restorepaste"'+(S.moving?" disabled":"")+'>Restore from pasted text</button>'
@@ -1162,6 +1256,18 @@ async function handleClick(ev){
     return render();
   }
   if(act==="classify") return classifyUnsorted();
+  if(act==="dupmerge"){
+    const [keepId, dropId] = arg.split("|");
+    S.busyNote = "Merging\u2026"; render();
+    await mergePair(keepId, dropId);
+    S.busyNote = ""; say("Merged");
+    return;
+  }
+  if(act==="dupkeep"){
+    S.dupDismissed = S.dupDismissed || {};
+    S.dupDismissed[arg] = true;
+    return render();
+  }
   if(act==="clearskipped"){ S.lastSkipped = null; return render(); }
   if(act==="csv") return exportCsv();
   if(act==="copy") return copyText(S.backupText);
