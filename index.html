@@ -138,6 +138,9 @@
   .stub{display:flex;align-items:flex-start;width:100%;background:none;border:0;
     border-bottom:1px solid var(--line);text-align:left;padding:14px 2px;color:inherit;gap:16px}
   .stub:hover{background:var(--stock)}
+  .stub.picked{background:var(--stock);box-shadow:inset 3px 0 0 var(--brass)}
+  .stub .tick{flex:0 0 26px;align-self:center;text-align:center;font-size:17px;color:var(--brass);
+    border:1px solid var(--line);width:26px;height:26px;line-height:24px;margin-right:2px}
   .stub .date{min-width:58px;display:block;text-align:right;flex:0 0 auto;padding-top:3px}
   .stub .perf{display:none}
   .stub .body{min-width:0;flex:1}
@@ -249,7 +252,7 @@ const S = {
   openId: null, openPages: null, query: "", lightbox: null, backupText: "", pasteText: "",
   busy: false, adding: false, moving: false, error: "", toast: "", syncing: false,
   cfg: { key:"", model:"claude-sonnet-5" }, keyDraft: null, modelDraft: null, pageTarget: "tray",
-  kindFilter: "All", sort: "new", mergeWith: null, mergeChecked: false, busyNote: "", lastSkipped: null, dupDismissed: {}
+  kindFilter: "All", sort: "new", mergeWith: null, mergeChecked: false, busyNote: "", lastSkipped: null, dupDismissed: {}, selectMode: false, picked: {}
 };
 let db = null, auth = null, unsub = null, unsubCfg = null, toastTimer = null;
 
@@ -330,7 +333,7 @@ async function preparePage(file, i){
 }
 
 /* ============ reading a program ============ */
-const BUILD = "v17";
+const BUILD = "v18";
 const KINDS = ["Theatre", "Musical", "Opera", "Classical", "Jazz", "Cabaret", "Dance", "Other"];
 function kindOf(e){ return (e && KINDS.includes(e.kind)) ? e.kind : "Unsorted"; }
 
@@ -500,7 +503,8 @@ function viewGate(){
   return '<div class="gate"><p class="muted">Opening the log…</p></div>';
 }
 
-function viewLog(){
+// the rows the current search and filters are showing, in the chosen order
+function visibleLog(){
   const q = S.query.trim().toLowerCase();
   let list = S.entries.slice();
   if (S.kindFilter !== "All") list = list.filter(e => kindOf(e) === S.kindFilter);
@@ -519,6 +523,12 @@ function viewLog(){
   else if(S.sort==="old") list.sort((a,b) => undatedLast(a,b,1));
   else if(S.sort==="title") list.sort((a,b) => a.title.localeCompare(b.title));
   else if(S.sort==="kind") list.sort((a,b) => kindOf(a).localeCompare(kindOf(b)) || undatedLast(a,b,-1));
+  return list;
+}
+
+function viewLog(){
+  const q = S.query.trim().toLowerCase();
+  const list = visibleLog();
 
   let h = "";
   const legacy = legacyLog();
@@ -527,6 +537,20 @@ function viewLog(){
     + (S.moving?" disabled":"")+'>'+(S.moving?"Moving…":"Move them into the shared log")+'</button></div>';
 
   h += '<label style="margin-bottom:10px"><input type="text" placeholder="Search titles, people, venues, notes" value="'+esc(S.query)+'" data-field="query"></label>';
+
+  if(S.selectMode){
+    const n = Object.keys(S.picked).length;
+    h += '<div style="border:1px solid var(--brass);background:var(--stock);padding:12px;margin-bottom:12px">'
+      + '<div class="row"><span class="small">' + (n ? n + ' selected' : 'Tap shows to select them') + '</span>'
+      + '<span>'
+      + (list.length ? '<button class="btn sm ghost" style="margin-right:6px" data-act="pickall">Select these ' + list.length + '</button>' : '')
+      + (n ? '<button class="btn sm" style="margin-right:6px" data-act="removepicked">Remove ' + n + '</button>' : '')
+      + '<button class="btn sm ghost" data-act="selectoff">Done</button></span></div>'
+      + (n ? '<p class="tiny muted" style="margin:8px 0 0">Removing also deletes any programme pages on those entries.</p>' : '')
+      + '</div>';
+  } else {
+    h += '<div style="text-align:right;margin-bottom:10px"><button class="btn sm ghost" data-act="selecton">Select several</button></div>';
+  }
 
   if(S.entries.length){
     const counts = {};
@@ -579,7 +603,10 @@ function viewLog(){
     let names = distinct.slice(0,3).map(c => c.actor).join(", ");
     if(distinct.length>3) names += " +" + (distinct.length-3);
     const where = [e.venue, e.city].filter(Boolean).join(", ") || "Venue not recorded";
-    return '<button class="stub" data-act="open:'+e.id+'"><span class="date">'
+    const picked = !!S.picked[e.id];
+    return '<button class="stub'+(picked?" picked":"")+'" data-act="'+(S.selectMode?"pick:":"open:")+e.id+'">'
+      + (S.selectMode ? '<span class="tick">'+(picked?"\u2713":"")+'</span>' : '')
+      + '<span class="date">'
       + (s.eyebrow ? '<span class="d-mon">'+s.eyebrow+'</span>' : '')
       + '<span class="d-day"'+(s.sub==="undated"?' style="color:var(--muted)"':'')+'>'+esc(s.big)+'</span>'
       + (s.sub ? '<span class="d-yr">'+esc(s.sub)+'</span>' : '')
@@ -1267,6 +1294,33 @@ async function handleClick(ev){
     S.dupDismissed = S.dupDismissed || {};
     S.dupDismissed[arg] = true;
     return render();
+  }
+  if(act==="selecton"){ S.selectMode = true; S.picked = {}; return render(); }
+  if(act==="selectoff"){ S.selectMode = false; S.picked = {}; return render(); }
+  if(act==="pick"){
+    if(S.picked[arg]) delete S.picked[arg]; else S.picked[arg] = true;
+    return render();
+  }
+  if(act==="pickall"){
+    // everything currently shown by the filters, not the whole log
+    visibleLog().forEach(e => { S.picked[e.id] = true; });
+    return render();
+  }
+  if(act==="removepicked"){
+    const ids = Object.keys(S.picked);
+    if(!ids.length) return;
+    const titles = ids.slice(0,6).map(i => (S.entries.find(e => e.id === i)||{}).title).filter(Boolean);
+    if(!confirm("Remove " + ids.length + " show" + (ids.length===1?"":"s") + " for good?\n\n"
+        + titles.join("\n") + (ids.length > 6 ? "\n…and " + (ids.length - 6) + " more" : ""))) return;
+    let done = 0;
+    for(const id of ids){
+      S.busyNote = "Removing \u2014 " + (++done) + " of " + ids.length; render();
+      await new Promise(r => setTimeout(r, 0));
+      try { await removeShow(id); } catch(err){ /* keep going, report at the end */ }
+    }
+    S.busyNote = ""; S.picked = {}; S.selectMode = false;
+    say("Removed " + ids.length + " show" + (ids.length===1?"":"s"));
+    return;
   }
   if(act==="clearskipped"){ S.lastSkipped = null; return render(); }
   if(act==="csv") return exportCsv();
