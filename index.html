@@ -249,7 +249,7 @@ const S = {
   openId: null, openPages: null, query: "", lightbox: null, backupText: "", pasteText: "",
   busy: false, adding: false, moving: false, error: "", toast: "", syncing: false,
   cfg: { key:"", model:"claude-sonnet-5" }, keyDraft: null, modelDraft: null, pageTarget: "tray",
-  kindFilter: "All", sort: "new"
+  kindFilter: "All", sort: "new", mergeWith: null, mergeChecked: false, busyNote: "", lastSkipped: null
 };
 let db = null, auth = null, unsub = null, unsubCfg = null, toastTimer = null;
 
@@ -330,7 +330,7 @@ async function preparePage(file, i){
 }
 
 /* ============ reading a program ============ */
-const BUILD = "v11";
+const BUILD = "v14";
 const KINDS = ["Theatre", "Musical", "Opera", "Classical", "Jazz", "Cabaret", "Dance", "Other"];
 function kindOf(e){ return (e && KINDS.includes(e.kind)) ? e.kind : "Unsorted"; }
 
@@ -417,9 +417,9 @@ function textToCast(t){
 function sortEntries(list){ return list.sort((a,b) => (b.dateSeen||"0").localeCompare(a.dateSeen||"0")); }
 function download(text, filename, mime){
   try { const url = URL.createObjectURL(new Blob([text], { type:mime }));
-    const a = document.createElement("a"); a.href = url; a.download = filename;
+    const a = document.createElement("a"); a.href = url; a.download = filename; a.rel = "noopener";
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    setTimeout(() => URL.revokeObjectURL(url), 1000); } catch {}
+    setTimeout(() => URL.revokeObjectURL(url), 4000); return true; } catch { return false; }
 }
 function copyText(text){
   const legacy = () => { try { const ta = document.createElement("textarea");
@@ -601,6 +601,7 @@ function viewDetail(){
 }
 
 function viewAdd(){
+  if(S.draft && S.mergeWith) return viewMerge();
   if(S.draft) return viewReview();
   let h = '<div class="eyebrow">Photograph the program</div>'
     + '<p class="small muted" style="margin-top:0">Add pages one at a time or in batches — cover, title page, cast list, the run of dates, an understudy slip, and the ticket if you kept it. Up to eight, read together. A ticket settles the date.</p>';
@@ -614,6 +615,22 @@ function viewAdd(){
     + (S.busy ? '<span class="spin">◠</span> Reading the program…' : "Read " + S.pending.length + (S.pending.length===1?" page":" pages")) + '</button>';
   h += '<button class="btn ghost" data-act="manual">Type it in instead</button>';
   return h;
+}
+
+function viewMerge(){
+  const m = S.mergeWith, d = S.draft;
+  return '<div class="eyebrow">Already on the list</div>'
+    + '<div class="card">'
+    + '<p class="small" style="margin-top:0">This looks like a show already in the log'
+    + (m.fromCalendar ? ', added from your calendar and waiting for its programme' : '') + '.</p>'
+    + '<div class="hr"></div>'
+    + '<div class="kv"><span>On the list</span><i class="lead"></i><span>' + esc(m.title) + ' &middot; ' + esc(fmtDate(m.dateSeen)) + '</span></div>'
+    + '<div class="kv"><span>Just scanned</span><i class="lead"></i><span>' + esc(d.title) + ' &middot; ' + esc(fmtDate(d.dateSeen)) + '</span></div>'
+    + '<div class="hr"></div>'
+    + '<button class="btn" data-act="mergeyes">Fill in that show</button>'
+    + '<button class="btn ghost" data-act="mergeno">File as a separate performance</button>'
+    + '<p class="tiny muted">Two visits to the same production are separate performances — keep both if you saw it twice.</p>'
+    + '</div>';
 }
 
 function viewReview(){
@@ -704,6 +721,15 @@ function viewSeason(){
   if(S.backupText) h += '<div style="margin:14px 0"><div class="row" style="margin-bottom:8px"><span class="tiny muted">'+(S.backupText.length/1024).toFixed(0)+' KB of text</span><span>'
     + '<button class="btn sm" data-act="copy">Copy all</button> <button class="btn sm ghost" data-act="closebackup">Close</button></span></div>'
     + '<textarea rows="6" readonly onfocus="this.select()">'+esc(S.backupText)+'</textarea></div>';
+  if(S.lastSkipped && S.lastSkipped.length){
+    h += '<div class="hr"></div><div class="eyebrow">Left out of the last import</div>'
+      + '<p class="small muted" style="margin-top:0">These matched shows already in your log, so the calendar stub was not added.</p>'
+      + S.lastSkipped.slice(0,40).map(function(pair){
+          return '<div class="kv"><span>' + esc(pair[0].title) + '</span><i class="lead"></i><span>'
+            + esc(fmtDate(pair[0].dateSeen)) + '</span></div>'; }).join("")
+      + (S.lastSkipped.length > 40 ? '<p class="tiny muted">and ' + (S.lastSkipped.length - 40) + ' more</p>' : '')
+      + '<button class="btn ghost" style="margin-top:10px" data-act="clearskipped">Clear this list</button>';
+  }
   h += '<div class="hr"></div><div class="eyebrow">Restore into the shared log</div>'
     + '<textarea rows="3" data-field="paste" placeholder="Paste a backup here">'+esc(S.pasteText)+'</textarea>'
     + '<button class="btn ghost" style="margin-top:10px" data-act="restorepaste"'+(S.moving?" disabled":"")+'>Restore from pasted text</button>'
@@ -746,6 +772,7 @@ function render(){
     + '<div class="rule"></div>';
   if(S.error) head += '<div class="notice"><div class="row"><span>'+esc(S.error)+'</span><button class="btn sm ghost" data-act="clearerr">Dismiss</button></div></div>';
   if(S.toast) head += '<div class="toast">'+esc(S.toast)+'</div>';
+  if(S.busyNote) head += '<div class="toast"><span class="spin">\u25E0</span> '+esc(S.busyNote)+'</div>';
   const tabs = [["log","The log"],["add","Add a show"],["season","Season"]].map(t =>
     '<button class="tab'+(S.tab===t[0]?" on":"")+'" data-act="tab:'+t[0]+'">'+t[1]+'</button>').join("");
   const light = S.lightbox ? '<div class="lightbox" data-act="closelight"><img src="'+S.lightbox+'" alt="Program page"></div>' : "";
@@ -834,9 +861,52 @@ async function scanPending(){
   S.busy = false; render();
 }
 
+// A scan often belongs to a show already in the log — a calendar import waiting
+// for its programme. Match on title, then require the dates to be close.
+function normTitle(t){
+  return (t||"").toLowerCase()
+    .replace(/[\u2018\u2019\u201c\u201d'"`]/g,"")
+    .replace(/^(the|a|an)\s+/,"")
+    .replace(/[^a-z0-9]+/g," ").trim();
+}
+function titleAlike(a, b){
+  a = normTitle(a); b = normTitle(b);
+  if(!a || !b) return false;
+  if(a === b) return true;
+  if(a.length > 4 && b.length > 4 && (a.includes(b) || b.includes(a))) return true;
+  const A = new Set(a.split(" ").filter(w => w.length > 2));
+  const B = new Set(b.split(" ").filter(w => w.length > 2));
+  // one significant word is not enough to call it the same show ("John" vs "John Proctor")
+  if(A.size < 2 || B.size < 2) return false;
+  let hit = 0; A.forEach(w => { if(B.has(w)) hit++; });
+  return hit / Math.min(A.size, B.size) >= 0.75;
+}
+function daysApart(a, b){
+  if(!a || !b) return 9999;
+  const pa = a.length >= 10 ? a : a.length === 7 ? a + "-15" : a + "-07-01";
+  const pb = b.length >= 10 ? b : b.length === 7 ? b + "-15" : b + "-07-01";
+  return Math.abs((new Date(pa + "T00:00:00") - new Date(pb + "T00:00:00")) / 86400000);
+}
+function findExisting(draft){
+  const cands = S.entries.filter(e => e.id !== draft.id && titleAlike(e.title, draft.title));
+  if(!cands.length) return null;
+  // prefer a calendar import, then the closest date
+  const scored = cands.map(e => ({ e, d: daysApart(e.dateSeen, draft.dateSeen) }))
+    .filter(x => x.d <= 21)
+    .sort((x,y) => (y.e.fromCalendar?1:0) - (x.e.fromCalendar?1:0) || x.d - y.d);
+  return scored.length ? scored[0].e : null;
+}
+
 function saveDraft(){
   const d = S.draft;
   if(!d.title.trim()) return fail("A show needs a title before it goes in the log.");
+
+  // this scan may be filling in a show already on the list
+  if(!S.mergeChecked && !S.entries.some(e => e.id === d.id)){
+    const hit = findExisting(d);
+    if(hit){ S.mergeWith = hit; S.mergeChecked = true; return render(); }
+  }
+  S.mergeChecked = false;
   const isNew = !S.entries.some(e => e.id === d.id);
   const rec = {
     id:d.id, title:d.title.trim(), kind:d.kind || "Theatre", director:(d.director||"").trim(),
@@ -845,7 +915,8 @@ function saveDraft(){
     dateInfo:d.dateInfo, creatives:textToCreatives(d.creativesText), cast:textToCast(d.castText),
     understudies:textToCast(d.understudyText), notes:d.notes,
     pageCount:(d.pageViews||[]).length, savedAt:d.savedAt || Date.now(), updatedAt:Date.now(),
-    addedBy:d.addedBy || S.user.email, addedByName:d.addedByName || firstName(S.user)
+    addedBy:d.addedBy || S.user.email, addedByName:d.addedByName || firstName(S.user),
+    fromCalendar: d.fromCalendar && !(d.cast||[]).length ? true : false
   };
   if(!isNew) rec.editedBy = firstName(S.user);
   const pages = d.pagesNew ? (d.pageViews || []) : null;
@@ -858,8 +929,22 @@ function saveDraft(){
 
 async function buildBackup(withPages){
   const payload = { app:"i-saw-that", version:2, exportedAt:new Date().toISOString(), entries:S.entries, pages:{} };
-  if(withPages) for (const e of S.entries){
-    if(e.pageCount) payload.pages[e.id] = (await loadPages(e.id)).map(p => ({ thumb:p.thumb, full:p.full }));
+  if(withPages){
+    const todo = S.entries.filter(e => e.pageCount);
+    // in parallel batches: one at a time takes minutes and looks like nothing is happening
+    const BATCH = 8;
+    for(let i = 0; i < todo.length; i += BATCH){
+      const slice = todo.slice(i, i + BATCH);
+      S.busyNote = "Gathering programme pages \u2014 " + Math.min(i + BATCH, todo.length) + " of " + todo.length;
+      render();
+      await new Promise(r => setTimeout(r, 0));
+      const got = await Promise.all(slice.map(async e => {
+        try { return [e.id, (await loadPages(e.id)).map(p => ({ thumb:p.thumb, full:p.full }))]; }
+        catch { return [e.id, null]; }
+      }));
+      got.forEach(([id, pages]) => { if(pages && pages.length) payload.pages[id] = pages; });
+    }
+    S.busyNote = "";
   }
   return JSON.stringify(payload);
 }
@@ -870,9 +955,25 @@ async function restoreFromText(text){
   if(!data || !Array.isArray(data.entries)) return fail("That text is not a backup file.");
   S.moving = true; S.error = ""; render();
   try {
-    const n = await importShows(data.entries, data.pages || {});
+    // A calendar import can name shows already scanned. The scanned copy has the cast
+    // and the programme pages, so it wins — skip the stub rather than double the entry.
+    const have = S.entries.slice();
+    const incoming = [], skipped = [];
+    for(const e of data.entries){
+      if(!e || !e.id) continue;
+      const dup = e.fromCalendar && !(e.cast||[]).length
+        && have.find(x => x.id !== e.id && titleAlike(x.title, e.title) && daysApart(x.dateSeen, e.dateSeen) <= 21);
+      if(dup) skipped.push([e, dup]); else { incoming.push(e); have.push(e); }
+    }
+    const n = await importShows(incoming, data.pages || {});
     S.pasteText = "";
-    say("Restored " + n + " show" + (n===1?"":"s") + " into the shared log");
+    S.lastSkipped = skipped;
+    if(skipped.length){
+      S.error = "Added " + n + " show" + (n===1?"":"s") + ". Left out " + skipped.length
+        + " that you have already scanned — your scanned versions are the fuller ones.";
+    } else {
+      say("Restored " + n + " show" + (n===1?"":"s") + " into the shared log");
+    }
   } catch(err){ S.error = "Restore stopped partway: " + (err.message || err.code); }
   S.moving = false; render();
 }
@@ -1004,8 +1105,25 @@ appEl.addEventListener("click", async ev => {
   if(act==="rmpage"){ S.pending = S.pending.filter(p => p.id!==arg); return render(); }
   if(act==="scan") return scanPending();
   if(act==="manual"){ S.draft = newDraft(null); return render(); }
+  if(act==="mergeyes"){
+    const m = S.mergeWith, d = S.draft;
+    // the programme wins on detail; keep the date the calendar already knew if the scan has none
+    d.id = m.id;
+    d.dateSeen = d.dateSeen || m.dateSeen;
+    d.venue = d.venue || m.venue;
+    d.city = d.city || m.city;
+    d.company = d.company || m.company;
+    d.director = d.director || m.director;
+    d.notes = (m.notes && !/Imported from calendar/i.test(m.notes) && m.notes !== d.notes)
+      ? (d.notes ? m.notes + " — " + d.notes : m.notes) : d.notes;
+    d.addedBy = m.addedBy; d.addedByName = m.addedByName; d.savedAt = m.savedAt;
+    d.fromCalendar = false;
+    S.mergeWith = null;
+    return saveDraft();
+  }
+  if(act==="mergeno"){ S.mergeWith = null; return saveDraft(); }
   if(act==="save") return saveDraft();
-  if(act==="discard"){ S.draft = null; S.error = ""; return render(); }
+  if(act==="discard"){ S.draft = null; S.mergeWith = null; S.mergeChecked = false; S.error = ""; return render(); }
   if(act==="prec"){
     const v = S.draft.dateSeen;
     if(v){
@@ -1022,12 +1140,21 @@ appEl.addEventListener("click", async ev => {
   if(act==="closelight"){ S.lightbox = null; return render(); }
   if(act==="backup"){
     if(!S.entries.length) return fail("Nothing to back up yet.");
-    say(arg==="full" ? "Gathering every page…" : "Preparing backup…");
-    S.backupText = await buildBackup(arg==="full");
-    download(S.backupText, "i-saw-that-" + new Date().toISOString().slice(0,10) + ".json", "application/json");
+    if(S.busyNote) return;
+    S.error = ""; S.busyNote = "Preparing the backup\u2026"; render();
+    try { S.backupText = await buildBackup(arg==="full"); }
+    catch(err){ S.busyNote = ""; return fail("Could not gather the backup: " + (err.message || err.code)); }
+    S.busyNote = "";
+    const mb = S.backupText.length / 1048576;
+    const ok = download(S.backupText, "i-saw-that-" + new Date().toISOString().slice(0,10) + ".json", "application/json");
+    S.error = "Backup ready \u2014 " + mb.toFixed(1) + " MB. "
+      + (ok ? "Check your downloads. " : "This browser would not download it. ")
+      + (mb > 4 ? "Too large to copy as text, so use a computer if the file did not arrive."
+                : "You can also copy it from the box below.");
     return render();
   }
   if(act==="classify") return classifyUnsorted();
+  if(act==="clearskipped"){ S.lastSkipped = null; return render(); }
   if(act==="csv") return exportCsv();
   if(act==="copy") return copyText(S.backupText);
   if(act==="closebackup"){ S.backupText = ""; return render(); }
