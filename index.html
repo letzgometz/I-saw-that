@@ -330,7 +330,7 @@ async function preparePage(file, i){
 }
 
 /* ============ reading a program ============ */
-const BUILD = "v14";
+const BUILD = "v15";
 const KINDS = ["Theatre", "Musical", "Opera", "Classical", "Jazz", "Cabaret", "Dance", "Other"];
 function kindOf(e){ return (e && KINDS.includes(e.kind)) ? e.kind : "Unsorted"; }
 
@@ -773,6 +773,7 @@ function render(){
   if(S.error) head += '<div class="notice"><div class="row"><span>'+esc(S.error)+'</span><button class="btn sm ghost" data-act="clearerr">Dismiss</button></div></div>';
   if(S.toast) head += '<div class="toast">'+esc(S.toast)+'</div>';
   if(S.busyNote) head += '<div class="toast"><span class="spin">\u25E0</span> '+esc(S.busyNote)+'</div>';
+  if(S.tab === "season") head += '<p class="tiny muted" style="text-align:right;margin:-8px 0 10px">build ' + BUILD + '</p>';
   const tabs = [["log","The log"],["add","Add a show"],["season","Season"]].map(t =>
     '<button class="tab'+(S.tab===t[0]?" on":"")+'" data-act="tab:'+t[0]+'">'+t[1]+'</button>').join("");
   const light = S.lightbox ? '<div class="lightbox" data-act="closelight"><img src="'+S.lightbox+'" alt="Program page"></div>' : "";
@@ -1048,7 +1049,14 @@ function authMessage(err){
 /* ============ events ============ */
 const appEl = document.getElementById("app");
 
-appEl.addEventListener("click", async ev => {
+appEl.addEventListener("click", ev => { handleClick(ev).catch(err => {
+  // a button that does nothing is worse than a button that explains itself
+  S.busyNote = "";
+  S.error = "That did not work: " + (err && (err.message || err.code) || err);
+  render();
+}); });
+
+async function handleClick(ev){
   const el = ev.target.closest("[data-act]"); if(!el) return;
   const [act, ...rest] = el.getAttribute("data-act").split(":");
   const arg = rest.join(":");
@@ -1171,7 +1179,7 @@ appEl.addEventListener("click", async ev => {
       .catch(err => fail("Saved on this device, but it did not reach the shared database: " + (err.message || err.code)));
     return;
   }
-});
+}
 
 appEl.addEventListener("input", ev => {
   const f = ev.target.getAttribute("data-field"); if(!f) return;
