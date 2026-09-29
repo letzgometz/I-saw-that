@@ -333,7 +333,7 @@ async function preparePage(file, i){
 }
 
 /* ============ reading a program ============ */
-const BUILD = "v20";
+const BUILD = "v21";
 const KINDS = ["Theatre", "Musical", "Opera", "Classical", "Jazz", "Cabaret", "Dance", "Other"];
 function kindOf(e){ return (e && KINDS.includes(e.kind)) ? e.kind : "Unsorted"; }
 
@@ -544,9 +544,11 @@ function viewLog(){
       + '<div class="row"><span class="small">' + (n ? n + ' selected' : 'Tap shows to select them') + '</span>'
       + '<span>'
       + (list.length ? '<button class="btn sm ghost" style="margin-right:6px" data-act="pickall">Select these ' + list.length + '</button>' : '')
+      + (n === 2 ? '<button class="btn sm" style="margin-right:6px" data-act="mergepicked">Merge these two</button>' : '')
       + (n ? '<button class="btn sm" style="margin-right:6px" data-act="removepicked">Remove ' + n + '</button>' : '')
       + '<button class="btn sm ghost" data-act="selectoff">Done</button></span></div>'
-      + (n ? '<p class="tiny muted" style="margin:8px 0 0">Removing also deletes any programme pages on those entries.</p>' : '')
+      + (n === 2 ? '<p class="tiny muted" style="margin:8px 0 0">Merging keeps the fuller record and folds the other into it.</p>'
+          : n ? '<p class="tiny muted" style="margin:8px 0 0">Removing also deletes any programme pages on those entries.</p>' : '')
       + '</div>';
   } else {
     h += '<div style="text-align:right;margin-bottom:10px"><button class="btn sm ghost" data-act="selecton">Select several</button></div>';
@@ -738,37 +740,40 @@ function normVenue(v){
     .replace(/[^a-z0-9]+/g," ").trim();
 }
 function findDuplicatePairs(loose){
-  const byDay = {};
-  S.entries.forEach(e => {
-    if(!e.dateSeen) return;
-    (byDay[e.dateSeen.slice(0,10)] = byDay[e.dateSeen.slice(0,10)] || []).push(e);
-  });
+  const list = S.entries;
   const pairs = [];
-  Object.keys(byDay).forEach(d => {
-    const list = byDay[d];
-    for(let i = 0; i < list.length; i++){
-      for(let j = i + 1; j < list.length; j++){
-        const a = list[i], b = list[j];
-        const va = normVenue(a.venue), vb = normVenue(b.venue);
-        const sameVenue = va && vb && (va === vb || va.includes(vb) || vb.includes(va));
-        const alike = titleAlike(a.title, b.title);
-        // a bare first word in common is weak on its own but telling on the same night
-        const firstWord = x => normTitle(x.title).split(" ")[0] || "";
-        const sameStart = firstWord(a).length > 3 && firstWord(a) === firstWord(b);
-        const strong = sameVenue || alike || sameStart;
-        if(!strong && !loose) continue;
-        const score = x => (x.cast||[]).length * 3 + (x.pageCount||0) * 5
-                         + ((x.creatives||[]).length) + (x.fromCalendar ? -10 : 0);
-        const keep = score(a) >= score(b) ? a : b;
-        const drop = keep === a ? b : a;
-        pairs.push({ keep, drop, strong,
-          why: sameVenue ? "same night, same venue"
-             : alike ? "same night, similar title"
-             : sameStart ? "same night, same opening word"
-             : "same night, different venue" });
-      }
+  const firstWord = x => normTitle(x.title).split(" ")[0] || "";
+  const score = x => (x.cast||[]).length * 3 + (x.pageCount||0) * 5
+                   + ((x.creatives||[]).length) + (x.fromCalendar ? -10 : 0);
+  for(let i = 0; i < list.length; i++){
+    for(let j = i + 1; j < list.length; j++){
+      const a = list[i], b = list[j];
+      const va = normVenue(a.venue), vb = normVenue(b.venue);
+      const sameVenue = va && vb && (va === vb || va.includes(vb) || vb.includes(va));
+      const alike = titleAlike(a.title, b.title);
+      const sameStart = firstWord(a).length > 3 && firstWord(a) === firstWord(b);
+      const gap = daysApart(a.dateSeen, b.dateSeen);
+      const coarse = !a.dateSeen || !b.dateSeen
+                   || a.dateSeen.length < 10 || b.dateSeen.length < 10;
+
+      let why = null, strong = true;
+      // one performance recorded twice — the dates need not match to the day
+      if((alike || sameStart) && gap <= 7) why = "same show, dates within a week";
+      // a calendar stub may carry only a month, or no date at all
+      else if((alike || sameStart) && coarse && gap <= 45) why = "same title, one date is approximate";
+      // different titles for the same night in the same theatre
+      else if(sameVenue && gap === 0 && !coarse) why = "same night, same venue";
+      else if(loose && gap === 0 && !coarse){ why = "same night, different venue"; strong = false; }
+      if(!why) continue;
+
+      const keep = score(a) >= score(b) ? a : b;
+      const drop = keep === a ? b : a;
+      pairs.push({ keep, drop, strong, why });
     }
-  });
+  }
+  const rank = { "same show, dates within a week":0, "same night, same venue":1,
+                 "same title, one date is approximate":2, "same night, different venue":3 };
+  pairs.sort((x,y) => (rank[x.why]||9) - (rank[y.why]||9));
   return pairs;
 }
 
@@ -1034,13 +1039,26 @@ function daysApart(a, b){
   return Math.abs((new Date(pa + "T00:00:00") - new Date(pb + "T00:00:00")) / 86400000);
 }
 function findExisting(draft){
-  const cands = S.entries.filter(e => e.id !== draft.id && titleAlike(e.title, draft.title));
+  const dv = normVenue(draft.venue);
+  const cands = [];
+  S.entries.forEach(e => {
+    if(e.id === draft.id) return;
+    const gap = daysApart(e.dateSeen, draft.dateSeen);
+    const ev = normVenue(e.venue);
+    const sameVenue = dv && ev && (dv === ev || dv.includes(ev) || ev.includes(dv));
+    const alike = titleAlike(e.title, draft.title);
+    // A concert billed by conductor on the calendar and by programme on the night
+    // shares almost no words — the date and the hall are what identify it.
+    if(alike && gap <= 21) cands.push({ e, gap, by: "title" });
+    else if(sameVenue && gap === 0 && draft.dateSeen && draft.dateSeen.length >= 10
+            && e.dateSeen && e.dateSeen.length >= 10) cands.push({ e, gap, by: "night" });
+  });
   if(!cands.length) return null;
-  // prefer a calendar import, then the closest date
-  const scored = cands.map(e => ({ e, d: daysApart(e.dateSeen, draft.dateSeen) }))
-    .filter(x => x.d <= 21)
-    .sort((x,y) => (y.e.fromCalendar?1:0) - (x.e.fromCalendar?1:0) || x.d - y.d);
-  return scored.length ? scored[0].e : null;
+  // a calendar stub waiting to be filled in comes first, then the closest date
+  cands.sort((x,y) => (y.e.fromCalendar?1:0) - (x.e.fromCalendar?1:0)
+                   || (x.by === "title" ? 0 : 1) - (y.by === "title" ? 0 : 1)
+                   || x.gap - y.gap);
+  return cands[0].e;
 }
 
 function saveDraft(){
@@ -1343,6 +1361,24 @@ async function handleClick(ev){
     // everything currently shown by the filters, not the whole log
     visibleLog().forEach(e => { S.picked[e.id] = true; });
     return render();
+  }
+  if(act==="mergepicked"){
+    const ids = Object.keys(S.picked);
+    if(ids.length !== 2) return;
+    const a = S.entries.find(e => e.id === ids[0]), b = S.entries.find(e => e.id === ids[1]);
+    if(!a || !b) return;
+    const score = x => (x.cast||[]).length * 3 + (x.pageCount||0) * 5
+                     + ((x.creatives||[]).length) + (x.fromCalendar ? -10 : 0);
+    const keep = score(a) >= score(b) ? a : b;
+    const drop = keep === a ? b : a;
+    if(!confirm("Merge these into one?\n\nKeep: " + keep.title + "  (" + fmtDate(keep.dateSeen) + ")"
+      + "\nFold in: " + drop.title + "  (" + fmtDate(drop.dateSeen) + ")")) return;
+    S.busyNote = "Merging\u2026"; render();
+    try { await mergePair(keep.id, drop.id); }
+    catch(err){ S.busyNote = ""; return fail("Could not merge: " + (err.message || err.code)); }
+    S.busyNote = ""; S.picked = {}; S.selectMode = false;
+    say("Merged");
+    return;
   }
   if(act==="removepicked"){
     const ids = Object.keys(S.picked);
