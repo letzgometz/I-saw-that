@@ -88,23 +88,22 @@ service cloud.firestore {
     }
 
     // ---- the original two-person archive ----
-    // Readable so it can be copied into a log, frozen against new writes.
-    // Delete this block once the copy is confirmed and the old data removed.
+    // Left fully working on purpose: the live app still reads and writes here,
+    // so the old and new versions can run side by side while the new one is
+    // tested. Freeze these writes at cutover, and delete the block when the
+    // old data is no longer wanted. Nothing in the new structure touches them.
     function isOriginalPair() {
       return signedIn()
         && request.auth.token.email in ['ericpeterbrown@gmail.com', 'janinepaver@gmail.com'];
     }
     match /shows/{showId} {
-      allow read: if isOriginalPair();
-      allow write: if false;
+      allow read, write: if isOriginalPair();
       match /pages/{pageId} {
-        allow read: if isOriginalPair();
-        allow write: if false;
+        allow read, write: if isOriginalPair();
       }
     }
     match /config/{docId} {
-      allow read: if isOriginalPair();
-      allow write: if false;
+      allow read, write: if isOriginalPair();
     }
   }
 }
