@@ -1,0 +1,1774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#1E1620">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="I Saw That">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
+<title>I Saw That</title>
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAI1klEQVR42u3dwW2DQBRFUYiQ6IAloik6oQw6oUJWpIDEiAjZYeads8xyxPy5xoa04zAdDQAQ5csSAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAAAQAJYAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAADgPTpLUK9t7S0CcNu87BahQu04TIdlcOADCAIBgIMfQAgIABz8AEJAAODgBxACxfMUgMMfwHwSANhcAOZUAl8B2FAAb+ErAXcAcPgD5hcCAJsHMMcQAACAAEA1A+YZAsBmATDXEAA2CYD5hgAAAASAOgYw5xAAAIAAUMUA5h0CAAAEAGoYwNwTAACAAAAABAAAIAC4w/dggPmHAAAABAAAIAAAAAEAAAgAAEAAAACvdZYA8szL/uNvHskCdwCAsMP/7O+AAAAqPfxFAAgAIPTwFwEgAAAAAQAACAAAQAAAAAIAeKirz/l7HwAIACAsAhz+IACAsAhw+EMWrwIGEQC4AwAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAAAgAAEAAAgAAAAKrRjsN0WIbn2NbeIgDVmpfdIggAhADg4EcAIAT412HsWsPBn8VvAGweXFOuNcwvAYBNRPK15FrD3BIA2EyEXkOuNcwrAYBNBWBOCQBsLgDzSQBgkwGYSwIAABAAqG0e5upz/t4HgHkkALDpCIsAhz/mkAAAwiLA4Q9ZvAo44FMdgE//uAMAAAgAFQ5g7ggAAEAAAAACgAdzOw4wbxAAAIAAAAAEQLXclgPMGQQAACAAAAABUC235wDzBQEAAAgAAEAAAIAAAAAEAAXzQx3AXEEAAAACAAAQAAAgAAAAAQAACABK4he7gHnCmc4SgIHeNE2zrb2FAXcAgLRPcz7lgQAAwg5/EQACAAg9/EUACAAAQAAAAAIAABAAAIAAAB7q6nP+3gcAAgAIiwCHPwgAICwCHP6QxauAQQQA7gAAAAIAABAAAIAAAAAEAAAgAAAAAcBnecwLME8QAACAAAAAAQAACAAAQAAAAAKAEvjFLmCuIAAAAAEAAAgAABAAAIAAoEB+qAOYLwgAAEAAAAACoDpuzwHmDAIAAHipswSQZ152n+zAHQBqYHhz5/A/+zuYNwIAqPTwFwEgAIDQw18EgACgMG7HAeYOAgAAEAAqHMD8QQAAAAJAfeN6cV1hDgkAbDrCrxvXFeaRAADChrUhDlnacZgOy6C2Ae7yDgl3AHD4A+YTAgCbCzCnEADYVIB5hQDAZgLMLQQANhFgfvEBngKwcQDezhMCAgAHPyAEEAA48AFBwH/wGwAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAD8VWcJIM9v/4LVv6YGdwCAsMP/7O+AAAAqPfxFAAgAIPTwFwEgAAAAAQAACAAAQAAAAAIAeKirz/l7HwAIACAsAhz+IACAsAhw+EMWrwIGEQC4AwAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAZZuX3SIA5h8CAAAQAACAAAAABEAlfA8GmHsIAABAAKhhAPMOAQAACABVDGDOIQAAAAGgjgHMNwSATQJgriEAbBYA80wAAAACANUMYI4JAGweAPOrKu04TIdlKMO29hYBcPDjDoBNBWBOIQBsLgDziYt8BVAwXwkADn4EgBAAcPAjAIQAgIMfASAIABz4CAAAyOYpAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAAPAZ382PWkLB5PCRAAAAAElFTkSuQmCC">
+<link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAI1klEQVR42u3dwW2DQBRFUYiQ6IAloik6oQw6oUJWpIDEiAjZYeads8xyxPy5xoa04zAdDQAQ5csSAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAAAQAJYAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAADgPTpLUK9t7S0CcNu87BahQu04TIdlcOADCAIBgIMfQAgIABz8AEJAAODgBxACxfMUgMMfwHwSANhcAOZUAl8B2FAAb+ErAXcAcPgD5hcCAJsHMMcQAACAAEA1A+YZAsBmATDXEAA2CYD5hgAAAASAOgYw5xAAAIAAUMUA5h0CAAAEAGoYwNwTAACAAAAABAAAIAC4w/dggPmHAAAABAAAIAAAAAEAAAgAAEAAAACvdZYA8szL/uNvHskCdwCAsMP/7O+AAAAqPfxFAAgAIPTwFwEgAAAAAQAACAAAQAAAAAIAeKirz/l7HwAIACAsAhz+IACAsAhw+EMWrwIGEQC4AwAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAAAgAAEAAAgAAAAKrRjsN0WIbn2NbeIgDVmpfdIggAhADg4EcAIAT412HsWsPBn8VvAGweXFOuNcwvAYBNRPK15FrD3BIA2EyEXkOuNcwrAYBNBWBOCQBsLgDzSQBgkwGYSwIAABAAqG0e5upz/t4HgHkkALDpCIsAhz/mkAAAwiLA4Q9ZvAo44FMdgE//uAMAAAgAFQ5g7ggAAEAAAAACgAdzOw4wbxAAAIAAAAAEQLXclgPMGQQAACAAAAABUC235wDzBQEAAAgAAEAAAIAAAAAEAAXzQx3AXEEAAAACAAAQAAAgAAAAAQAACABK4he7gHnCmc4SgIHeNE2zrb2FAXcAgLRPcz7lgQAAwg5/EQACAAg9/EUACAAAQAAAAAIAABAAAIAAAB7q6nP+3gcAAgAIiwCHPwgAICwCHP6QxauAQQQA7gAAAAIAABAAAIAAAAAEAAAgAAAAAcBnecwLME8QAACAAAAAAQAACAAAQAAAAAKAEvjFLmCuIAAAAAEAAAgAABAAAIAAoEB+qAOYLwgAAEAAAAACoDpuzwHmDAIAAHipswSQZ152n+zAHQBqYHhz5/A/+zuYNwIAqPTwFwEgAIDQw18EgACgMG7HAeYOAgAAEAAqHMD8QQAAAAJAfeN6cV1hDgkAbDrCrxvXFeaRAADChrUhDlnacZgOy6C2Ae7yDgl3AHD4A+YTAgCbCzCnEADYVIB5hQDAZgLMLQQANhFgfvEBngKwcQDezhMCAgAHPyAEEAA48AFBwH/wGwAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAD8VWcJIM9v/4LVv6YGdwCAsMP/7O+AAAAqPfxFAAgAIPTwFwEgAAAAAQAACAAAQAAAAAIAeKirz/l7HwAIACAsAhz+IACAsAhw+EMWrwIGEQC4AwAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAZZuX3SIA5h8CAAAQAACAAAAABEAlfA8GmHsIAABAAKhhAPMOAQAACABVDGDOIQAAAAGgjgHMNwSATQJgriEAbBYA80wAAAACANUMYI4JAGweAPOrKu04TIdlKMO29hYBcPDjDoBNBWBOIQBsLgDziYt8BVAwXwkADn4EgBAAcPAjAIQAgIMfASAIABz4CAAAyOYpAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAAPAZ382PWkLB5PCRAAAAAElFTkSuQmCC">
+<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%20%22I%20Saw%20That%22%2C%20%22short_name%22%3A%20%22I%20Saw%20That%22%2C%20%22start_url%22%3A%20%22.%22%2C%20%22scope%22%3A%20%22.%22%2C%20%22display%22%3A%20%22standalone%22%2C%20%22background_color%22%3A%20%22%231E1620%22%2C%20%22theme_color%22%3A%20%22%231E1620%22%2C%20%22icons%22%3A%20%5B%7B%22src%22%3A%20%22data%3Aimage/png%3Bbase64%2CiVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAI1klEQVR42u3dwW2DQBRFUYiQ6IAloik6oQw6oUJWpIDEiAjZYeads8xyxPy5xoa04zAdDQAQ5csSAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAAAQAJYAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAADgPTpLUK9t7S0CcNu87BahQu04TIdlcOADCAIBgIMfQAgIABz8AEJAAODgBxACxfMUgMMfwHwSANhcAOZUAl8B2FAAb%2BErAXcAcPgD5hcCAJsHMMcQAACAAEA1A%2BYZAsBmATDXEAA2CYD5hgAAAASAOgYw5xAAAIAAUMUA5h0CAAAEAGoYwNwTAACAAAAABAAAIAC4w/dggPmHAAAABAAAIAAAAAEAAAgAAEAAAACvdZYA8szL/uNvHskCdwCAsMP/7O%2BAAAAqPfxFAAgAIPTwFwEgAAAAAQAACAAAQAAAAAIAeKirz/l7HwAIACAsAhz%2BIACAsAhw%2BEMWrwIGEQC4AwAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAAAgAAEAAAgAAAAKrRjsN0WIbn2NbeIgDVmpfdIggAhADg4EcAIAT412HsWsPBn8VvAGweXFOuNcwvAYBNRPK15FrD3BIA2EyEXkOuNcwrAYBNBWBOCQBsLgDzSQBgkwGYSwIAABAAqG0e5upz/t4HgHkkALDpCIsAhz/mkAAAwiLA4Q9ZvAo44FMdgE//uAMAAAgAFQ5g7ggAAEAAAAACgAdzOw4wbxAAAIAAAAAEQLXclgPMGQQAACAAAAABUC235wDzBQEAAAgAAEAAAIAAAAAEAAXzQx3AXEEAAAACAAAQAAAgAAAAAQAACABK4he7gHnCmc4SgIHeNE2zrb2FAXcAgLRPcz7lgQAAwg5/EQACAAg9/EUACAAAQAAAAAIAABAAAIAAAB7q6nP%2B3gcAAgAIiwCHPwgAICwCHP6QxauAQQQA7gAAAAIAABAAAIAAAAAEAAAgAAAAAcBnecwLME8QAACAAAAAAQAACAAAQAAAAAKAEvjFLmCuIAAAAAEAAAgAABAAAIAAoEB%2BqAOYLwgAAEAAAAACoDpuzwHmDAIAAHipswSQZ152n%2BzAHQBqYHhz5/A/%2BzuYNwIAqPTwFwEgAIDQw18EgACgMG7HAeYOAgAAEAAqHMD8QQAAAAJAfeN6cV1hDgkAbDrCrxvXFeaRAADChrUhDlnacZgOy6C2Ae7yDgl3AHD4A%2BYTAgCbCzCnEADYVIB5hQDAZgLMLQQANhFgfvEBngKwcQDezhMCAgAHPyAEEAA48AFBwH/wGwAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAD8VWcJIM9v/4LVv6YGdwCAsMP/7O%2BAAAAqPfxFAAgAIPTwFwEgAAAAAQAACAAAQAAAAAIAeKirz/l7HwAIACAsAhz%2BIACAsAhw%2BEMWrwIGEQC4AwAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAZZuX3SIA5h8CAAAQAACAAAAABEAlfA8GmHsIAABAAKhhAPMOAQAACABVDGDOIQAAAAGgjgHMNwSATQJgriEAbBYA80wAAAACANUMYI4JAGweAPOrKu04TIdlKMO29hYBcPDjDoBNBWBOIQBsLgDziYt8BVAwXwkADn4EgBAAcPAjAIQAgIMfASAIABz4CAAAyOYpAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAAPAZ382PWkLB5PCRAAAAAElFTkSuQmCC%22%2C%20%22sizes%22%3A%20%22512x512%22%2C%20%22type%22%3A%20%22image/png%22%2C%20%22purpose%22%3A%20%22any%22%7D%2C%20%7B%22src%22%3A%20%22data%3Aimage/png%3Bbase64%2CiVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAI1klEQVR42u3dwW2DQBRFUYiQ6IAloik6oQw6oUJWpIDEiAjZYeads8xyxPy5xoa04zAdDQAQ5csSAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAAAQAJYAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAADgPTpLUK9t7S0CcNu87BahQu04TIdlcOADCAIBgIMfQAgIABz8AEJAAODgBxACxfMUgMMfwHwSANhcAOZUAl8B2FAAb%2BErAXcAcPgD5hcCAJsHMMcQAACAAEA1A%2BYZAsBmATDXEAA2CYD5hgAAAASAOgYw5xAAAIAAUMUA5h0CAAAEAGoYwNwTAACAAAAABAAAIAC4w/dggPmHAAAABAAAIAAAAAEAAAgAAEAAAACvdZYA8szL/uNvHskCdwCAsMP/7O%2BAAAAqPfxFAAgAIPTwFwEgAAAAAQAACAAAQAAAAAIAeKirz/l7HwAIACAsAhz%2BIACAsAhw%2BEMWrwIGEQC4AwAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAAAgAAEAAAgAAAAKrRjsN0WIbn2NbeIgDVmpfdIggAhADg4EcAIAT412HsWsPBn8VvAGweXFOuNcwvAYBNRPK15FrD3BIA2EyEXkOuNcwrAYBNBWBOCQBsLgDzSQBgkwGYSwIAABAAqG0e5upz/t4HgHkkALDpCIsAhz/mkAAAwiLA4Q9ZvAo44FMdgE//uAMAAAgAFQ5g7ggAAEAAAAACgAdzOw4wbxAAAIAAAAAEQLXclgPMGQQAACAAAAABUC235wDzBQEAAAgAAEAAAIAAAAAEAAXzQx3AXEEAAAACAAAQAAAgAAAAAQAACABK4he7gHnCmc4SgIHeNE2zrb2FAXcAgLRPcz7lgQAAwg5/EQACAAg9/EUACAAAQAAAAAIAABAAAIAAAB7q6nP%2B3gcAAgAIiwCHPwgAICwCHP6QxauAQQQA7gAAAAIAABAAAIAAAAAEAAAgAAAAAcBnecwLME8QAACAAAAAAQAACAAAQAAAAAKAEvjFLmCuIAAAAAEAAAgAABAAAIAAoEB%2BqAOYLwgAAEAAAAACoDpuzwHmDAIAAHipswSQZ152n%2BzAHQBqYHhz5/A/%2BzuYNwIAqPTwFwEgAIDQw18EgACgMG7HAeYOAgAAEAAqHMD8QQAAAAJAfeN6cV1hDgkAbDrCrxvXFeaRAADChrUhDlnacZgOy6C2Ae7yDgl3AHD4A%2BYTAgCbCzCnEADYVIB5hQDAZgLMLQQANhFgfvEBngKwcQDezhMCAgAHPyAEEAA48AFBwH/wGwAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAD8VWcJIM9v/4LVv6YGdwCAsMP/7O%2BAAAAqPfxFAAgAIPTwFwEgAAAAAQAACAAAQAAAAAIAeKirz/l7HwAIACAsAhz%2BIACAsAhw%2BEMWrwIGEQC4AwAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAZZuX3SIA5h8CAAAQAACAAAAABEAlfA8GmHsIAABAAKhhAPMOAQAACABVDGDOIQAAAAGgjgHMNwSATQJgriEAbBYA80wAAAACANUMYI4JAGweAPOrKu04TIdlKMO29hYBcPDjDoBNBWBOIQBsLgDziYt8BVAwXwkADn4EgBAAcPAjAIQAgIMfASAIABz4CAAAyOYpAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAAAIAABAAAIAAAAAEAAAgAAAAAQAACAAAQAAAgAAAAAQAACAAAAABAAAIAABAAAAAAgAAEAAAgAAAAAQAAPAZ382PWkLB5PCRAAAAAElFTkSuQmCC%22%2C%20%22sizes%22%3A%20%22192x192%22%2C%20%22type%22%3A%20%22image/png%22%2C%20%22purpose%22%3A%20%22any%22%7D%5D%7D">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="application-name" content="I Saw That">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..600&family=Archivo:wdth,wght@62..125,400..700&display=swap" rel="stylesheet">
+<style>
+  /* ---------------------------------------------------------------
+     The house program: program stock, letterpress ink, curtain red.
+     Variable names are historical; values below are what matter.
+       --house    page       --velvet  panel/quiet fill
+       --line     rule       --paper   ink (text)
+       --paperDim secondary  --brass   curtain red (accent)
+       --brassDim accent, quiet        --muted   small print
+     ----------------------------------------------------------------*/
+  :root{
+    --house:#EFE9DC; --velvet:#E7DFCF; --line:#C7BCA6;
+    --paper:#171310; --paperDim:#3D352C; --muted:#6E6455;
+    --brass:#8C1D2A; --brassDim:#A84450;
+    --stock:#F6F1E6;
+    --display:"Bodoni Moda", Didot, "Playfair Display", Georgia, serif;
+    --text:"Archivo", "Helvetica Neue", Arial, sans-serif;
+  }
+  html[data-lights="down"]{
+    --house:#14100F; --velvet:#1F1A18; --line:#3B322D;
+    --paper:#EFE7D9; --paperDim:#CFC4B2; --muted:#968B7C;
+    --brass:#CE5B62; --brassDim:#9E454C;
+    --stock:#1A1513;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--house);color:var(--paper);
+    font-family:var(--text);font-size:16px;font-weight:450;line-height:1.55;
+    -webkit-text-size-adjust:100%;font-variant-numeric:oldstyle-nums}
+  body{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+  #app{max-width:660px;margin:0 auto;padding:0 20px 90px}
+  .marquee{background:#F2CE1B;color:#14110E;border-bottom:3px solid #14110E;
+    margin:0 -20px 16px;padding:17px 16px 15px;text-align:center}
+  /* the wordmark: a Didone at full weight, with the optical-size axis kept low so the
+     thin strokes stay sturdy instead of going to hairlines — closer to the real masthead */
+  .marquee span{display:block;font-family:var(--display);font-weight:900;
+    font-variation-settings:"opsz" 11;font-size:46px;line-height:.98;letter-spacing:.035em;
+    text-transform:uppercase;text-indent:.035em}
+  @media (max-width:380px){ .marquee span{font-size:38px;letter-spacing:.025em} }
+
+  /* --- masthead: a title page, centred --- */
+  h1{font-family:var(--display);font-weight:600;font-size:36px;line-height:1;margin:0;
+    text-align:center;letter-spacing:.005em;font-variant-numeric:lining-nums;
+    font-variation-settings:"opsz" 96}
+  .colophon{display:flex;justify-content:center;flex-wrap:wrap;margin:10px 0 0;
+    font-size:12px;font-stretch:80%;color:var(--muted);letter-spacing:.02em}
+  .colophon span + span{margin-left:11px;padding-left:11px;border-left:1px solid var(--line)}
+  .lights{background:none;border:0;color:var(--muted);font:inherit;font-size:11px;font-stretch:80%;
+    padding:4px 0;cursor:pointer;display:block;margin:6px auto 0;letter-spacing:.04em}
+  .lights:hover{color:var(--brass)}
+  .rule{height:0;border-top:1px solid var(--line);border-bottom:3px double var(--line);
+    margin:14px auto 0;max-width:100%}
+  @media (prefers-reduced-motion: no-preference){
+    .rule{animation:raise .7s ease-out both}
+    @keyframes raise{from{max-width:0}to{max-width:100%}}
+  }
+
+  h2{font-family:var(--display);font-weight:700;font-size:29px;line-height:1.14;margin:0 0 4px;
+    text-align:center;font-variant-numeric:lining-nums;font-variation-settings:"opsz" 30}
+
+  /* --- navigation: the three sections of the book --- */
+  .tabs{display:flex;justify-content:center;gap:26px;margin:18px 0 22px}
+  .tab{background:none;border:0;padding:0 0 6px;font:inherit;font-size:14px;font-stretch:84%;font-weight:500;
+    letter-spacing:.06em;color:var(--muted);border-bottom:1px solid transparent;cursor:pointer}
+  .tab.on{color:var(--paper);border-bottom-color:var(--brass)}
+  .tab:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{
+    outline:2px solid var(--brassDim);outline-offset:2px}
+
+  /* --- section heads: how a program announces a section --- */
+  .eyebrow{font-family:var(--display);font-style:italic;font-size:15px;color:var(--paperDim);
+    letter-spacing:0;text-transform:none;margin:0 0 10px;padding-bottom:5px;
+    border-bottom:1px solid var(--line)}
+
+  .meta{font-size:12px;font-stretch:82%;font-weight:500;color:var(--muted);letter-spacing:.02em}
+  .muted{color:var(--muted)} .dim{color:var(--paperDim)}
+  .small{font-size:14px} .tiny{font-size:12px}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .truncate{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  /* long titles and single long words break instead of pushing the page sideways */
+  html,body{overflow-x:hidden}
+  #app,.card,.stub,.stub .body,.notice{min-width:0;max-width:100%}
+  h2,.title,.eyebrow,p,li,td{overflow-wrap:break-word}
+
+  .card{background:var(--stock);border:1px solid var(--line);padding:20px 18px}
+  .notice{background:var(--stock);border-left:3px solid var(--brass);border-top:1px solid var(--line);
+    border-right:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:12px 14px;margin-bottom:16px;font-size:14px}
+  .toast{border-left:3px solid var(--brassDim);background:var(--stock);color:var(--paperDim);
+    padding:10px 14px;margin-bottom:16px;font-size:14px}
+
+  /* --- buttons: set like a ticket --- */
+  button{font-family:var(--text);cursor:pointer}
+  .btn{display:block;width:100%;padding:13px;background:var(--brass);color:var(--stock);
+    border:0;border-radius:2px;font-size:14px;font-stretch:85%;font-weight:600;
+    letter-spacing:.05em;margin-bottom:10px}
+  .btn.ghost{background:none;border:1px solid var(--line);color:var(--paperDim);font-weight:400}
+  .btn.outline{background:none;border:1px solid var(--brass);color:var(--brass);font-weight:500}
+  .btn:disabled{opacity:.45;cursor:default}
+  .btn.sm{width:auto;display:inline-block;padding:6px 12px;font-size:12px;margin:0}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+
+  label{display:block;margin-bottom:14px}
+  label span{display:block;font-family:var(--display);font-style:italic;font-size:14px;
+    color:var(--paperDim);margin-bottom:5px}
+  input,textarea{width:100%;padding:10px 11px;background:var(--house);color:var(--paper);
+    border:1px solid var(--line);border-radius:2px;font:inherit;font-size:16px;outline:none}
+  textarea{resize:vertical;font-size:15px;line-height:1.6}
+  input:focus,textarea:focus{border-color:var(--brassDim)}
+  ::placeholder{color:var(--muted);opacity:.8}
+
+  .chip,.seg{background:none;border:1px solid var(--line);color:var(--paperDim);
+    padding:6px 11px;font-size:13px;font-stretch:88%;font-weight:500;border-radius:2px;margin:0 6px 6px 0}
+  .chip{border-color:var(--brassDim);color:var(--brass)}
+  .seg.on{border-color:var(--brass);color:var(--brass);background:var(--stock)}
+
+  /* --- the log: an index of performances, ruled, not boxed --- */
+  .stub{position:relative;display:flex;align-items:flex-start;width:100%;background:none;border:0;
+    border-bottom:1px solid var(--line);text-align:left;padding:14px 2px;color:inherit;gap:16px}
+  .stub:hover{background:var(--stock)}
+  .stub.picked{background:var(--stock);box-shadow:inset 3px 0 0 var(--brass)}
+  .stub .tick{flex:0 0 26px;align-self:center;text-align:center;font-size:17px;color:var(--brass);
+    border:1px solid var(--line);width:26px;height:26px;line-height:24px;margin-right:2px}
+  .stub .date{min-width:58px;display:block;text-align:right;flex:0 0 auto;padding-top:3px}
+  .stub .perf{display:none}
+  .stub .body{min-width:0;flex:1}
+  .d-day{font-family:var(--display);font-size:22px;font-weight:700;line-height:1;display:block;
+    font-variant-numeric:lining-nums;font-variation-settings:"opsz" 14}
+  .d-mon{font-size:11px;font-stretch:78%;letter-spacing:.08em;color:var(--brass);display:block;
+    text-transform:uppercase}
+  .d-yr{font-size:11px;font-stretch:78%;color:var(--muted);display:block;margin-top:2px;
+    font-variant-numeric:lining-nums}
+  .title{font-family:var(--display);font-size:20px;font-weight:700;line-height:1.22;
+    max-width:100%;overflow-wrap:break-word;
+    font-variation-settings:"opsz" 16;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .credit{display:block;font-size:13px;font-stretch:84%;font-weight:500;color:var(--paperDim);margin-top:4px}
+  .credit .k{color:var(--paperDim);text-transform:uppercase;letter-spacing:.09em;font-size:11px}
+  .players{display:block;font-size:13px;font-stretch:84%;color:var(--muted);margin-top:3px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+  /* --- the signature: a cast list with dot leaders --- */
+  .kv{display:flex;flex-wrap:wrap;align-items:baseline;width:100%;font-size:15px;font-weight:500;
+    padding:6px 0;background:none;border:0;color:inherit;text-align:left;row-gap:0}
+  .kv .lead{flex:1 1 auto;min-width:14px;margin:0 7px;
+    border-bottom:1px dotted var(--line);transform:translateY(-4px)}
+  /* the name is never abbreviated: it keeps its width and wraps if it must */
+  .kv > span:first-child{flex:0 1 auto;min-width:9ch;white-space:normal;overflow-wrap:break-word}
+  /* the role keeps a readable column; when that will not fit beside a long name it
+     drops to its own line, right-aligned, the way a programme sets a long credit */
+  .kv > span:last-child{flex:0 1 auto;min-width:13ch;margin-left:auto;text-align:right;
+    color:var(--muted);font-size:14px;font-stretch:88%;white-space:normal;overflow-wrap:break-word}
+  .kv > span:last-child:only-child{margin-left:0}
+  button.kv{cursor:pointer;border-bottom:1px solid transparent}
+  button.kv:hover{color:var(--brass)}
+
+  /* what you thought: the one part of an entry nobody else could have written */
+  .impressions{margin:16px 0 0;padding:2px 0 2px 16px;border-left:2px solid var(--brassDim)}
+  .impressions p{font-family:var(--display);font-size:16.5px;line-height:1.6;margin:0 0 .7em;
+    color:var(--paper)}
+  .impressions p:last-child{margin-bottom:0}
+  .wrote{position:absolute;right:2px;top:12px;font-family:var(--display);font-size:30px;
+    line-height:1;color:var(--brassDim);opacity:.55}
+  .hr{height:0;border-top:1px solid var(--line);margin:18px 0}
+  .orn{text-align:center;color:var(--muted);font-size:18px;line-height:1;margin:20px 0 16px;
+    font-family:var(--display)}
+
+  .pages{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .page{position:relative;border:1px solid var(--line);background:var(--stock);padding:3px}
+  .page img{width:100%;height:80px;object-fit:cover;display:block}
+  .page .num{position:absolute;left:3px;bottom:3px;background:var(--house);color:var(--brass);
+    font-size:11px;padding:0 5px;font-variant-numeric:lining-nums}
+  .page .x{position:absolute;top:5px;right:5px;background:var(--house);color:var(--paper);
+    border:1px solid var(--line);border-radius:50%;width:22px;height:22px;line-height:1;font-size:13px}
+  .strip{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:16px}
+  .strip img{height:118px;width:88px;object-fit:cover;border:1px solid var(--line);flex:0 0 auto;
+    background:var(--stock);padding:3px}
+
+  .stat{background:var(--stock);border:1px solid var(--line);padding:14px 12px;text-align:center}
+  .stat b{font-family:var(--display);font-size:32px;font-weight:700;color:var(--brass);display:block;
+    line-height:1;font-variant-numeric:lining-nums;font-variation-settings:"opsz" 24}
+  .stat .meta{display:block;margin-top:6px}
+
+  .lightbox{position:fixed;inset:0;background:rgba(18,14,12,.94);display:flex;align-items:center;
+    justify-content:center;padding:18px;z-index:50}
+  .lightbox img{max-width:100%;max-height:100%;border:6px solid var(--stock)}
+
+  .gate{text-align:center;padding:40px 4px}
+  .gate p{max-width:40ch;margin:0 auto 20px;line-height:1.6}
+  .spin{display:inline-block;animation:sp 1s linear infinite}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  @media (prefers-reduced-motion: reduce){.spin{animation:none}}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<input type="file" id="pageInput" accept="image/*" multiple class="hidden">
+<input type="file" id="restoreInput" accept="application/json,.json" class="hidden">
+
+<script type="module">
+/* =====================================================================
+   SETUP — paste your Firebase web config below, replacing the whole
+   firebase: { ... } block. It comes from Firebase console → Project
+   settings → Your apps → Web app → "SDK setup and configuration".
+   This config is meant to be public; your Firestore rules are what
+   keep the log private to the two of you.
+   ===================================================================== */
+const CONFIG = {
+  firebase: {
+    apiKey: "AIzaSyCISeGJvEHheRQFfOoZpZb5TPLKEqx1als",
+    authDomain: "i-saw-that-69d03.firebaseapp.com",
+    projectId: "i-saw-that-69d03",
+    storageBucket: "i-saw-that-69d03.firebasestorage.app",
+    messagingSenderId: "822629576979",
+    appId: "1:822629576979:web:26f8709085c31002a8eae6"
+  }
+};
+/* ===================================================================== */
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { initializeFirestore, getFirestore, persistentLocalCache, persistentMultipleTabManager,
+  collection, doc, onSnapshot, getDoc, getDocs, setDoc, updateDoc, deleteDoc, writeBatch,
+  query, where, limit, arrayUnion, arrayRemove }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// House lights: paper by default, lamplight when asked, remembered per device.
+(function(){
+  let pref = null;
+  try { pref = localStorage.getItem("cc:lights"); } catch {}
+  if (!pref && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) pref = "down";
+  if (pref === "down") document.documentElement.setAttribute("data-lights", "down");
+})();
+
+/* ============ state ============ */
+const S = {
+  phase: "loading", user: null, tab: "log", entries: [], pending: [], draft: null,
+  openId: null, openPages: null, query: "", lightbox: null, backupText: "", pasteText: "",
+  busy: false, adding: false, moving: false, error: "", toast: "", syncing: false,
+  cfg: { key:"", model:"claude-sonnet-5" }, keyDraft: null, modelDraft: null, pageTarget: "tray",
+  kindFilter: "All", sort: "new", mergeWith: null, mergeChecked: false, busyNote: "", lastSkipped: null, dupDismissed: {}, selectMode: false, picked: {}, dupLoose: false,
+  logId: null, log: null, members: [], legacyCount: null, joinCode: "", inviteEmail: "", logNameDraft: "", inviteCode: ""
+};
+let db = null, auth = null, unsub = null, unsubCfg = null, unsubLog = null, unsubMembers = null, toastTimer = null;
+
+function say(msg){ S.toast = msg; render();
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => { S.toast = ""; render(); }, 4000); }
+function fail(msg){ S.error = msg; render(); }
+function firstName(u){ return ((u && (u.displayName || u.email)) || "").split(/[ @]/)[0]; }
+function pad(i){ return String(i).padStart(2, "0"); }
+function newId(){ return "s_" + Date.now() + "_" + Math.random().toString(36).slice(2, 7); }
+function clean(o){ return JSON.parse(JSON.stringify(o)); } // Firestore rejects undefined
+
+/* ============ this browser only: Claude key ============ */
+const LK = { key: "cc:apikey", model: "cc:model", legacy: "cc:entries", legacyPages: "cc:pages:", moved: "cc:moved" };
+function lsGet(k){ try { return localStorage.getItem(k); } catch { return null; } }
+function lsSet(k, v){ try { localStorage.setItem(k, v); return true; } catch { return false; } }
+function apiKey(){ return (S.cfg.key || lsGet(LK.key) || "").trim(); }
+function apiModel(){ return (S.cfg.model || lsGet(LK.model) || "claude-sonnet-5").trim(); }
+function legacyLog(){
+  if (lsGet(LK.moved)) return null;
+  try { const l = JSON.parse(lsGet(LK.legacy) || "[]"); return l.length ? l : null; } catch { return null; }
+}
+
+/* ============ where this log's data lives ============ */
+// Everything hangs off logs/{logId}. A log has members; that is what sharing means.
+function showsCol(){ return collection(db, "logs", S.logId, "shows"); }
+function showDoc(id){ return doc(db, "logs", S.logId, "shows", id); }
+function pagesCol(id){ return collection(db, "logs", S.logId, "shows", id, "pages"); }
+function pageDoc(id, n){ return doc(db, "logs", S.logId, "shows", id, "pages", pad(n)); }
+function cfgDoc(){ return doc(db, "logs", S.logId, "config", "claude"); }
+function userDoc(uid){ return doc(db, "users", uid); }
+
+/* ============ logs: finding, making, joining ============ */
+// Membership is a document per person at logs/{logId}/members/{uid}, not an array
+// on the log. That lets the rules prove a join: you create your own membership
+// document and point it at the invitation you claimed.
+function newLogId(){ return "lg_" + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+function makeCode(){
+  const abc = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";   // no look-alike characters
+  let c = ""; for(let i=0;i<6;i++) c += abc[Math.floor(Math.random()*abc.length)];
+  return c;
+}
+function memberDoc(logId, uid){ return doc(db, "logs", logId, "members", uid); }
+
+async function createLog(name){
+  const id = newLogId();
+  const b = writeBatch(db);
+  b.set(doc(db, "logs", id), {
+    id, name: name || ((firstName(S.user) || "My") + "'s log"),
+    createdBy: S.user.uid, createdAt: Date.now()
+  });
+  b.set(memberDoc(id, S.user.uid), {
+    uid: S.user.uid, name: firstName(S.user) || S.user.email,
+    email: S.user.email, joinedAt: Date.now(), founder: true
+  });
+  b.set(userDoc(S.user.uid), { uid:S.user.uid, email:S.user.email, logId:id, updatedAt:Date.now() });
+  await b.commit();
+  return id;
+}
+
+async function joinByCode(code){
+  code = (code||"").trim().toUpperCase();
+  if(code.length < 4) throw new Error("That code looks too short.");
+  const snap = await getDoc(doc(db, "invites", code));
+  if(!snap.exists()) throw new Error("No invitation with that code. Check it with whoever sent it.");
+  const inv = snap.data();
+  if(inv.usedBy && inv.usedBy !== S.user.uid) throw new Error("That invitation has already been used.");
+  if(inv.expiresAt && inv.expiresAt < Date.now()) throw new Error("That invitation has expired.");
+  // claim it first, so the membership rule has something to verify against
+  await setDoc(doc(db, "invites", code), { usedBy: S.user.uid, usedAt: Date.now() }, { merge:true });
+  await setDoc(memberDoc(inv.logId, S.user.uid), {
+    uid: S.user.uid, name: firstName(S.user) || S.user.email,
+    email: S.user.email, joinedAt: Date.now(), viaCode: code
+  });
+  await setDoc(userDoc(S.user.uid), { uid:S.user.uid, email:S.user.email, logId:inv.logId, updatedAt:Date.now() }, { merge:true });
+  return inv.logId;
+}
+
+async function makeInvite(){
+  const code = makeCode();
+  await setDoc(doc(db, "invites", code), {
+    code, logId: S.logId, logName: (S.log && S.log.name) || "",
+    createdBy: S.user.uid, createdAt: Date.now(),
+    expiresAt: Date.now() + 1000*60*60*24*30, usedBy: null
+  });
+  return code;
+}
+
+async function leaveLog(){
+  await deleteDoc(memberDoc(S.logId, S.user.uid));
+  await setDoc(userDoc(S.user.uid), { logId: null, updatedAt: Date.now() }, { merge:true });
+}
+
+// The original two-person archive sits at the top level. Copy it across rather
+// than move it; the old copy stays untouched until it is no longer wanted.
+async function countLegacy(){
+  try { return (await getDocs(query(collection(db, "shows"), limit(1000)))).size; }
+  catch { return 0; }
+}
+
+async function migrateLegacy(){
+  const snap = await getDocs(collection(db, "shows"));
+  const docs = snap.docs;
+  let moved = 0, pages = 0;
+  for(let i = 0; i < docs.length; i++){
+    if(i % 10 === 0){
+      S.busyNote = "Copying your archive \u2014 " + i + " of " + docs.length;
+      render(); await new Promise(r => setTimeout(r, 0));
+    }
+    const d = docs[i];
+    const b = writeBatch(db);
+    b.set(showDoc(d.id), d.data());
+    try {
+      const ps = await getDocs(collection(db, "shows", d.id, "pages"));
+      ps.forEach(pg => { b.set(pageDoc(d.id, pg.data().n || 0), pg.data()); pages++; });
+    } catch {}
+    await b.commit();
+    moved++;
+  }
+  S.busyNote = "";
+  return { moved, pages };
+}
+
+/* ============ dates ============ */
+const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+// If the model only left us the printed text, read a month and year out of it.
+function inferFromPrinted(text){
+  if(!text) return "";
+  const t = String(text).toLowerCase();
+  const years = (t.match(/\b(?:19|20)\d{2}\b/g) || []);
+  if(!years.length) return "";
+  // "2011-2012 Season" spans two years — too vague to file as either
+  if(years.length > 1 && years[0] !== years[1]) return "";
+  const months = ["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"];
+  const i = months.findIndex(m => t.includes(m));
+  return i > -1 ? years[0] + "-" + String(i + 1).padStart(2, "0") : years[0];
+}
+
+function precisionOf(v){ if(!v) return null; if(v.length>=10) return "day"; if(v.length===7) return "month"; return "year"; }
+function fmtDate(v){
+  const p = precisionOf(v); if(!p) return "Date not recorded";
+  const a = v.split("-");
+  if(p==="year") return a[0];
+  if(p==="month") return MONTHS[+a[1]-1] + " " + a[0];
+  return MONTHS[+a[1]-1] + " " + (+a[2]) + ", " + a[0];
+}
+function stubParts(v){
+  const p = precisionOf(v);
+  if(!p) return { eyebrow:"", big:"—", sub:"undated" };
+  const a = v.split("-"), mon = (MONTHS[+a[1]-1]||"").slice(0,3).toUpperCase();
+  if(p==="year") return { eyebrow:"", big:a[0], sub:"" };
+  if(p==="month") return { eyebrow:mon, big:a[0], sub:"" };
+  return { eyebrow:mon, big:String(+a[2]), sub:a[0] };
+}
+
+/* ============ images ============ */
+function loadImage(file){
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onerror = () => reject(new Error("Could not read that image."));
+    r.onload = () => { const img = new Image();
+      img.onerror = () => reject(new Error("That photo would not open — if it is a HEIC file, open it in Photos and share it as JPEG, or take the shot with your camera set to Most Compatible."));
+      img.onload = () => resolve(img); img.src = r.result; };
+    r.readAsDataURL(file);
+  });
+}
+function encode(img, maxDim, q){
+  const s = Math.min(1, maxDim / Math.max(img.width, img.height));
+  const c = document.createElement("canvas");
+  c.width = Math.round(img.width*s); c.height = Math.round(img.height*s);
+  c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+  return c.toDataURL("image/jpeg", q);
+}
+async function preparePage(file, i){
+  const img = await loadImage(file);
+  let archive = encode(img, 1100, .62);
+  if (archive.length > 850000) archive = encode(img, 800, .55);  // stay under Firestore's 1 MB document limit
+  return { id: "p_" + Date.now() + "_" + i, read: encode(img, 1400, .75), full: archive, thumb: encode(img, 300, .55) };
+}
+
+/* ============ reading a program ============ */
+const BUILD = "v23";
+const KINDS = ["Theatre", "Musical", "Opera", "Classical", "Jazz", "Cabaret", "Dance", "Other"];
+function kindOf(e){ return (e && KINDS.includes(e.kind)) ? e.kind : "Unsorted"; }
+
+const PROMPT = 'These images relate to a single live performance the user attended, in the order they were added. Most are pages from its program: the title may be on the cover, the run of dates inside, the cast elsewhere, an understudy slip loose in the book. One may instead be a TICKET, ticket stub, box-office receipt, will-call slip or booking confirmation. Read every image and merge what you find into one record. Where images disagree, this is the order of authority: (1) a ticket or booking confirmation, (2) a slip or insert printed for this performance, (3) the program pages, (4) a season or repertory book covering many productions. Return ONLY a JSON object, no markdown fences and no commentary:\n' +
+'{"title":"","kind":"","director":"","company":"","venue":"","city":"","dateInfo":{"exact":"","monthYear":"","rangeStart":"","rangeEnd":"","printed":""},"creatives":[{"role":"","name":""}],"cast":[{"actor":"","role":""}],"understudies":[{"actor":"","role":""}],"notes":""}\n' +
+'Rules: title is the production name. kind is exactly one of Theatre, Musical, Opera, Classical, Jazz, Cabaret, Dance, Other — judge from the program (a play is Theatre, a book musical is Musical, a symphony or recital is Classical, a jazz club or festival set is Jazz, a solo song evening is Cabaret, ballet or contemporary dance is Dance). company is the producing theatre or opera company if named. dateInfo: hunt for dates everywhere including small print, cover, title page, the run of performances, a season line, and any copyright or issue date. IMPORTANT: if any image is a ticket, stub, receipt or booking confirmation, the performance date printed on it is the date the user attended — put it in "exact" and let it override any date from the program, even a printed run or a slip. Put the performance time and the seat from a ticket into "notes" if legible, for example "Ticket: Fri 7:30pm, Orch H12". A ticket also settles the venue. "exact" is YYYY-MM-DD only when one single performance date is printed. "monthYear" is YYYY-MM and should be filled whenever the program names a month and year even without a day — Playbill and most house programs print the issue month and year on the cover or masthead (for example "DECEMBER 2013"), and that is the month of the performance, so capture it. A two-year season line such as "2011-2012 Season" is NOT a monthYear; leave it in printed only. "rangeStart" and "rangeEnd" are YYYY-MM-DD when a run or repertory span is printed. "printed" is the date text copied exactly as it appears, for example "March 4-22, 2019" or "2011-2012 Season". Never guess a date that is not printed. director is the stage director of this production, the person credited "Directed by" — not the music director, artistic director or conductor; leave it "" for a concert or recital with no director. creatives: up to 6 others (writer, composer, conductor, choreographer, designer); do not repeat the director there. cast: up to 40 performers who appeared, principals first, with the character each plays. understudies: up to 25 entries from the understudy, standby, swing or cover list, each with the performer and the role or roles they cover; leave empty if no such list is printed. IMPORTANT: if a loose slip or insert announces that a role is played by someone else at this performance, put that performer in "cast" for that role instead of the printed name, and say so plainly in "notes", for example "Slip: Elphaba played by Jane Doe". notes: one short line, else "". Use "" for anything unreadable.';
+
+// A reply cut off mid-list leaves unclosed brackets. Trim to the last complete
+// entry and close what is open, so a long cast list is shortened rather than lost.
+function repairJson(text){
+  const cut = Math.max(text.lastIndexOf("}"), text.lastIndexOf("]"));
+  if (cut < 0) return null;
+  let out = text.slice(0, cut + 1);
+  const stack = []; let inStr = false, esc = false;
+  for (const ch of out){
+    if (esc) { esc = false; continue; }
+    if (ch === "\\") { if (inStr) esc = true; continue; }
+    if (ch === '"') { inStr = !inStr; continue; }
+    if (inStr) continue;
+    if (ch === "{" || ch === "[") stack.push(ch === "{" ? "}" : "]");
+    else if (ch === "}" || ch === "]") stack.pop();
+  }
+  out = out.replace(/,\s*$/, "");
+  while (stack.length) out += stack.pop();
+  return out;
+}
+
+let lastReadTruncated = false;
+
+async function readProgram(images){
+  const key = apiKey();
+  if(!key) throw new Error("Add a Claude API key in Season → Settings, or type the show in by hand.");
+  const content = images.map(d => ({ type:"image", source:{ type:"base64", media_type:"image/jpeg", data:d.split(",")[1] } }));
+  content.push({ type:"text", text:PROMPT });
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method:"POST",
+    headers:{ "Content-Type":"application/json", "x-api-key":key, "anthropic-version":"2023-06-01",
+      "anthropic-dangerous-direct-browser-access":"true" },
+    body: JSON.stringify({ model:apiModel(), max_tokens:8000, messages:[{ role:"user", content }] })
+  });
+  if(!res.ok){
+    const t = await res.text();
+    throw new Error(res.status===401 ? "That Claude API key was refused. Check it in Season → Settings."
+      : res.status===402 ? "The Claude account needs credits — add them in the Claude Console."
+      : "The reader could not reach Claude (" + res.status + "). " + t.slice(0,120));
+  }
+  const data = await res.json();
+  const text = (data.content||[]).filter(b => b.type==="text").map(b => b.text).join("\n");
+  const c = text.replace(/```json/g,"").replace(/```/g,"").trim();
+  const a = c.indexOf("{");
+  if(a<0) throw new Error("Nothing readable came back. Try a brighter, straighter photo.");
+  const body = c.slice(a);
+  lastReadTruncated = data.stop_reason === "max_tokens";
+  try {
+    return JSON.parse(body.slice(0, body.lastIndexOf("}") + 1));
+  } catch {
+    const repaired = repairJson(body);
+    if(!repaired) throw new Error("The reply came back unreadable. Try again, or with fewer pages at once.");
+    lastReadTruncated = true;
+    return JSON.parse(repaired);   // throws only if it is beyond saving
+  }
+}
+
+/* ============ helpers ============ */
+function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;")
+  .replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;"); }
+function groupCast(list){
+  const order = [], byActor = {};
+  (list||[]).forEach(c => {
+    const name = (c.actor||"").trim();
+    if(!name) return;
+    if(!byActor[name]){ byActor[name] = []; order.push(name); }
+    if(c.role && c.role.trim()) byActor[name].push(c.role.trim());
+  });
+  return order.map(name => ({ actor:name, role:byActor[name].join(", ") }));
+}
+function castToText(cast){ return (cast||[]).map(c => c.actor + (c.role ? " as " + c.role : "")).join("\n"); }
+function textToCast(t){
+  return (t||"").split("\n").filter(l => l.trim()).map(l => {
+    const i = l.toLowerCase().indexOf(" as ");
+    return i>-1 ? { actor:l.slice(0,i).trim(), role:l.slice(i+4).trim() } : { actor:l.trim(), role:"" };
+  });
+}
+function sortEntries(list){ return list.sort((a,b) => (b.dateSeen||"0").localeCompare(a.dateSeen||"0")); }
+function download(text, filename, mime){
+  try { const url = URL.createObjectURL(new Blob([text], { type:mime }));
+    const a = document.createElement("a"); a.href = url; a.download = filename; a.rel = "noopener";
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 4000); return true; } catch { return false; }
+}
+function copyText(text){
+  const legacy = () => { try { const ta = document.createElement("textarea");
+      ta.value = text; ta.style.position="fixed"; ta.style.opacity="0";
+      document.body.appendChild(ta); ta.select(); document.execCommand("copy");
+      document.body.removeChild(ta); say("Copied — paste it somewhere safe");
+    } catch { fail("Copying is blocked. Tap the box, select all, and copy by hand."); } };
+  if (navigator.clipboard && navigator.clipboard.writeText)
+    navigator.clipboard.writeText(text).then(() => say("Copied — paste it somewhere safe"), legacy);
+  else legacy();
+}
+
+/* ============ the shared log ============ */
+async function loadPages(id){
+  const snap = await getDocs(pagesCol(id));
+  return snap.docs.map(d => d.data()).sort((a,b) => a.n - b.n);
+}
+async function writeShow(rec, pages){
+  const b = writeBatch(db);
+  b.set(showDoc(rec.id), clean(rec));
+  if (Array.isArray(pages)){
+    const existing = await getDocs(pagesCol(rec.id));
+    existing.forEach(p => b.delete(p.ref));          // clear the old set first
+    pages.forEach((p, i) => {
+      const v = typeof p === "string" ? { thumb:p, full:p } : p;
+      b.set(pageDoc(rec.id, i), { n:i, thumb:v.thumb || v.full, full:v.full || v.thumb });
+    });
+  }
+  return b.commit();
+}
+async function removeShow(id){
+  const pages = await getDocs(pagesCol(id));
+  const b = writeBatch(db);
+  pages.forEach(p => b.delete(p.ref));
+  b.delete(showDoc(id));
+  return b.commit();
+}
+async function importShows(entries, pagesMap){
+  let n = 0;
+  for (const e of entries){
+    if (!e || !e.id || !e.title) continue;
+    const rec = Object.assign({}, e, {
+      addedBy: e.addedBy || S.user.email, addedByName: e.addedByName || firstName(S.user),
+      pageCount: (pagesMap[e.id] || []).length || e.pageCount || 0
+    });
+    await writeShow(rec, pagesMap[e.id] || []);
+    n++;
+  }
+  return n;
+}
+
+/* ============ views ============ */
+function viewGate(){
+  if (S.phase === "setup") return '<div class="gate" style="text-align:left;max-width:520px;margin:0 auto">'
+    + '<h1 style="margin-bottom:6px">I Saw That</h1>'
+    + '<p class="small muted" style="margin:0 0 20px">A log of every show you have seen — scanned from the program, searchable by actor, kept for good.</p>'
+    + '<div class="card"><div class="eyebrow">One-time setup, about fifteen minutes</div>'
+    + '<p class="small dim" style="margin-top:0">This copy is not connected to a database yet. Everything below is free and needs no credit card.</p>'
+    + '<ol class="small muted" style="padding-left:18px;line-height:1.6">'
+    + '<li>At <b>console.firebase.google.com</b>, create a project. Keep the free Spark plan; skip Analytics.</li>'
+    + '<li>Open <b>Authentication</b> → Get started → enable <b>Google</b> sign-in.</li>'
+    + '<li>In Authentication → <b>Settings → Authorized domains</b>, add the web address you will open this from.</li>'
+    + '<li>Open <b>Firestore Database</b> → Create database → production mode.</li>'
+    + '<li>In its <b>Rules</b> tab, paste the rules from the setup guide, with your own email address, and Publish.</li>'
+    + '<li>Gear icon → <b>Project settings</b> → Your apps → the <b>&lt;/&gt;</b> web icon → copy the config.</li>'
+    + '<li>Open this file in a text editor, find <b>CONFIG</b> near the top of the script, paste the config in, and save.</li>'
+    + '</ol>'
+    + '<p class="small muted">Then reload. Scanning programs also needs a Claude API key from console.anthropic.com, which you add inside the app afterwards — everything else works without one.</p>'
+    + '</div></div>';
+  if (S.phase === "signin") return '<div class="gate"><h1 style="margin-bottom:14px">I Saw That</h1>'
+    + '<p class="muted">A shared log of every show you have seen. Sign in to open it.</p>'
+    + '<button class="btn" style="max-width:260px;margin:0 auto" data-act="signin">Sign in with Google</button>'
+    + (S.error ? '<p class="small" style="color:var(--brass);margin-top:18px">'+esc(S.error)+'</p>' : '') + '</div>';
+  if (S.phase === "denied") return '<div class="gate"><h1 style="margin-bottom:14px">I Saw That</h1>'
+    + '<p class="muted">You are signed in as '+esc(S.user && S.user.email)+', but this account cannot open that log. '
+    + 'Ask whoever shared it to send you an invitation.</p>'
+    + '<button class="btn ghost" style="max-width:260px;margin:0 auto" data-act="signout">Sign out</button></div>';
+
+  if (S.phase === "setup") return viewSetup();
+  return '<div class="gate"><p class="muted">Opening the log…</p></div>';
+}
+
+// First time in: start a log, or join one someone shared.
+function viewSetup(){
+  let h = '<div class="gate" style="max-width:520px;margin:0 auto;text-align:left">';
+  h += '<h1 style="margin-bottom:6px">Welcome</h1>'
+     + '<p class="small muted">Signed in as ' + esc(S.user.email) + '</p>';
+
+  if (S.legacyCount > 0){
+    h += '<div class="card" style="margin-top:20px">'
+      + '<div class="eyebrow">Your existing archive</div>'
+      + '<p class="small" style="margin-top:0">There are <b>' + S.legacyCount + ' shows</b> in the original log. '
+      + 'Starting a log here copies them across. The originals stay exactly where they are, '
+      + 'so nothing is at risk if this goes wrong.</p>'
+      + '<button class="btn" data-act="setupmigrate"' + (S.busyNote ? ' disabled' : '') + '>'
+      + 'Start my log and copy those ' + S.legacyCount + ' shows</button>'
+      + '</div>';
+  }
+
+  h += '<div class="card" style="margin-top:16px">'
+    + '<div class="eyebrow">Start fresh</div>'
+    + '<p class="small" style="margin-top:0">A new, empty log of your own. You can invite someone to share it later.</p>'
+    + '<label><span>What should it be called?</span><input type="text" data-field="logname" placeholder="'
+    + esc((firstName(S.user) || "My") + "'s log") + '" value="' + esc(S.logNameDraft || "") + '"></label>'
+    + '<button class="btn" data-act="setupcreate"' + (S.busyNote ? ' disabled' : '') + '>Create my log</button>'
+    + '</div>';
+
+  h += '<div class="card" style="margin-top:16px">'
+    + '<div class="eyebrow">Join someone else\'s</div>'
+    + '<p class="small" style="margin-top:0">If someone shared their log with you, put their invitation code in here.</p>'
+    + '<label><span>Invitation code</span><input type="text" data-field="joincode" placeholder="ABC123" '
+    + 'autocapitalize="characters" autocorrect="off" spellcheck="false" value="' + esc(S.joinCode || "") + '"></label>'
+    + '<button class="btn ghost" data-act="setupjoin"' + (S.busyNote ? ' disabled' : '') + '>Join that log</button>'
+    + '</div>';
+
+  h += '<button class="btn ghost" style="margin-top:16px" data-act="signout">Sign out</button></div>';
+  return h;
+}
+
+// the rows the current search and filters are showing, in the chosen order
+function visibleLog(){
+  const q = S.query.trim().toLowerCase();
+  let list = S.entries.slice();
+  if (S.kindFilter !== "All") list = list.filter(e => kindOf(e) === S.kindFilter);
+  if (q) list = list.filter(e => {
+    if([e.title,e.venue,e.city,e.company,e.notes,e.impressions,e.addedByName,e.kind,e.director].join(" ").toLowerCase().includes(q)) return true;
+    if((e.creatives||[]).some(c => (c.name+" "+c.role).toLowerCase().includes(q))) return true;
+    return (e.cast||[]).concat(e.understudies||[]).some(c => (c.actor+" "+c.role).toLowerCase().includes(q));
+  });
+  const undatedLast = (a,b,dir) => {
+    if(!a.dateSeen && !b.dateSeen) return 0;
+    if(!a.dateSeen) return 1;
+    if(!b.dateSeen) return -1;
+    return dir * a.dateSeen.localeCompare(b.dateSeen);
+  };
+  if(S.sort==="new") list.sort((a,b) => undatedLast(a,b,-1));
+  else if(S.sort==="old") list.sort((a,b) => undatedLast(a,b,1));
+  else if(S.sort==="title") list.sort((a,b) => a.title.localeCompare(b.title));
+  else if(S.sort==="kind") list.sort((a,b) => kindOf(a).localeCompare(kindOf(b)) || undatedLast(a,b,-1));
+  return list;
+}
+
+function viewLog(){
+  const q = S.query.trim().toLowerCase();
+  const list = visibleLog();
+
+  let h = "";
+  const legacy = legacyLog();
+  if (legacy) h += '<div class="notice">This browser still holds '+legacy.length+' show'+(legacy.length===1?"":"s")
+    + ' from the earlier, unshared version. <button class="btn sm" style="margin-top:10px" data-act="movelegacy"'
+    + (S.moving?" disabled":"")+'>'+(S.moving?"Moving…":"Move them into the shared log")+'</button></div>';
+
+  h += '<label style="margin-bottom:10px"><input type="text" placeholder="Search titles, people, venues, what you wrote" value="'+esc(S.query)+'" data-field="query"></label>';
+
+  if(S.selectMode){
+    const n = Object.keys(S.picked).length;
+    h += '<div style="border:1px solid var(--brass);background:var(--stock);padding:12px;margin-bottom:12px">'
+      + '<div class="row"><span class="small">' + (n ? n + ' selected' : 'Tap shows to select them') + '</span>'
+      + '<span>'
+      + (list.length ? '<button class="btn sm ghost" style="margin-right:6px" data-act="pickall">Select these ' + list.length + '</button>' : '')
+      + (n === 2 ? '<button class="btn sm" style="margin-right:6px" data-act="mergepicked">Merge these two</button>' : '')
+      + (n ? '<button class="btn sm" style="margin-right:6px" data-act="removepicked">Remove ' + n + '</button>' : '')
+      + '<button class="btn sm ghost" data-act="selectoff">Done</button></span></div>'
+      + (n === 2 ? '<p class="tiny muted" style="margin:8px 0 0">Merging keeps the fuller record and folds the other into it.</p>'
+          : n ? '<p class="tiny muted" style="margin:8px 0 0">Removing also deletes any programme pages on those entries.</p>' : '')
+      + '</div>';
+  } else {
+    h += '<div style="text-align:right;margin-bottom:10px"><button class="btn sm ghost" data-act="selecton">Select several</button></div>';
+  }
+
+  if(S.entries.length){
+    const counts = {};
+    S.entries.forEach(e => { const k = kindOf(e); counts[k] = (counts[k]||0)+1; });
+    const present = KINDS.filter(k => counts[k]).concat(counts["Unsorted"] ? ["Unsorted"] : []);
+    if(present.length >= 1 && S.entries.length > 1){
+      h += '<div style="margin-bottom:10px">'
+        + '<button class="seg'+(S.kindFilter==="All"?" on":"")+'" data-act="kind:All">All '+S.entries.length+'</button>'
+        + present.map(k => '<button class="seg'+(S.kindFilter===k?" on":"")+'" data-act="kind:'+k+'">'+k+' '+counts[k]+'</button>').join("")
+        + '</div>';
+    }
+    h += '<div class="row" style="margin-bottom:14px"><span class="tiny muted">'
+      + (q || S.kindFilter!=="All" ? list.length + " of " + S.entries.length + " shows" : list.length + (list.length===1?" show":" shows"))
+      + (q ? ' · <button class="tab" style="border:0;padding:0;font-size:11px" data-act="clearq">clear</button>' : '')
+      + '</span><span>'
+      + [["new","Newest"],["old","Oldest"],["title","A–Z"],["kind","Kind"]].map(o =>
+          '<button class="seg'+(S.sort===o[0]?" on":"")+'" style="margin-right:4px" data-act="sort:'+o[0]+'">'+o[1]+'</button>').join("")
+      + '</span></div>';
+  }
+
+  if(!S.entries.length) return h + '<div class="gate" style="padding:40px 0"><div class="serif" style="font-size:22px;margin-bottom:6px">The log is empty</div>'
+    + '<p class="small muted">Start with the last playbill in your bag.</p>'
+    + '<button class="btn" style="max-width:200px;margin:0 auto" data-act="tab:add">Add a show</button></div>';
+  if(!list.length){
+    // say which filter is doing the excluding, and offer the way out
+    const inKind = S.kindFilter === "All" ? S.entries
+      : S.entries.filter(e => kindOf(e) === S.kindFilter);
+    const qOnly = q ? S.entries.filter(e =>
+        [e.title,e.venue,e.city,e.company,e.notes,e.impressions,e.addedByName,e.kind,e.director].join(" ").toLowerCase().includes(q)
+        || (e.creatives||[]).some(c => (c.name+" "+c.role).toLowerCase().includes(q))
+        || (e.cast||[]).concat(e.understudies||[]).some(c => (c.actor+" "+c.role).toLowerCase().includes(q))) : [];
+    let msg, fix = "";
+    if(q && S.kindFilter !== "All" && qOnly.length){
+      msg = "No " + S.kindFilter + " shows match \u201c" + q + "\u201d, but " + qOnly.length
+          + " show" + (qOnly.length===1?"":"s") + " match" + (qOnly.length===1?"es":"") + " across all kinds.";
+      fix = '<button class="btn outline" style="max-width:280px;margin:14px auto 0" data-act="kind:All">Show all ' + qOnly.length + '</button>';
+    } else if(q){
+      msg = "Nothing matches \u201c" + q + "\u201d.";
+      fix = '<button class="btn ghost" style="max-width:280px;margin:14px auto 0" data-act="clearq">Clear the search</button>';
+    } else {
+      msg = "No " + S.kindFilter + " shows in the log yet.";
+      fix = '<button class="btn ghost" style="max-width:280px;margin:14px auto 0" data-act="kind:All">Show all ' + S.entries.length + '</button>';
+    }
+    return h + '<div style="text-align:center;padding:32px 0"><p class="small muted">' + esc(msg) + '</p>' + fix + '</div>';
+  }
+
+  return h + list.map(e => {
+    const s = stubParts(e.dateSeen);
+    const distinct = groupCast(e.cast);
+    let names = distinct.slice(0,3).map(c => c.actor).join(", ");
+    if(distinct.length>3) names += " +" + (distinct.length-3);
+    const where = [e.venue, e.city].filter(Boolean).join(", ") || "Venue not recorded";
+    const picked = !!S.picked[e.id];
+    return '<button class="stub'+(picked?" picked":"")+'" data-act="'+(S.selectMode?"pick:":"open:")+e.id+'">'
+      + (S.selectMode ? '<span class="tick">'+(picked?"\u2713":"")+'</span>' : '')
+      + '<span class="date">'
+      + (s.eyebrow ? '<span class="d-mon">'+s.eyebrow+'</span>' : '')
+      + '<span class="d-day"'+(s.sub==="undated"?' style="color:var(--muted)"':'')+'>'+esc(s.big)+'</span>'
+      + (s.sub ? '<span class="d-yr">'+esc(s.sub)+'</span>' : '')
+      + '</span><span class="body">'
+      + '<span class="title truncate">'+esc(e.title)+'</span>'
+      + '<span class="credit truncate"><span class="k">'+esc(kindOf(e))+'</span> at '+esc(where)+'</span>'
+      + (names ? '<span class="players truncate">'+esc(names)+'</span>' : '')
+      + (e.impressions ? '<span class="wrote">\u201c</span>' : '')
+      + '</span></button>';
+  }).join("");
+}
+
+function viewDetail(){
+  const e = S.entries.find(x => x.id===S.openId);
+  if(!e) return '<p class="muted">That show is no longer in the log.</p>';
+  let h = '<button class="tab" style="border:0;margin-bottom:14px" data-act="back">&larr; Back to the log</button><div class="card">';
+  if(S.openPages === null && e.pageCount) h += '<p class="tiny muted">Loading pages…</p>';
+  if((S.openPages||[]).length) h += '<div class="strip">' + S.openPages.map((p,i) =>
+      '<img src="'+p.thumb+'" alt="Page '+(i+1)+'" data-act="light:'+i+'">').join("") + '</div>';
+  const house = [e.venue, e.city].filter(Boolean).join(", ");
+  h += (house ? '<div class="meta" style="text-align:center;letter-spacing:.14em;text-transform:uppercase">'+esc(house)+'</div>' : '')
+    + '<h2>'+esc(e.title)+'</h2>'
+    + '<div class="small" style="text-align:center;color:var(--brass);font-family:var(--display);font-style:italic">'+esc(fmtDate(e.dateSeen))+'</div>'
+    + (kindOf(e)!=="Unsorted" ? '<div class="tiny muted" style="text-align:center;margin-top:3px">'+esc(e.kind)+'</div>' : '');
+  if(e.dateInfo && e.dateInfo.printed) h += '<div class="tiny muted" style="margin-top:4px">Program reads: '+esc(e.dateInfo.printed)+'</div>';
+  if(e.director) h += '<div class="small dim" style="text-align:center;margin-top:12px">Directed by '+esc(e.director)+'</div>';
+  if(e.company) h += '<div class="tiny muted" style="text-align:center;margin-top:3px">'+esc(e.company)+'</div>';
+  if(e.notes) h += '<div class="small dim" style="margin-top:8px">'+esc(e.notes)+'</div>';
+  if(e.impressions) h += '<div class="impressions">' + esc(e.impressions).replace(/\n+/g, '</p><p>').replace(/^/, '<p>') + '</p></div>';
+  if((e.creatives||[]).length) h += '<div class="hr"></div>' + e.creatives.map(c =>
+      '<div class="kv"><span class="muted">'+esc(c.role)+'</span><i class="lead"></i><span>'+esc(c.name)+'</span></div>').join("");
+  h += '<div class="orn">❧</div><div class="eyebrow">Cast</div>';
+  h += (e.cast||[]).length ? groupCast(e.cast).map(c => '<div class="kv"><span>'+esc(c.actor)+'</span><i class="lead"></i><span>'+esc(c.role)+'</span></div>').join("")
+    : '<p class="small muted">No cast recorded.</p>';
+  if((e.understudies||[]).length) h += '<div class="hr"></div><div class="eyebrow">Understudies and standbys</div>'
+    + groupCast(e.understudies).map(c => '<div class="kv"><span class="muted">'+esc(c.actor)+'</span><i class="lead"></i><span>'+esc(c.role)+'</span></div>').join("");
+  if(e.addedByName) h += '<p class="tiny muted" style="margin-top:14px">Filed by '+esc(e.addedByName)+(e.editedBy && e.editedBy!==e.addedByName ? ', edited by '+esc(e.editedBy) : '')+'</p>';
+  h += '<div style="display:flex;gap:10px;margin-top:18px">'
+    + '<button class="btn ghost" style="margin:0" data-act="edit"'+(S.openPages===null&&e.pageCount?" disabled":"")+'>Edit</button>'
+    + '<button class="btn ghost" style="margin:0" data-act="del">Remove</button></div></div>';
+  return h;
+}
+
+function viewAdd(){
+  if(S.draft && S.mergeWith) return viewMerge();
+  if(S.draft) return viewReview();
+  let h = '<div class="eyebrow">Photograph the program</div>'
+    + '<p class="small muted" style="margin-top:0">Add pages one at a time or in batches — cover, title page, cast list, the run of dates, an understudy slip, and the ticket if you kept it. Up to eight, read together. A ticket settles the date.</p>';
+  if(S.pending.length) h += '<div class="pages">' + S.pending.map((p,i) =>
+      '<div class="page"><img src="'+p.thumb+'" data-act="lightp:'+i+'"><span class="num">'+(i+1)+'</span>'
+      + '<button class="x" data-act="rmpage:'+p.id+'">&times;</button></div>').join("")
+    + '</div><p class="tiny muted" style="margin:8px 0 14px">'+S.pending.length+' of 8 pages ready.</p>';
+  h += '<button class="btn '+(S.pending.length?"ghost":"outline")+'" data-act="addpages"'+(S.adding||S.busy?" disabled":"")+'>'
+    + (S.adding ? "Adding pages…" : (S.pending.length ? "Add more pages" : "Add photos of the program")) + '</button>';
+  if(S.pending.length) h += '<button class="btn" data-act="scan"'+(S.busy?" disabled":"")+'>'
+    + (S.busy ? '<span class="spin">◠</span> Reading the program…' : "Read " + S.pending.length + (S.pending.length===1?" page":" pages")) + '</button>';
+  h += '<button class="btn ghost" data-act="manual">Type it in instead</button>';
+  return h;
+}
+
+function viewMerge(){
+  const m = S.mergeWith, d = S.draft;
+  return '<div class="eyebrow">Already on the list</div>'
+    + '<div class="card">'
+    + '<p class="small" style="margin-top:0">This looks like a show already in the log'
+    + (m.fromCalendar ? ', added from your calendar and waiting for its programme' : '') + '.</p>'
+    + '<div class="hr"></div>'
+    + '<div class="kv"><span>On the list</span><i class="lead"></i><span>' + esc(m.title) + ' &middot; ' + esc(fmtDate(m.dateSeen)) + '</span></div>'
+    + '<div class="kv"><span>Just scanned</span><i class="lead"></i><span>' + esc(d.title) + ' &middot; ' + esc(fmtDate(d.dateSeen)) + '</span></div>'
+    + '<div class="hr"></div>'
+    + '<button class="btn" data-act="mergeyes">Fill in that show</button>'
+    + '<button class="btn ghost" data-act="mergeno">File as a separate performance</button>'
+    + '<p class="tiny muted">Two visits to the same production are separate performances — keep both if you saw it twice.</p>'
+    + '</div>';
+}
+
+function viewReview(){
+  const d = S.draft, info = d.dateInfo || {};
+  const p = precisionOf(d.dateSeen) || d.datePrecision || "day";
+  let h = '<div class="eyebrow">'+(d.savedAt ? "Editing" : "Check before filing")+'</div><div class="card">';
+  if((d.pageViews||[]).length) h += '<div class="pages" style="margin-bottom:10px">' + d.pageViews.map((pg,i) =>
+      '<div class="page"><img src="'+pg.thumb+'" data-act="lightd:'+i+'"><span class="num">'+(i+1)+'</span>'
+      + '<button class="x" data-act="rmdpage:'+i+'">&times;</button></div>').join("") + '</div>';
+  h += '<button class="btn ghost" style="margin-bottom:14px" data-act="addtodraft"'+(S.adding?" disabled":"")+'>'
+    + (S.adding ? "Adding pages…" : ((d.pageViews||[]).length ? "Add more program pages" : "Add program pages")) + '</button>';
+  h += '<label><span>Show</span><input type="text" data-field="title" value="'+esc(d.title)+'" placeholder="Production title"></label>';
+  h += '<div style="margin-bottom:14px"><span style="display:block;font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:6px">Kind of performance</span>'
+    + KINDS.map(k => '<button class="seg'+(d.kind===k?" on":"")+'" style="margin-bottom:6px" data-act="setkind:'+k+'">'+k+'</button>').join("") + '</div>';
+  h += '<div style="background:var(--house);border:1px solid var(--line);border-radius:6px;padding:12px;margin-bottom:14px"><div class="meta" style="margin-bottom:8px">Date you saw it</div>';
+  h += info.printed
+    ? '<p class="small dim" style="margin:0 0 10px">On the program: <span style="color:var(--brass)">'+esc(info.printed)+'</span>'+(info.rangeStart ? ' — a run of performances, so pick the night you were there.' : '')+'</p>'
+    : '<p class="small muted" style="margin:0 0 10px">No date printed on this program. Add what you know — a year alone is fine.</p>';
+  const chips = [];
+  if(info.exact && info.exact !== d.dateSeen) chips.push(["Use the printed date", info.exact]);
+  if(info.monthYear && info.monthYear !== d.dateSeen) chips.push([fmtDate(info.monthYear), info.monthYear]);
+  const fromLine = inferFromPrinted(info.printed);
+  if(fromLine && fromLine !== d.dateSeen && fromLine !== info.monthYear && fromLine !== info.exact)
+    chips.push(["Use " + fmtDate(fromLine), fromLine]);
+  if(info.rangeStart) chips.push(["First night · " + fmtDate(info.rangeStart), info.rangeStart]);
+  if(info.rangeEnd && info.rangeEnd !== info.rangeStart) chips.push(["Last night · " + fmtDate(info.rangeEnd), info.rangeEnd]);
+  if(info.rangeStart) chips.push(["Just " + fmtDate(info.rangeStart.slice(0,7)), info.rangeStart.slice(0,7)]);
+  if(chips.length) h += '<div style="margin-bottom:10px">' + chips.map(c => '<button class="chip" data-act="chip:'+c[1]+'">'+esc(c[0])+'</button>').join("") + '</div>';
+  h += '<div style="margin-bottom:10px">' + [["day","Exact day"],["month","Month"],["year","Year only"]].map(o =>
+      '<button class="seg'+(p===o[0]?" on":"")+'" data-act="prec:'+o[0]+'">'+o[1]+'</button>').join("") + '</div>';
+  if(p==="day") h += '<input type="date" data-field="date" value="'+esc(d.dateSeen.length>=10?d.dateSeen:"")+'">';
+  else if(p==="month") h += '<input type="month" data-field="date" value="'+esc(d.dateSeen.length>=7?d.dateSeen.slice(0,7):"")+'">';
+  else h += '<input type="number" data-field="date" min="1850" max="2100" placeholder="1998" value="'+esc(d.dateSeen?d.dateSeen.slice(0,4):"")+'">';
+  h += '<p class="tiny muted" style="margin:8px 0 0">Filed as: <span id="filedAs" style="color:var(--paper)">'+esc(fmtDate(d.dateSeen))+'</span>'
+    + (d.dateAuto && d.dateSeen ? ' — taken from the program. Change it if you were there on another night.' : '')
+    + '</p></div>';
+  h += '<div class="grid2"><label><span>Venue</span><input type="text" data-field="venue" value="'+esc(d.venue)+'"></label>'
+    + '<label><span>City</span><input type="text" data-field="city" value="'+esc(d.city)+'"></label></div>'
+    + '<label><span>Company</span><input type="text" data-field="company" value="'+esc(d.company)+'"></label>'
+    + '<label><span>Director</span><input type="text" data-field="director" value="'+esc(d.director)+'" placeholder="Leave blank if none"></label>'
+    + '<label><span>Creative team — one per line, “Director: Name”</span><textarea rows="4" data-field="creativesText">'+esc(d.creativesText)+'</textarea></label>'
+    + '<label><span>Cast — one per line, “Actor as Role”</span><textarea rows="8" data-field="castText">'+esc(d.castText)+'</textarea></label>'
+    + '<label><span>Understudies and standbys — “Actor as Role”</span><textarea rows="5" data-field="understudyText">'+esc(d.understudyText)+'</textarea></label>'
+    + '<label><span>Notes</span><input type="text" data-field="notes" value="'+esc(d.notes)+'" placeholder="Understudy on, seats, who came along"></label>'
+    + '<label><span>What did you think?</span><textarea rows="6" data-field="impressions" placeholder="Worth writing down now \u2014 it is the part you will not remember in ten years.">'+esc(d.impressions)+'</textarea></label>'
+    + '<div style="display:flex;gap:10px"><button class="btn" style="margin:0" data-act="save">File this show</button>'
+    + '<button class="btn ghost" style="margin:0;width:auto;padding:14px 18px" data-act="discard">Discard</button></div></div>';
+  return h;
+}
+
+// Titles can differ wildly for the same show ("ROI" vs "R.O.I. (Return on Investment)").
+// Two entries on the same date, at the same venue, are almost always one performance.
+// venues get written a dozen ways: "SHN Golden Gate", "Golden Gate Theatre", "Golden Gate"
+function normVenue(v){
+  return (v||"").toLowerCase()
+    .replace(/\b(shn|act|a\.c\.t\.?|american conservatory|the)\b/g,"")
+    .replace(/\b(theatre|theater|hall|center|centre|house)\b/g,"")
+    .replace(/[^a-z0-9]+/g," ").trim();
+}
+function findDuplicatePairs(loose){
+  const list = S.entries;
+  const pairs = [];
+  const firstWord = x => normTitle(x.title).split(" ")[0] || "";
+  const score = x => (x.cast||[]).length * 3 + (x.pageCount||0) * 5
+                   + ((x.creatives||[]).length) + (x.fromCalendar ? -10 : 0);
+  for(let i = 0; i < list.length; i++){
+    for(let j = i + 1; j < list.length; j++){
+      const a = list[i], b = list[j];
+      const va = normVenue(a.venue), vb = normVenue(b.venue);
+      const sameVenue = va && vb && (va === vb || va.includes(vb) || vb.includes(va));
+      const alike = titleAlike(a.title, b.title);
+      const sameStart = firstWord(a).length > 3 && firstWord(a) === firstWord(b);
+      const gap = daysApart(a.dateSeen, b.dateSeen);
+      const coarse = !a.dateSeen || !b.dateSeen
+                   || a.dateSeen.length < 10 || b.dateSeen.length < 10;
+
+      let why = null, strong = true;
+      // one performance recorded twice — the dates need not match to the day
+      if((alike || sameStart) && gap <= 7) why = "same show, dates within a week";
+      // a calendar stub may carry only a month, or no date at all
+      else if((alike || sameStart) && coarse && gap <= 45) why = "same title, one date is approximate";
+      // different titles for the same night in the same theatre
+      else if(sameVenue && gap === 0 && !coarse) why = "same night, same venue";
+      else if(loose && gap === 0 && !coarse){ why = "same night, different venue"; strong = false; }
+      if(!why) continue;
+
+      const keep = score(a) >= score(b) ? a : b;
+      const drop = keep === a ? b : a;
+      pairs.push({ keep, drop, strong, why });
+    }
+  }
+  const rank = { "same show, dates within a week":0, "same night, same venue":1,
+                 "same title, one date is approximate":2, "same night, different venue":3 };
+  pairs.sort((x,y) => (rank[x.why]||9) - (rank[y.why]||9));
+  return pairs;
+}
+
+async function mergePair(keepId, dropId){
+  const keep = S.entries.find(e => e.id === keepId);
+  const drop = S.entries.find(e => e.id === dropId);
+  if(!keep || !drop) return;
+  const merged = Object.assign({}, keep);
+  // take anything the kept record is missing
+  ["venue","city","company","director","kind"].forEach(f => { if(!merged[f] && drop[f]) merged[f] = drop[f]; });
+  if(!(merged.cast||[]).length && (drop.cast||[]).length) merged.cast = drop.cast;
+  if(!(merged.understudies||[]).length && (drop.understudies||[]).length) merged.understudies = drop.understudies;
+  if(!(merged.creatives||[]).length && (drop.creatives||[]).length) merged.creatives = drop.creatives;
+  // never lose something somebody wrote
+  if(!(merged.impressions||"").trim() && (drop.impressions||"").trim()) merged.impressions = drop.impressions;
+  else if((drop.impressions||"").trim() && !(merged.impressions||"").includes(drop.impressions.trim()))
+    merged.impressions = (merged.impressions || "").trim() + "\n\n" + drop.impressions.trim();
+  const dn = (drop.notes||"").replace(/Imported from calendar[^.]*\.?/i,"").trim();
+  if(dn && !(merged.notes||"").includes(dn)) merged.notes = merged.notes ? merged.notes + " " + dn : dn;
+  merged.notes = (merged.notes||"").replace(/Imported from calendar[^.]*\.?/i,"").trim();
+  merged.fromCalendar = false;
+  merged.updatedAt = Date.now();
+  await writeShow(merged, null);
+  await removeShow(drop.id);
+  S.dupDismissed = S.dupDismissed || {};
+}
+
+function viewSeason(){
+  let h = "";
+  if(!S.entries.length) h += '<p class="small muted">Numbers appear once you have filed a show or two.</p>';
+  else {
+    const year = new Date().getFullYear();
+    const thisYear = S.entries.filter(e => (e.dateSeen||"").startsWith(String(year))).length;
+    const titles = new Set(S.entries.map(e => e.title.toLowerCase())).size;
+    const dates = S.entries.map(e => e.dateSeen).filter(Boolean).sort();
+    const tally = fn => { const m = {};
+      // one show counts once per name, even if they played five roles in it
+      S.entries.forEach(e => new Set(fn(e).filter(Boolean)).forEach(v => { m[v] = (m[v]||0)+1; }));
+      return Object.entries(m).sort((a,b) => b[1]-a[1]).slice(0,6); };
+    const list = (title, rows, unit) => '<div style="margin-top:22px"><div class="eyebrow">'+title+'</div>'
+      + (rows.length ? rows.map(r => '<button class="kv" style="border-bottom:1px solid var(--line)" data-act="find:'+encodeURIComponent(r[0])+'">'
+        + '<span>'+esc(r[0])+'</span><i class="lead"></i><span>'+r[1]+' '+unit+(r[1]>1?"s":"")+'</span></button>').join("")
+        : '<p class="small muted">Not recorded yet.</p>') + '</div>';
+    h += '<div class="grid3"><div class="stat"><b>'+S.entries.length+'</b><span class="meta">Total</span></div>'
+      + '<div class="stat"><b>'+thisYear+'</b><span class="meta">In '+year+'</span></div>'
+      + '<div class="stat"><b>'+titles+'</b><span class="meta">Distinct</span></div></div>';
+    if(dates.length) h += '<p class="tiny muted" style="margin-top:12px">Logged from '+esc(fmtDate(dates[0]))+' to '+esc(fmtDate(dates[dates.length-1]))+'.</p>';
+    if(S.entries.length - dates.length > 0) h += '<p class="tiny" style="color:var(--brass);margin-top:4px">'+(S.entries.length-dates.length)+' still undated.</p>';
+    h += '<div style="margin-top:22px"><div class="eyebrow">By kind</div>'
+      + tally(e => [kindOf(e)]).map(r => '<button class="kv" style="border-bottom:1px solid var(--line)" data-act="bykind:'+encodeURIComponent(r[0])+'">'
+        + '<span>'+esc(r[0])+'</span><i class="lead"></i><span>'+r[1]+'</span></button>').join("") + (S.entries.filter(e => kindOf(e)==="Unsorted").length
+        ? '<button class="btn outline" style="margin-top:10px" data-act="classify"'+(S.moving?" disabled":"")+'>'
+          + (S.moving ? "Sorting…" : "Let Claude sort the " + S.entries.filter(e => kindOf(e)==="Unsorted").length + " unsorted")
+          + '</button>' : '')
+      + '</div>';
+    h += list("Most-visited venues", tally(e => [e.venue]), "visit");
+    h += list("Directors seen most", tally(e => [e.director]), "show");
+    h += list("Performers seen most", tally(e => (e.cast||[]).map(c => c.actor)), "show");
+    h += list("Filed by", tally(e => [e.addedByName]), "show");
+  }
+  h += '<div style="margin-top:32px;padding-top:20px;border-top:1px solid var(--line)"><div class="eyebrow">The archive</div>'
+    + '<p class="small muted" style="margin-top:0">The log lives in your Firebase database and syncs between both of you. A backup is an extra copy outside it — downloaded as a file, and shown as text you can copy.</p>'
+    + '<div class="grid2" style="margin-bottom:10px"><button class="btn" style="margin:0" data-act="backup:log">Backup — log only</button>'
+    + '<button class="btn outline" style="margin:0" data-act="backup:full">Backup — with pages</button></div>'
+    + '<button class="btn ghost" data-act="csv">Spreadsheet (CSV)</button>';
+  if(S.backupText) h += '<div style="margin:14px 0"><div class="row" style="margin-bottom:8px"><span class="tiny muted">'+(S.backupText.length/1024).toFixed(0)+' KB of text</span><span>'
+    + '<button class="btn sm" data-act="copy">Copy all</button> <button class="btn sm ghost" data-act="closebackup">Close</button></span></div>'
+    + '<textarea rows="6" readonly onfocus="this.select()">'+esc(S.backupText)+'</textarea></div>';
+  if(S.lastSkipped && S.lastSkipped.length){
+    h += '<div class="hr"></div><div class="eyebrow">Left out of the last import</div>'
+      + '<p class="small muted" style="margin-top:0">These matched shows already in your log, so the calendar stub was not added.</p>'
+      + S.lastSkipped.slice(0,40).map(function(pair){
+          return '<div class="kv"><span>' + esc(pair[0].title) + '</span><i class="lead"></i><span>'
+            + esc(fmtDate(pair[0].dateSeen)) + '</span></div>'; }).join("")
+      + (S.lastSkipped.length > 40 ? '<p class="tiny muted">and ' + (S.lastSkipped.length - 40) + ' more</p>' : '')
+      + '<button class="btn ghost" style="margin-top:10px" data-act="clearskipped">Clear this list</button>';
+  }
+  const allPairs = (findDuplicatePairs(true) || []).filter(p => !(S.dupDismissed||{})[p.keep.id + "|" + p.drop.id]);
+  const dups = S.dupLoose ? allPairs : allPairs.filter(p => p.strong);
+  const hiddenWeak = allPairs.length - allPairs.filter(p => p.strong).length;
+  h += '<div class="hr"></div><div class="eyebrow">Possible duplicates</div>';
+  if(!dups.length){
+    h += '<p class="small muted" style="margin-top:0">Nothing on the same night looks doubled up.</p>';
+  } else {
+    h += '<p class="small muted" style="margin-top:0">' + dups.length + ' pair' + (dups.length===1?"":"s")
+       + ' land on the same night. Merging keeps the fuller record and folds in anything the other one had.</p>';
+    dups.slice(0,25).forEach(function(pr){
+      h += '<div style="border:1px solid var(--line);padding:12px;margin-bottom:10px">'
+        + '<div class="tiny muted">' + esc(fmtDate(pr.keep.dateSeen)) + ' &middot; ' + esc(pr.why) + '</div>'
+        + '<div class="kv" style="margin-top:6px"><span><b>Keep</b> ' + esc(pr.keep.title) + '</span><i class="lead"></i><span>'
+        + ((pr.keep.cast||[]).length ? (pr.keep.cast.length + ' in cast') : 'no cast')
+        + ((pr.keep.pageCount||0) ? ', ' + pr.keep.pageCount + ' pages' : '') + '</span></div>'
+        + '<div class="kv"><span><b>Fold in</b> ' + esc(pr.drop.title) + '</span><i class="lead"></i><span>'
+        + ((pr.drop.cast||[]).length ? (pr.drop.cast.length + ' in cast') : 'no cast')
+        + ((pr.drop.pageCount||0) ? ', ' + pr.drop.pageCount + ' pages' : '') + '</span></div>'
+        + '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">'
+        + '<button class="btn" style="margin:0;flex:1 1 140px" data-act="dupmerge:' + pr.keep.id + '|' + pr.drop.id + '">Merge them</button>'
+        + '<button class="btn ghost" style="margin:0;width:auto;padding:14px 16px" data-act="dupkeep:' + pr.keep.id + '|' + pr.drop.id + '">Keep both</button>'
+        + '<button class="btn ghost" style="margin:0;width:auto;padding:14px 16px;color:var(--brass);border-color:var(--brassDim)" data-act="dupdrop:' + pr.keep.id + '|' + pr.drop.id + '">Remove both</button>'
+        + '</div></div>';
+    });
+    if(dups.length > 25) h += '<p class="tiny muted">and ' + (dups.length - 25) + ' more after these</p>';
+  }
+  if(!S.dupLoose && hiddenWeak){
+    h += '<button class="btn ghost" style="margin-top:6px" data-act="duploose">Also show ' + hiddenWeak
+       + ' other pair' + (hiddenWeak===1?"":"s") + ' that share a date</button>';
+  } else if(S.dupLoose){
+    h += '<button class="btn ghost" style="margin-top:6px" data-act="duptight">Only show the likely ones</button>';
+  }
+
+  h += '<div class="hr"></div><div class="eyebrow">Restore into the shared log</div>'
+    + '<textarea rows="3" data-field="paste" placeholder="Paste a backup here">'+esc(S.pasteText)+'</textarea>'
+    + '<button class="btn ghost" style="margin-top:10px" data-act="restorepaste"'+(S.moving?" disabled":"")+'>Restore from pasted text</button>'
+    + '<button class="btn ghost" data-act="restorefile"'+(S.moving?" disabled":"")+'>Restore from a file</button>';
+  // who else can see this log
+  const mem = S.members || [];
+  h += '<div class="hr"></div><div class="eyebrow">Who shares this log</div>'
+    + '<p class="small muted" style="margin-top:0">'
+    + esc((S.log && S.log.name) || "This log") + ' \u2014 '
+    + mem.length + (mem.length === 1 ? ' person' : ' people') + '.</p>';
+  mem.forEach(function(m){
+    const isMe = m.uid === S.user.uid;
+    h += '<div class="kv"><span>' + esc(m.name || m.email || "Someone")
+      + (isMe ? ' <span class="muted">(you)</span>' : '') + '</span><i class="lead"></i>'
+      + '<span>' + (isMe
+          ? '<button class="btn sm ghost" data-act="leavelog">Leave</button>'
+          : '<span class="muted tiny">' + esc(m.email || "") + '</span>')
+      + '</span></div>';
+  });
+  if(S.inviteCode){
+    h += '<div style="border:1px solid var(--brass);background:var(--stock);padding:14px;margin-top:12px">'
+      + '<p class="small" style="margin:0 0 8px">Give them this code. It works once, and expires in 30 days.</p>'
+      + '<div class="row"><span class="serif" style="font-size:26px;letter-spacing:.14em">' + esc(S.inviteCode) + '</span>'
+      + '<button class="btn sm" data-act="copyinvite">Copy</button></div></div>';
+  } else {
+    h += '<button class="btn ghost" style="margin-top:10px" data-act="makeinvite"'
+      + (S.busyNote ? ' disabled' : '') + '>Invite someone to share this log</button>';
+  }
+
+  h += '<div class="hr"></div><div class="eyebrow">Settings</div>'
+    + '<p class="small muted" style="margin-top:0">Reading playbills uses a Claude API key, billed to that Anthropic account. It is stored in your shared database, so you enter it once and it works on every device for both of you.</p>'
+    + '<p class="small" style="color:'+(apiKey()?'var(--brass)':'var(--muted)')+'">'
+    + (apiKey() ? 'A key is saved, ending ' + esc(apiKey().slice(-6)) + '.' : 'No key saved yet — scanning is off, but typing shows in works.') + '</p>'
+    + '<label><span>Claude API key</span><input type="text" data-field="apikey" placeholder="sk-ant-..." autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" value="'+esc(S.keyDraft === null ? apiKey() : S.keyDraft)+'"></label>'
+    + '<label><span>Model</span><input type="text" data-field="model" autocapitalize="off" autocorrect="off" spellcheck="false" value="'+esc(S.modelDraft === null ? apiModel() : S.modelDraft)+'"></label>'
+    + '<button class="btn" data-act="savekey">Save key for both of us</button>'
+    + '<p class="tiny muted" style="margin-top:14px">Signed in as '+esc(S.user && S.user.email)+'</p>'
+    + '<button class="btn ghost" data-act="signout">Sign out</button></div>';
+  return h;
+}
+
+/* ============ render (keeps typing focus across redraws) ============ */
+function render(){
+  const app = document.getElementById("app");
+  const a = document.activeElement;
+  const field = a && a.getAttribute ? a.getAttribute("data-field") : null;
+  let sel = null; try { sel = field ? [a.selectionStart, a.selectionEnd] : null; } catch {}
+
+  if (S.phase !== "app") { app.innerHTML = viewGate(); return; }
+
+  let body = "";
+  if(S.openId && S.tab==="log") body = viewDetail();
+  else if(S.tab==="log") body = viewLog();
+  else if(S.tab==="add") body = viewAdd();
+  else body = viewSeason();
+
+  const lightsDown = document.documentElement.getAttribute("data-lights") === "down";
+  let head = '<div class="marquee"><span>I Saw That</span></div>'
+    + '<div style="background:var(--brass);color:var(--house);text-align:center;padding:6px 10px;margin:0 -20px 10px;font-size:13px">'
+    + 'TEST VERSION \u2014 your live log is untouched at /I-saw-that/</div>'
+    + '<div class="colophon">'
+    + '<span>' + S.entries.length + (S.entries.length===1 ? " performance" : " performances") + '</span>'
+    + '<span>' + esc((S.log && S.log.name) || "my log") + '</span>'
+    + ((S.members||[]).length > 1 ? '<span>shared</span>' : '')
+    + '<span>' + (S.syncing ? "syncing" : "saved") + '</span>'
+    + '<span>' + BUILD + '</span></div>'
+    + '<button class="lights" data-act="lights">' + (lightsDown ? "Raise the houselights" : "Dim the houselights") + '</button>'
+    + '<div class="rule"></div>';
+  if(S.error) head += '<div class="notice"><div class="row"><span>'+esc(S.error)+'</span><button class="btn sm ghost" data-act="clearerr">Dismiss</button></div></div>';
+  if(S.toast) head += '<div class="toast">'+esc(S.toast)+'</div>';
+  if(S.busyNote) head += '<div class="toast"><span class="spin">\u25E0</span> '+esc(S.busyNote)+'</div>';
+  if(S.tab === "season") head += '<p class="tiny muted" style="text-align:right;margin:-8px 0 10px">build ' + BUILD + '</p>';
+  const tabs = [["log","The log"],["add","Add a show"],["season","Season"]].map(t =>
+    '<button class="tab'+(S.tab===t[0]?" on":"")+'" data-act="tab:'+t[0]+'">'+t[1]+'</button>').join("");
+  const light = S.lightbox ? '<div class="lightbox" data-act="closelight"><img src="'+S.lightbox+'" alt="Program page"></div>' : "";
+  app.innerHTML = head + '<div class="tabs">'+tabs+'</div>' + body + light;
+
+  if (field){
+    const el = app.querySelector('[data-field="'+field+'"]');
+    if (el){ el.focus(); if (sel) { try { el.setSelectionRange(sel[0], sel[1]); } catch {} } }
+  }
+}
+
+/* ============ actions ============ */
+function pushView(){ try { history.pushState({ cc:1 }, ""); } catch {} }
+
+window.addEventListener("popstate", () => {
+  // Android's back button walks back through the app before leaving it
+  if (S.lightbox) { S.lightbox = null; return render(); }
+  if (S.openId) { S.openId = null; S.openPages = null; return render(); }
+  if (S.draft) { return render(); }        // keep an in-progress entry on screen
+  if (S.tab !== "log") { S.tab = "log"; return render(); }
+  history.back();                           // nothing left to step back through
+});
+
+function directorFrom(creatives){
+  const hit = (creatives||[]).find(c => /direct/i.test(c.role || "")
+    && !/music|musical|artistic|casting|technical|associate|assistant/i.test(c.role || ""));
+  return hit ? (hit.name || "") : "";
+}
+
+function newDraft(base){
+  base = base || {};
+  // a fresh scan should never land with an empty date when the program says one
+  let ds = base.dateSeen || "";
+  let auto = !!base.dateAuto;
+  if (!ds && base.pagesNew && base.dateInfo){
+    ds = (base.dateInfo.exact || "")
+      || (/^\d{4}-\d{2}$/.test(base.dateInfo.monthYear || "") ? base.dateInfo.monthYear : "")
+      || inferFromPrinted(base.dateInfo.printed);
+    if (ds) auto = true;
+  }
+  return {
+    id: base.id || newId(), title: base.title||"", kind: base.kind || "Theatre",
+    director: base.director || directorFrom(base.creatives), company: base.company||"", venue: base.venue||"",
+    city: base.city||"", dateSeen: ds, datePrecision: precisionOf(ds) || base.datePrecision || "day",
+    dateInfo: base.dateInfo || { exact:"", rangeStart:"", rangeEnd:"", printed:"" },
+    creativesText: (base.creatives||[]).map(c => (c.role ? c.role + ": " : "") + c.name).join("\n"),
+    castText: castToText(base.cast), understudyText: castToText(base.understudies), notes: base.notes||"",
+    impressions: base.impressions||"",
+    pageViews: base.pageViews||[], pagesNew: !!base.pagesNew,
+    dateAuto: auto,
+    addedBy: base.addedBy, addedByName: base.addedByName, savedAt: base.savedAt
+  };
+}
+function textToCreatives(t){
+  return (t||"").split("\n").filter(l => l.trim()).map(l => {
+    const i = l.indexOf(":");
+    return i>-1 ? { role:l.slice(0,i).trim(), name:l.slice(i+1).trim() } : { role:"", name:l.trim() };
+  });
+}
+
+async function scanPending(){
+  if(!S.pending.length) return;
+  S.busy = true; S.error = ""; render();
+  try {
+    const parsed = await readProgram(S.pending.map(p => p.read));
+    const di = parsed.dateInfo || {};
+    const info = { exact:di.exact||"", monthYear:di.monthYear||"", rangeStart:di.rangeStart||"", rangeEnd:di.rangeEnd||"", printed:di.printed||"" };
+    let seen = "";
+    if(info.exact) seen = info.exact;                                  // one printed performance date
+    else if(/^\d{4}-\d{2}$/.test(info.monthYear || "")) seen = info.monthYear;   // masthead month and year
+    else if(info.rangeStart && info.rangeStart.slice(0,7) === (info.rangeEnd||info.rangeStart).slice(0,7)) seen = info.rangeStart.slice(0,7);
+    else if(info.rangeStart && info.rangeStart.slice(0,4) === (info.rangeEnd||info.rangeStart).slice(0,4)) seen = info.rangeStart.slice(0,4);
+    else seen = inferFromPrinted(info.printed);                        // anything legible in the date line
+    S.draft = newDraft({
+      title:parsed.title, kind:(KINDS.includes(parsed.kind) ? parsed.kind : "Theatre"), director:parsed.director||"",
+      company:parsed.company, venue:parsed.venue, city:parsed.city,
+      dateSeen:seen, dateInfo:info,
+      creatives:(parsed.creatives||[]).filter(c => c && c.name),
+      cast:(parsed.cast||[]).filter(c => c && c.actor),
+      understudies:(parsed.understudies||[]).filter(c => c && c.actor),
+      notes:parsed.notes, dateAuto: !!seen,
+      pageViews:S.pending.map(p => ({ thumb:p.thumb, full:p.full })), pagesNew:true
+    });
+    S.pending = [];
+    if(lastReadTruncated) S.error = "That program was long enough that the reading was cut short — check the cast and understudy lists and add anyone missing.";
+  } catch(err){ S.error = err.message || "Something went wrong reading that program."; }
+  S.busy = false; render();
+}
+
+// A scan often belongs to a show already in the log — a calendar import waiting
+// for its programme. Match on title, then require the dates to be close.
+function normTitle(t){
+  return (t||"").toLowerCase()
+    .replace(/[\u2018\u2019\u201c\u201d'"`]/g,"")
+    .replace(/^(the|a|an)\s+/,"")
+    .replace(/[^a-z0-9]+/g," ").trim();
+}
+function titleAlike(a, b){
+  a = normTitle(a); b = normTitle(b);
+  if(!a || !b) return false;
+  if(a === b) return true;
+  if(a.length > 4 && b.length > 4 && (a.includes(b) || b.includes(a))) return true;
+  const A = new Set(a.split(" ").filter(w => w.length > 2));
+  const B = new Set(b.split(" ").filter(w => w.length > 2));
+  // one significant word is not enough to call it the same show ("John" vs "John Proctor")
+  if(A.size < 2 || B.size < 2) return false;
+  let hit = 0; A.forEach(w => { if(B.has(w)) hit++; });
+  return hit / Math.min(A.size, B.size) >= 0.75;
+}
+function daysApart(a, b){
+  if(!a || !b) return 9999;
+  const pa = a.length >= 10 ? a : a.length === 7 ? a + "-15" : a + "-07-01";
+  const pb = b.length >= 10 ? b : b.length === 7 ? b + "-15" : b + "-07-01";
+  return Math.abs((new Date(pa + "T00:00:00") - new Date(pb + "T00:00:00")) / 86400000);
+}
+function findExisting(draft){
+  const dv = normVenue(draft.venue);
+  const cands = [];
+  S.entries.forEach(e => {
+    if(e.id === draft.id) return;
+    const gap = daysApart(e.dateSeen, draft.dateSeen);
+    const ev = normVenue(e.venue);
+    const sameVenue = dv && ev && (dv === ev || dv.includes(ev) || ev.includes(dv));
+    const alike = titleAlike(e.title, draft.title);
+    // A concert billed by conductor on the calendar and by programme on the night
+    // shares almost no words — the date and the hall are what identify it.
+    if(alike && gap <= 21) cands.push({ e, gap, by: "title" });
+    else if(sameVenue && gap === 0 && draft.dateSeen && draft.dateSeen.length >= 10
+            && e.dateSeen && e.dateSeen.length >= 10) cands.push({ e, gap, by: "night" });
+  });
+  if(!cands.length) return null;
+  // a calendar stub waiting to be filled in comes first, then the closest date
+  cands.sort((x,y) => (y.e.fromCalendar?1:0) - (x.e.fromCalendar?1:0)
+                   || (x.by === "title" ? 0 : 1) - (y.by === "title" ? 0 : 1)
+                   || x.gap - y.gap);
+  return cands[0].e;
+}
+
+function saveDraft(){
+  const d = S.draft;
+  if(!d.title.trim()) return fail("A show needs a title before it goes in the log.");
+
+  // this scan may be filling in a show already on the list
+  if(!S.mergeChecked && !S.entries.some(e => e.id === d.id)){
+    const hit = findExisting(d);
+    if(hit){ S.mergeWith = hit; S.mergeChecked = true; return render(); }
+  }
+  S.mergeChecked = false;
+  const isNew = !S.entries.some(e => e.id === d.id);
+  const rec = {
+    id:d.id, title:d.title.trim(), kind:d.kind || "Theatre", director:(d.director||"").trim(),
+    company:d.company, venue:d.venue, city:d.city,
+    dateSeen:d.dateSeen, datePrecision:precisionOf(d.dateSeen) || d.datePrecision,
+    dateInfo:d.dateInfo, creatives:textToCreatives(d.creativesText), cast:textToCast(d.castText),
+    understudies:textToCast(d.understudyText), notes:d.notes, impressions:(d.impressions||"").trim(),
+    pageCount:(d.pageViews||[]).length, savedAt:d.savedAt || Date.now(), updatedAt:Date.now(),
+    addedBy:d.addedBy || S.user.email, addedByName:d.addedByName || firstName(S.user),
+    fromCalendar: d.fromCalendar && !(d.cast||[]).length ? true : false
+  };
+  if(!isNew) rec.editedBy = firstName(S.user);
+  const pages = d.pagesNew ? (d.pageViews || []) : null;
+  S.draft = null; S.tab = "log";
+  say(rec.title + (isNew ? " filed" : " updated"));
+  // Firestore shows the change locally at once and syncs in the background, even offline.
+  writeShow(rec, pages)
+    .catch(err => fail("That change did not reach the shared log: " + (err.message || err.code)));
+}
+
+async function buildBackup(withPages){
+  const payload = { app:"i-saw-that", version:2, exportedAt:new Date().toISOString(), entries:S.entries, pages:{} };
+  if(withPages){
+    const todo = S.entries.filter(e => e.pageCount);
+    // in parallel batches: one at a time takes minutes and looks like nothing is happening
+    const BATCH = 8;
+    for(let i = 0; i < todo.length; i += BATCH){
+      const slice = todo.slice(i, i + BATCH);
+      S.busyNote = "Gathering programme pages \u2014 " + Math.min(i + BATCH, todo.length) + " of " + todo.length;
+      render();
+      await new Promise(r => setTimeout(r, 0));
+      const got = await Promise.all(slice.map(async e => {
+        try { return [e.id, (await loadPages(e.id)).map(p => ({ thumb:p.thumb, full:p.full }))]; }
+        catch { return [e.id, null]; }
+      }));
+      got.forEach(([id, pages]) => { if(pages && pages.length) payload.pages[id] = pages; });
+    }
+    S.busyNote = "";
+  }
+  return JSON.stringify(payload);
+}
+
+async function restoreFromText(text){
+  let data;
+  try { data = JSON.parse(text); } catch { return fail("That text is not a backup file."); }
+  if(!data || !Array.isArray(data.entries)) return fail("That text is not a backup file.");
+  S.moving = true; S.error = ""; render();
+  try {
+    // A calendar import can name shows already scanned. The scanned copy has the cast
+    // and the programme pages, so it wins — skip the stub rather than double the entry.
+    const have = S.entries.slice();
+    const incoming = [], skipped = [];
+    for(const e of data.entries){
+      if(!e || !e.id) continue;
+      const dup = e.fromCalendar && !(e.cast||[]).length
+        && have.find(x => x.id !== e.id && titleAlike(x.title, e.title) && daysApart(x.dateSeen, e.dateSeen) <= 21);
+      if(dup) skipped.push([e, dup]); else { incoming.push(e); have.push(e); }
+    }
+    const n = await importShows(incoming, data.pages || {});
+    S.pasteText = "";
+    S.lastSkipped = skipped;
+    if(skipped.length){
+      S.error = "Added " + n + " show" + (n===1?"":"s") + ". Left out " + skipped.length
+        + " that you have already scanned — your scanned versions are the fuller ones.";
+    } else {
+      say("Restored " + n + " show" + (n===1?"":"s") + " into the shared log");
+    }
+  } catch(err){ S.error = "Restore stopped partway: " + (err.message || err.code); }
+  S.moving = false; render();
+}
+
+async function moveLegacy(){
+  const list = legacyLog(); if(!list) return;
+  const pages = {};
+  list.forEach(e => { try { const p = JSON.parse(lsGet(LK.legacyPages + e.id) || "null"); if(p && p.length) pages[e.id] = p; } catch {} });
+  S.moving = true; render();
+  try {
+    const n = await importShows(list, pages);
+    lsSet(LK.moved, String(Date.now()));
+    say("Moved " + n + " show" + (n===1?"":"s") + " into the shared log");
+  } catch(err){ S.error = "The move stopped partway: " + (err.message || err.code) + ". Tap it again to finish."; }
+  S.moving = false; render();
+}
+
+async function classifyUnsorted(){
+  const todo = S.entries.filter(e => kindOf(e) === "Unsorted");
+  if(!todo.length) return fail("Every show already has a kind.");
+  if(!apiKey()) return fail("Classifying uses the Claude API key — add one in Settings below.");
+  S.moving = true; S.error = ""; render();
+  try {
+    const brief = todo.map(e => ({ id:e.id, title:e.title, venue:e.venue||"", company:e.company||"",
+      cast:(e.cast||[]).slice(0,3).map(c => c.actor).join(", ") }));
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method:"POST",
+      headers:{ "Content-Type":"application/json", "x-api-key":apiKey(), "anthropic-version":"2023-06-01",
+        "anthropic-dangerous-direct-browser-access":"true" },
+      body: JSON.stringify({ model:apiModel(), max_tokens:2000, messages:[{ role:"user", content:
+        'Classify each live performance below as exactly one of: ' + KINDS.join(", ") + '. '
+        + 'A play is Theatre, a book musical is Musical, a symphony or recital is Classical, a jazz set is Jazz, '
+        + 'a solo song evening is Cabaret, ballet or contemporary dance is Dance. Use what you know about these productions. '
+        + 'Return ONLY a JSON object mapping each id to its kind, no commentary:\n' + JSON.stringify(brief) }] })
+    });
+    if(!res.ok) throw new Error("Claude returned " + res.status);
+    const data = await res.json();
+    const text = (data.content||[]).filter(b => b.type==="text").map(b => b.text).join("");
+    const c = text.replace(/```json/g,"").replace(/```/g,"").trim();
+    const map = JSON.parse(c.slice(c.indexOf("{"), c.lastIndexOf("}")+1));
+    const b = writeBatch(db);
+    let n = 0;
+    todo.forEach(e => {
+      const k = map[e.id];
+      if(KINDS.includes(k)){ b.set(showDoc(e.id), { kind:k }, { merge:true }); n++; }
+    });
+    if(!n) throw new Error("Nothing came back that I could use.");
+    await b.commit();
+    say("Sorted " + n + " show" + (n===1?"":"s") + " by kind — check them and fix any that look wrong");
+  } catch(err){ S.error = "Could not classify: " + (err.message || err.code); }
+  S.moving = false; render();
+}
+
+function exportCsv(){
+  const rows = [["Date seen","Printed on program","Title","Kind","Director","Venue","City","Company","Cast","Understudies","Notes","What you thought","Filed by"]];
+  S.entries.forEach(e => rows.push([e.dateSeen, (e.dateInfo&&e.dateInfo.printed)||"", e.title, e.kind||"", e.director||"", e.venue, e.city, e.company,
+    (e.cast||[]).map(c => c.actor + (c.role?" as "+c.role:"")).join("; "),
+    (e.understudies||[]).map(c => c.actor + (c.role?" as "+c.role:"")).join("; "), e.notes, e.impressions||"", e.addedByName]));
+  S.backupText = rows.map(r => r.map(v => '"' + String(v==null?"":v).replace(/"/g,'""') + '"').join(",")).join("\n");
+  download(S.backupText, "i-saw-that.csv", "text/csv");
+  render();
+}
+
+function authMessage(err){
+  const c = err && err.code;
+  if (c === "auth/unauthorized-domain") return "This web address is not on Firebase's list yet. In Firebase → Authentication → Settings → Authorized domains, add " + location.hostname + ".";
+  if (c === "auth/popup-blocked") return "The sign-in window was blocked. Allow pop-ups for this site, or open it in Safari rather than from the home-screen icon.";
+  if (c === "auth/operation-not-allowed") return "Google sign-in is not switched on. In Firebase → Authentication → Sign-in method, enable Google.";
+  return (err && err.message) || "Sign-in did not work.";
+}
+
+/* ============ events ============ */
+const appEl = document.getElementById("app");
+
+appEl.addEventListener("click", ev => { handleClick(ev).catch(err => {
+  // a button that does nothing is worse than a button that explains itself
+  S.busyNote = "";
+  S.error = "That did not work: " + (err && (err.message || err.code) || err);
+  render();
+}); });
+
+async function handleClick(ev){
+  const el = ev.target.closest("[data-act]"); if(!el) return;
+  const [act, ...rest] = el.getAttribute("data-act").split(":");
+  const arg = rest.join(":");
+
+  if(act==="signin"){
+    S.error = "";
+    try { await signInWithPopup(auth, new GoogleAuthProvider()); }
+    catch(err){ if(err.code !== "auth/popup-closed-by-user" && err.code !== "auth/cancelled-popup-request") { S.error = authMessage(err); render(); } }
+    return;
+  }
+  if(act==="signout"){ await signOut(auth); return; }
+  if(act==="setupcreate"){
+    S.busyNote = "Creating your log\u2026"; render();
+    try {
+      const id = await createLog((S.logNameDraft||"").trim());
+      S.busyNote = ""; S.legacyCount = null;
+      openLog(id);
+    } catch(err){ S.busyNote = ""; fail("Could not create the log: " + (err.message || err.code)); }
+    return;
+  }
+  if(act==="setupmigrate"){
+    S.busyNote = "Creating your log\u2026"; render();
+    try {
+      const id = await createLog((S.logNameDraft||"").trim());
+      S.logId = id;
+      const r = await migrateLegacy();
+      S.busyNote = ""; S.legacyCount = null;
+      openLog(id);
+      say("Copied " + r.moved + " shows and " + r.pages + " programme pages into your log");
+    } catch(err){ S.busyNote = ""; fail("The copy stopped partway: " + (err.message || err.code) + ". Nothing was removed from the original."); }
+    return;
+  }
+  if(act==="setupjoin"){
+    S.busyNote = "Looking up that code\u2026"; render();
+    try {
+      const id = await joinByCode(S.joinCode);
+      S.busyNote = ""; S.joinCode = ""; S.legacyCount = null;
+      openLog(id);
+      say("You are in");
+    } catch(err){ S.busyNote = ""; fail(err.message || String(err)); }
+    return;
+  }
+  if(act==="makeinvite"){
+    S.busyNote = "Making an invitation\u2026"; render();
+    try { S.inviteCode = await makeInvite(); S.busyNote = ""; render(); }
+    catch(err){ S.busyNote = ""; fail("Could not create an invitation: " + (err.message || err.code)); }
+    return;
+  }
+  if(act==="copyinvite"){ return copyText(S.inviteCode); }
+  if(act==="leavelog"){
+    if(!confirm("Leave this log? The shows stay with whoever else is in it, and you will need a new invitation to come back.")) return;
+    try {
+      await leaveLog();
+      S.legacyCount = await countLegacy();
+      S.phase = "setup"; S.logId = null; S.log = null; S.members = []; S.entries = [];
+      return render();
+    } catch(err){ return fail("Could not leave: " + (err.message || err.code)); }
+  }
+
+  if(act==="tab"){ if(S.tab==="log" && arg!=="log") pushView(); S.tab = arg; S.openId = null; S.error = ""; return render(); }
+  if(act==="lights"){
+    const el = document.documentElement;
+    const down = el.getAttribute("data-lights") === "down";
+    if(down) el.removeAttribute("data-lights"); else el.setAttribute("data-lights","down");
+    try { localStorage.setItem("cc:lights", down ? "up" : "down"); } catch {}
+    return render();
+  }
+  if(act==="clearerr"){ S.error = ""; return render(); }
+  if(act==="open"){
+    pushView(); S.openId = arg; S.openPages = null; render();
+    try { S.openPages = await loadPages(arg); } catch { S.openPages = []; }
+    if (S.openId === arg) render();
+    return;
+  }
+  if(act==="back"){ S.openId = null; S.openPages = null; return render(); }
+  if(act==="edit"){
+    const e = S.entries.find(x => x.id===S.openId);
+    S.draft = newDraft(Object.assign({}, e, { pageViews:(S.openPages||[]).map(p => ({ thumb:p.thumb, full:p.full })), pagesNew:false }));
+    S.openId = null; S.tab = "add"; return render();
+  }
+  if(act==="del"){
+    if(!confirm("Remove this show from the shared log? It disappears for both of you.")) return;
+    const id = S.openId; S.openId = null; S.openPages = null;
+    say("Removed");
+    removeShow(id).catch(err => fail("Could not remove it: " + (err.message || err.code)));
+    return;
+  }
+  if(act==="movelegacy") return moveLegacy();
+  if(act==="kind"){ S.kindFilter = arg; return render(); }
+  if(act==="sort"){ S.sort = arg; return render(); }
+  if(act==="clearq"){ S.query = ""; return render(); }
+  if(act==="setkind"){ S.draft.kind = arg; return render(); }
+  if(act==="find"){ S.query = decodeURIComponent(arg); S.kindFilter = "All"; S.tab = "log"; S.openId = null; return render(); }
+  if(act==="bykind"){ S.kindFilter = decodeURIComponent(arg); S.query = ""; S.tab = "log"; S.openId = null; return render(); }
+  if(act==="addpages"){ S.pageTarget = "tray"; document.getElementById("pageInput").click(); return; }
+  if(act==="addtodraft"){ S.pageTarget = "draft"; document.getElementById("pageInput").click(); return; }
+  if(act==="rmdpage"){
+    S.draft.pageViews = S.draft.pageViews.filter((_, i) => i !== +arg);
+    S.draft.pagesNew = true;
+    return render();
+  }
+  if(act==="rmpage"){ S.pending = S.pending.filter(p => p.id!==arg); return render(); }
+  if(act==="scan") return scanPending();
+  if(act==="manual"){ S.draft = newDraft(null); return render(); }
+  if(act==="mergeyes"){
+    const m = S.mergeWith, d = S.draft;
+    // the programme wins on detail; keep the date the calendar already knew if the scan has none
+    d.id = m.id;
+    d.dateSeen = d.dateSeen || m.dateSeen;
+    d.venue = d.venue || m.venue;
+    d.city = d.city || m.city;
+    d.company = d.company || m.company;
+    d.director = d.director || m.director;
+    if(!(d.impressions||"").trim() && (m.impressions||"").trim()) d.impressions = m.impressions;
+    d.notes = (m.notes && !/Imported from calendar/i.test(m.notes) && m.notes !== d.notes)
+      ? (d.notes ? m.notes + " — " + d.notes : m.notes) : d.notes;
+    d.addedBy = m.addedBy; d.addedByName = m.addedByName; d.savedAt = m.savedAt;
+    d.fromCalendar = false;
+    S.mergeWith = null;
+    return saveDraft();
+  }
+  if(act==="mergeno"){ S.mergeWith = null; return saveDraft(); }
+  if(act==="save") return saveDraft();
+  if(act==="discard"){ S.draft = null; S.mergeWith = null; S.mergeChecked = false; S.error = ""; return render(); }
+  if(act==="prec"){
+    const v = S.draft.dateSeen;
+    if(v){
+      if(arg==="year") S.draft.dateSeen = v.slice(0,4);
+      else if(arg==="month") S.draft.dateSeen = v.length>=7 ? v.slice(0,7) : v.slice(0,4)+"-01";
+      else S.draft.dateSeen = v.length>=10 ? v : (v.length===7 ? v : v.slice(0,4)+"-01") + "-01";
+    }
+    S.draft.datePrecision = arg; return render();
+  }
+  if(act==="chip"){ S.draft.dateSeen = arg; S.draft.datePrecision = precisionOf(arg); return render(); }
+  if(act==="light"){ pushView(); S.lightbox = (S.openPages||[])[+arg].full; return render(); }
+  if(act==="lightp"){ pushView(); S.lightbox = S.pending[+arg].full; return render(); }
+  if(act==="lightd"){ pushView(); S.lightbox = S.draft.pageViews[+arg].full; return render(); }
+  if(act==="closelight"){ S.lightbox = null; return render(); }
+  if(act==="backup"){
+    if(!S.entries.length) return fail("Nothing to back up yet.");
+    if(S.busyNote) return;
+    S.error = ""; S.busyNote = "Preparing the backup\u2026"; render();
+    try { S.backupText = await buildBackup(arg==="full"); }
+    catch(err){ S.busyNote = ""; return fail("Could not gather the backup: " + (err.message || err.code)); }
+    S.busyNote = "";
+    const mb = S.backupText.length / 1048576;
+    const ok = download(S.backupText, "i-saw-that-" + new Date().toISOString().slice(0,10) + ".json", "application/json");
+    S.error = "Backup ready \u2014 " + mb.toFixed(1) + " MB. "
+      + (ok ? "Check your downloads. " : "This browser would not download it. ")
+      + (mb > 4 ? "Too large to copy as text, so use a computer if the file did not arrive."
+                : "You can also copy it from the box below.");
+    return render();
+  }
+  if(act==="classify") return classifyUnsorted();
+  if(act==="dupmerge"){
+    const [keepId, dropId] = arg.split("|");
+    S.busyNote = "Merging\u2026"; render();
+    await mergePair(keepId, dropId);
+    S.busyNote = ""; say("Merged");
+    return;
+  }
+  if(act==="dupkeep"){
+    S.dupDismissed = S.dupDismissed || {};
+    S.dupDismissed[arg] = true;
+    return render();
+  }
+  if(act==="duploose"){ S.dupLoose = true; return render(); }
+  if(act==="duptight"){ S.dupLoose = false; return render(); }
+  if(act==="dupdrop"){
+    const [keepId, dropId] = arg.split("|");
+    const a = S.entries.find(e => e.id === keepId), b = S.entries.find(e => e.id === dropId);
+    if(!a || !b) return render();
+    if(!confirm("Remove both of these for good?\n\n" + a.title + "\n" + b.title
+      + "\n\nAny programme pages on them go too.")) return;
+    S.busyNote = "Removing both\u2026"; render();
+    try { await removeShow(dropId); await removeShow(keepId); }
+    catch(err){ S.busyNote = ""; return fail("Could not remove: " + (err.message || err.code)); }
+    S.busyNote = ""; say("Removed both");
+    return;
+  }
+  if(act==="selecton"){ S.selectMode = true; S.picked = {}; return render(); }
+  if(act==="selectoff"){ S.selectMode = false; S.picked = {}; return render(); }
+  if(act==="pick"){
+    if(S.picked[arg]) delete S.picked[arg]; else S.picked[arg] = true;
+    return render();
+  }
+  if(act==="pickall"){
+    // everything currently shown by the filters, not the whole log
+    visibleLog().forEach(e => { S.picked[e.id] = true; });
+    return render();
+  }
+  if(act==="mergepicked"){
+    const ids = Object.keys(S.picked);
+    if(ids.length !== 2) return;
+    const a = S.entries.find(e => e.id === ids[0]), b = S.entries.find(e => e.id === ids[1]);
+    if(!a || !b) return;
+    const score = x => (x.cast||[]).length * 3 + (x.pageCount||0) * 5
+                     + ((x.creatives||[]).length) + (x.fromCalendar ? -10 : 0);
+    const keep = score(a) >= score(b) ? a : b;
+    const drop = keep === a ? b : a;
+    if(!confirm("Merge these into one?\n\nKeep: " + keep.title + "  (" + fmtDate(keep.dateSeen) + ")"
+      + "\nFold in: " + drop.title + "  (" + fmtDate(drop.dateSeen) + ")")) return;
+    S.busyNote = "Merging\u2026"; render();
+    try { await mergePair(keep.id, drop.id); }
+    catch(err){ S.busyNote = ""; return fail("Could not merge: " + (err.message || err.code)); }
+    S.busyNote = ""; S.picked = {}; S.selectMode = false;
+    say("Merged");
+    return;
+  }
+  if(act==="removepicked"){
+    const ids = Object.keys(S.picked);
+    if(!ids.length) return;
+    const titles = ids.slice(0,6).map(i => (S.entries.find(e => e.id === i)||{}).title).filter(Boolean);
+    if(!confirm("Remove " + ids.length + " show" + (ids.length===1?"":"s") + " for good?\n\n"
+        + titles.join("\n") + (ids.length > 6 ? "\n…and " + (ids.length - 6) + " more" : ""))) return;
+    let done = 0;
+    for(const id of ids){
+      S.busyNote = "Removing \u2014 " + (++done) + " of " + ids.length; render();
+      await new Promise(r => setTimeout(r, 0));
+      try { await removeShow(id); } catch(err){ /* keep going, report at the end */ }
+    }
+    S.busyNote = ""; S.picked = {}; S.selectMode = false;
+    say("Removed " + ids.length + " show" + (ids.length===1?"":"s"));
+    return;
+  }
+  if(act==="clearskipped"){ S.lastSkipped = null; return render(); }
+  if(act==="csv") return exportCsv();
+  if(act==="copy") return copyText(S.backupText);
+  if(act==="closebackup"){ S.backupText = ""; return render(); }
+  if(act==="restorepaste") return restoreFromText(S.pasteText);
+  if(act==="restorefile"){ document.getElementById("restoreInput").click(); return; }
+  if(act==="savekey"){
+    const key = (S.keyDraft === null ? apiKey() : S.keyDraft).trim();
+    const model = (S.modelDraft === null ? apiModel() : S.modelDraft).trim() || "claude-sonnet-5";
+    if(!key) return fail("Paste a key into the box first.");
+    lsSet(LK.key, key); lsSet(LK.model, model);          // cached here for offline use
+    S.cfg = { key, model }; S.keyDraft = null; S.modelDraft = null;
+    say("Key saved — it works on both your phones now");
+    setDoc(cfgDoc(), { key, model, updatedAt: Date.now(), setBy: firstName(S.user) })
+      .catch(err => fail("Saved on this device, but it did not reach the shared database: " + (err.message || err.code)));
+    return;
+  }
+}
+
+appEl.addEventListener("input", ev => {
+  const f = ev.target.getAttribute("data-field"); if(!f) return;
+  const val = ev.target.value;
+  if(f==="query"){ S.query = val; return render(); }
+  if(f==="paste"){ S.pasteText = val; return; }
+  if(f==="joincode"){ S.joinCode = val; return; }
+  if(f==="logname"){ S.logNameDraft = val; return; }
+  if(f==="apikey"){ S.keyDraft = val; return; }
+  if(f==="model"){ S.modelDraft = val; return; }
+  if(!S.draft) return;
+  if(f==="date"){
+    S.draft.dateSeen = S.draft.datePrecision==="year" ? val.slice(0,4) : val;
+    const fa = document.getElementById("filedAs"); if(fa) fa.textContent = fmtDate(S.draft.dateSeen);
+    return;
+  }
+  S.draft[f] = val;
+});
+
+document.getElementById("pageInput").addEventListener("change", async ev => {
+  const files = Array.from(ev.target.files || []); ev.target.value = "";
+  if(!files.length) return;
+  const toDraft = S.pageTarget === "draft" && S.draft;
+  const have = toDraft ? (S.draft.pageViews||[]).length : S.pending.length;
+  const room = 8 - have;
+  if(room <= 0) return fail("Eight pages is the limit for one show.");
+  S.adding = true; S.error = ""; render();
+  try {
+    const added = await Promise.all(files.slice(0, room).map(preparePage));
+    if (toDraft){
+      S.draft.pageViews = (S.draft.pageViews||[]).concat(added.map(p => ({ thumb:p.thumb, full:p.full })));
+      S.draft.pagesNew = true;
+    } else {
+      S.pending = S.pending.concat(added);
+    }
+    if(files.length > room) S.error = "Added " + room + " — eight pages is the limit.";
+  } catch(err){ S.error = err.message || "One of those images would not open."; }
+  S.adding = false; render();
+});
+
+document.getElementById("restoreInput").addEventListener("change", ev => {
+  const file = (ev.target.files || [])[0]; ev.target.value = "";
+  if(!file) return;
+  const r = new FileReader();
+  r.onload = () => restoreFromText(r.result);
+  r.onerror = () => fail("That file could not be opened.");
+  r.readAsText(file);
+});
+
+/* ============ boot ============ */
+const configured = CONFIG.firebase.projectId && !String(CONFIG.firebase.apiKey).startsWith("PASTE");
+if (!configured) { S.phase = "setup"; render(); }
+else {
+  const fb = initializeApp(CONFIG.firebase);
+  auth = getAuth(fb);
+  try { db = initializeFirestore(fb, { localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }) }); }
+  catch { db = getFirestore(fb); }
+  render();
+
+  onAuthStateChanged(auth, async user => {
+    if (unsub) { unsub(); unsub = null; }
+    if (unsubCfg) { unsubCfg(); unsubCfg = null; }
+    if (unsubLog) { unsubLog(); unsubLog = null; }
+    if (unsubMembers) { unsubMembers(); unsubMembers = null; }
+    S.user = user; S.members = []; S.entries = []; S.openId = null; S.draft = null;
+    S.logId = null; S.log = null;
+    if (!user) { S.phase = "signin"; return render(); }
+    S.phase = "loading"; render();
+
+    // Which log is this person's? New accounts have none yet.
+    let logId = null;
+    try {
+      const u = await getDoc(userDoc(user.uid));
+      if (u.exists() && u.data().logId) logId = u.data().logId;
+    } catch {}
+
+    if (!logId) {
+      // An existing two-person archive sits at the old top-level path.
+      S.legacyCount = await countLegacy();
+      S.phase = "setup"; return render();
+    }
+    openLog(logId);
+  });
+}
+
+function openLog(logId){
+  S.logId = logId;
+  S.phase = "loading"; render();
+
+  if (unsubLog) unsubLog();
+  unsubLog = onSnapshot(doc(db, "logs", logId), snap => {
+    S.log = snap.exists() ? snap.data() : null;
+    if (S.phase === "app" && S.tab === "season") render();
+  }, () => {});
+
+  if (unsubMembers) unsubMembers();
+  unsubMembers = onSnapshot(collection(db, "logs", logId, "members"), snap => {
+    S.members = snap.docs.map(d => d.data());
+    if (S.phase === "app" && S.tab === "season") render();
+  }, () => {});
+
+  S.cfg = { key: lsGet(LK.key) || "", model: lsGet(LK.model) || "claude-sonnet-5" };
+  if (unsubCfg) unsubCfg();
+  unsubCfg = onSnapshot(cfgDoc(), snap => {
+    if (!snap.exists()) return;
+    const d = snap.data() || {};
+    if (d.key) { S.cfg = { key: d.key, model: d.model || "claude-sonnet-5" };
+      lsSet(LK.key, d.key); lsSet(LK.model, S.cfg.model); }
+    if (S.tab === "season" && S.keyDraft === null) render();
+  }, () => {});
+
+  if (unsub) unsub();
+  unsub = onSnapshot(showsCol(), { includeMetadataChanges: true }, snap => {
+    S.entries = sortEntries(snap.docs.map(d => d.data()));
+    S.syncing = snap.metadata.hasPendingWrites;
+    S.phase = "app";
+    if (!(S.tab === "add" && S.draft) && !(S.tab === "season" && (S.keyDraft !== null || S.modelDraft !== null))) render();
+  }, err => {
+    if (err.code === "permission-denied") { S.phase = "denied"; render(); }
+    else { S.phase = "app"; fail("Could not open the log: " + (err.message || err.code)); }
+  });
+}
+</script>
+</body>
+</html>
