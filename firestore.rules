@@ -1,0 +1,110 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null && request.auth.token.email_verified == true;
+    }
+    function me() { return request.auth.uid; }
+
+    // Membership is a document per person. Checking it is one exists() —
+    // and because the uid is in the path, a join is provable rather than
+    // circular: you create your own membership, citing the invitation.
+    function isMember(logId) {
+      return signedIn()
+        && exists(/databases/$(database)/documents/logs/$(logId)/members/$(me()));
+    }
+    function invite(code) {
+      return get(/databases/$(database)/documents/invites/$(code)).data;
+    }
+
+    // ---- where a person's own log pointer lives ----
+    match /users/{uid} {
+      allow read, write: if signedIn() && me() == uid;
+    }
+
+    match /logs/{logId} {
+      allow get: if isMember(logId);
+      allow list: if false;                       // no browsing other people's logs
+
+      allow create: if signedIn() && request.resource.data.createdBy == me();
+      allow update: if isMember(logId) && request.resource.data.createdBy == resource.data.createdBy;
+      allow delete: if false;
+
+      // ---- membership ----
+      match /members/{uid} {
+        // members can see who else is in the log
+        allow read: if isMember(logId);
+
+        // You may only ever create your own membership, and only two ways:
+        // founding the log, or redeeming an unused invitation you have claimed.
+        allow create: if signedIn() && uid == me()
+          && request.resource.data.uid == me()
+          && (
+               get(/databases/$(database)/documents/logs/$(logId)).data.createdBy == me()
+               || (
+                    request.resource.data.viaCode is string
+                    && invite(request.resource.data.viaCode).logId == logId
+                    && invite(request.resource.data.viaCode).usedBy == me()
+                  )
+             );
+
+        allow update: if signedIn() && uid == me();
+        allow delete: if signedIn() && uid == me();   // leaving; nobody can evict anyone
+      }
+
+      match /shows/{showId} {
+        allow read, write: if isMember(logId);
+        match /pages/{pageId} {
+          allow read, write: if isMember(logId);
+        }
+      }
+
+      match /config/{docId} {
+        allow read, write: if isMember(logId);
+      }
+    }
+
+    // ---- invitations ----
+    // A code is six random characters, single use, and expires. Anyone signed in
+    // may read one they have been given; nobody may list them.
+    match /invites/{code} {
+      allow get: if signedIn();
+      allow list: if false;
+
+      allow create: if isMember(request.resource.data.logId)
+                    && request.resource.data.createdBy == me()
+                    && request.resource.data.usedBy == null;
+
+      // claiming: only an unexpired, unclaimed code, only in your own name,
+      // and the log it points at cannot be switched
+      allow update: if signedIn()
+                    && resource.data.usedBy == null
+                    && request.resource.data.usedBy == me()
+                    && request.resource.data.logId == resource.data.logId
+                    && resource.data.expiresAt > request.time.toMillis();
+
+      allow delete: if signedIn() && resource.data.createdBy == me();
+    }
+
+    // ---- the original two-person archive ----
+    // Readable so it can be copied into a log, frozen against new writes.
+    // Delete this block once the copy is confirmed and the old data removed.
+    function isOriginalPair() {
+      return signedIn()
+        && request.auth.token.email in ['ericpeterbrown@gmail.com', 'janinepaver@gmail.com'];
+    }
+    match /shows/{showId} {
+      allow read: if isOriginalPair();
+      allow write: if false;
+      match /pages/{pageId} {
+        allow read: if isOriginalPair();
+        allow write: if false;
+      }
+    }
+    match /config/{docId} {
+      allow read: if isOriginalPair();
+      allow write: if false;
+    }
+  }
+}

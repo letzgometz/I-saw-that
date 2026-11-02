@@ -235,7 +235,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut }
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { initializeFirestore, getFirestore, persistentLocalCache, persistentMultipleTabManager,
-  collection, doc, onSnapshot, getDocs, setDoc, writeBatch }
+  collection, doc, onSnapshot, getDoc, getDocs, setDoc, updateDoc, deleteDoc, writeBatch,
+  query, where, limit, arrayUnion, arrayRemove }
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // House lights: paper by default, lamplight when asked, remembered per device.
@@ -252,9 +253,10 @@ const S = {
   openId: null, openPages: null, query: "", lightbox: null, backupText: "", pasteText: "",
   busy: false, adding: false, moving: false, error: "", toast: "", syncing: false,
   cfg: { key:"", model:"claude-sonnet-5" }, keyDraft: null, modelDraft: null, pageTarget: "tray",
-  kindFilter: "All", sort: "new", mergeWith: null, mergeChecked: false, busyNote: "", lastSkipped: null, dupDismissed: {}, selectMode: false, picked: {}, dupLoose: false
+  kindFilter: "All", sort: "new", mergeWith: null, mergeChecked: false, busyNote: "", lastSkipped: null, dupDismissed: {}, selectMode: false, picked: {}, dupLoose: false,
+  logId: null, log: null, members: [], legacyCount: null, joinCode: "", inviteEmail: "", logNameDraft: "", inviteCode: ""
 };
-let db = null, auth = null, unsub = null, unsubCfg = null, toastTimer = null;
+let db = null, auth = null, unsub = null, unsubCfg = null, unsubLog = null, unsubMembers = null, toastTimer = null;
 
 function say(msg){ S.toast = msg; render();
   clearTimeout(toastTimer); toastTimer = setTimeout(() => { S.toast = ""; render(); }, 4000); }
@@ -273,6 +275,106 @@ function apiModel(){ return (S.cfg.model || lsGet(LK.model) || "claude-sonnet-5"
 function legacyLog(){
   if (lsGet(LK.moved)) return null;
   try { const l = JSON.parse(lsGet(LK.legacy) || "[]"); return l.length ? l : null; } catch { return null; }
+}
+
+/* ============ where this log's data lives ============ */
+// Everything hangs off logs/{logId}. A log has members; that is what sharing means.
+function showsCol(){ return collection(db, "logs", S.logId, "shows"); }
+function showDoc(id){ return doc(db, "logs", S.logId, "shows", id); }
+function pagesCol(id){ return collection(db, "logs", S.logId, "shows", id, "pages"); }
+function pageDoc(id, n){ return doc(db, "logs", S.logId, "shows", id, "pages", pad(n)); }
+function cfgDoc(){ return doc(db, "logs", S.logId, "config", "claude"); }
+function userDoc(uid){ return doc(db, "users", uid); }
+
+/* ============ logs: finding, making, joining ============ */
+// Membership is a document per person at logs/{logId}/members/{uid}, not an array
+// on the log. That lets the rules prove a join: you create your own membership
+// document and point it at the invitation you claimed.
+function newLogId(){ return "lg_" + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+function makeCode(){
+  const abc = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";   // no look-alike characters
+  let c = ""; for(let i=0;i<6;i++) c += abc[Math.floor(Math.random()*abc.length)];
+  return c;
+}
+function memberDoc(logId, uid){ return doc(db, "logs", logId, "members", uid); }
+
+async function createLog(name){
+  const id = newLogId();
+  const b = writeBatch(db);
+  b.set(doc(db, "logs", id), {
+    id, name: name || ((firstName(S.user) || "My") + "'s log"),
+    createdBy: S.user.uid, createdAt: Date.now()
+  });
+  b.set(memberDoc(id, S.user.uid), {
+    uid: S.user.uid, name: firstName(S.user) || S.user.email,
+    email: S.user.email, joinedAt: Date.now(), founder: true
+  });
+  b.set(userDoc(S.user.uid), { uid:S.user.uid, email:S.user.email, logId:id, updatedAt:Date.now() });
+  await b.commit();
+  return id;
+}
+
+async function joinByCode(code){
+  code = (code||"").trim().toUpperCase();
+  if(code.length < 4) throw new Error("That code looks too short.");
+  const snap = await getDoc(doc(db, "invites", code));
+  if(!snap.exists()) throw new Error("No invitation with that code. Check it with whoever sent it.");
+  const inv = snap.data();
+  if(inv.usedBy && inv.usedBy !== S.user.uid) throw new Error("That invitation has already been used.");
+  if(inv.expiresAt && inv.expiresAt < Date.now()) throw new Error("That invitation has expired.");
+  // claim it first, so the membership rule has something to verify against
+  await setDoc(doc(db, "invites", code), { usedBy: S.user.uid, usedAt: Date.now() }, { merge:true });
+  await setDoc(memberDoc(inv.logId, S.user.uid), {
+    uid: S.user.uid, name: firstName(S.user) || S.user.email,
+    email: S.user.email, joinedAt: Date.now(), viaCode: code
+  });
+  await setDoc(userDoc(S.user.uid), { uid:S.user.uid, email:S.user.email, logId:inv.logId, updatedAt:Date.now() }, { merge:true });
+  return inv.logId;
+}
+
+async function makeInvite(){
+  const code = makeCode();
+  await setDoc(doc(db, "invites", code), {
+    code, logId: S.logId, logName: (S.log && S.log.name) || "",
+    createdBy: S.user.uid, createdAt: Date.now(),
+    expiresAt: Date.now() + 1000*60*60*24*30, usedBy: null
+  });
+  return code;
+}
+
+async function leaveLog(){
+  await deleteDoc(memberDoc(S.logId, S.user.uid));
+  await setDoc(userDoc(S.user.uid), { logId: null, updatedAt: Date.now() }, { merge:true });
+}
+
+// The original two-person archive sits at the top level. Copy it across rather
+// than move it; the old copy stays untouched until it is no longer wanted.
+async function countLegacy(){
+  try { return (await getDocs(query(collection(db, "shows"), limit(1000)))).size; }
+  catch { return 0; }
+}
+
+async function migrateLegacy(){
+  const snap = await getDocs(collection(db, "shows"));
+  const docs = snap.docs;
+  let moved = 0, pages = 0;
+  for(let i = 0; i < docs.length; i++){
+    if(i % 10 === 0){
+      S.busyNote = "Copying your archive \u2014 " + i + " of " + docs.length;
+      render(); await new Promise(r => setTimeout(r, 0));
+    }
+    const d = docs[i];
+    const b = writeBatch(db);
+    b.set(showDoc(d.id), d.data());
+    try {
+      const ps = await getDocs(collection(db, "shows", d.id, "pages"));
+      ps.forEach(pg => { b.set(pageDoc(d.id, pg.data().n || 0), pg.data()); pages++; });
+    } catch {}
+    await b.commit();
+    moved++;
+  }
+  S.busyNote = "";
+  return { moved, pages };
 }
 
 /* ============ dates ============ */
@@ -333,7 +435,7 @@ async function preparePage(file, i){
 }
 
 /* ============ reading a program ============ */
-const BUILD = "v21";
+const BUILD = "v22";
 const KINDS = ["Theatre", "Musical", "Opera", "Classical", "Jazz", "Cabaret", "Dance", "Other"];
 function kindOf(e){ return (e && KINDS.includes(e.kind)) ? e.kind : "Unsorted"; }
 
@@ -437,27 +539,27 @@ function copyText(text){
 
 /* ============ the shared log ============ */
 async function loadPages(id){
-  const snap = await getDocs(collection(db, "shows", id, "pages"));
+  const snap = await getDocs(pagesCol(id));
   return snap.docs.map(d => d.data()).sort((a,b) => a.n - b.n);
 }
 async function writeShow(rec, pages){
   const b = writeBatch(db);
-  b.set(doc(db, "shows", rec.id), clean(rec));
+  b.set(showDoc(rec.id), clean(rec));
   if (Array.isArray(pages)){
-    const existing = await getDocs(collection(db, "shows", rec.id, "pages"));
+    const existing = await getDocs(pagesCol(rec.id));
     existing.forEach(p => b.delete(p.ref));          // clear the old set first
     pages.forEach((p, i) => {
       const v = typeof p === "string" ? { thumb:p, full:p } : p;
-      b.set(doc(db, "shows", rec.id, "pages", pad(i)), { n:i, thumb:v.thumb || v.full, full:v.full || v.thumb });
+      b.set(pageDoc(rec.id, i), { n:i, thumb:v.thumb || v.full, full:v.full || v.thumb });
     });
   }
   return b.commit();
 }
 async function removeShow(id){
-  const pages = await getDocs(collection(db, "shows", id, "pages"));
+  const pages = await getDocs(pagesCol(id));
   const b = writeBatch(db);
   pages.forEach(p => b.delete(p.ref));
-  b.delete(doc(db, "shows", id));
+  b.delete(showDoc(id));
   return b.commit();
 }
 async function importShows(entries, pagesMap){
@@ -497,10 +599,49 @@ function viewGate(){
     + '<button class="btn" style="max-width:260px;margin:0 auto" data-act="signin">Sign in with Google</button>'
     + (S.error ? '<p class="small" style="color:var(--brass);margin-top:18px">'+esc(S.error)+'</p>' : '') + '</div>';
   if (S.phase === "denied") return '<div class="gate"><h1 style="margin-bottom:14px">I Saw That</h1>'
-    + '<p class="muted">You are signed in as '+esc(S.user && S.user.email)+', but this account is not allowed into the log. '
-    + 'The allowed addresses are set in the Firestore rules in the Firebase console.</p>'
+    + '<p class="muted">You are signed in as '+esc(S.user && S.user.email)+', but this account cannot open that log. '
+    + 'Ask whoever shared it to send you an invitation.</p>'
     + '<button class="btn ghost" style="max-width:260px;margin:0 auto" data-act="signout">Sign out</button></div>';
+
+  if (S.phase === "setup") return viewSetup();
   return '<div class="gate"><p class="muted">Opening the log…</p></div>';
+}
+
+// First time in: start a log, or join one someone shared.
+function viewSetup(){
+  let h = '<div class="gate" style="max-width:520px;margin:0 auto;text-align:left">';
+  h += '<h1 style="margin-bottom:6px">Welcome</h1>'
+     + '<p class="small muted">Signed in as ' + esc(S.user.email) + '</p>';
+
+  if (S.legacyCount > 0){
+    h += '<div class="card" style="margin-top:20px">'
+      + '<div class="eyebrow">Your existing archive</div>'
+      + '<p class="small" style="margin-top:0">There are <b>' + S.legacyCount + ' shows</b> in the original log. '
+      + 'Starting a log here copies them across. The originals stay exactly where they are, '
+      + 'so nothing is at risk if this goes wrong.</p>'
+      + '<button class="btn" data-act="setupmigrate"' + (S.busyNote ? ' disabled' : '') + '>'
+      + 'Start my log and copy those ' + S.legacyCount + ' shows</button>'
+      + '</div>';
+  }
+
+  h += '<div class="card" style="margin-top:16px">'
+    + '<div class="eyebrow">Start fresh</div>'
+    + '<p class="small" style="margin-top:0">A new, empty log of your own. You can invite someone to share it later.</p>'
+    + '<label><span>What should it be called?</span><input type="text" data-field="logname" placeholder="'
+    + esc((firstName(S.user) || "My") + "'s log") + '" value="' + esc(S.logNameDraft || "") + '"></label>'
+    + '<button class="btn" data-act="setupcreate"' + (S.busyNote ? ' disabled' : '') + '>Create my log</button>'
+    + '</div>';
+
+  h += '<div class="card" style="margin-top:16px">'
+    + '<div class="eyebrow">Join someone else\'s</div>'
+    + '<p class="small" style="margin-top:0">If someone shared their log with you, put their invitation code in here.</p>'
+    + '<label><span>Invitation code</span><input type="text" data-field="joincode" placeholder="ABC123" '
+    + 'autocapitalize="characters" autocorrect="off" spellcheck="false" value="' + esc(S.joinCode || "") + '"></label>'
+    + '<button class="btn ghost" data-act="setupjoin"' + (S.busyNote ? ' disabled' : '') + '>Join that log</button>'
+    + '</div>';
+
+  h += '<button class="btn ghost" style="margin-top:16px" data-act="signout">Sign out</button></div>';
+  return h;
 }
 
 // the rows the current search and filters are showing, in the chosen order
@@ -884,6 +1025,31 @@ function viewSeason(){
     + '<textarea rows="3" data-field="paste" placeholder="Paste a backup here">'+esc(S.pasteText)+'</textarea>'
     + '<button class="btn ghost" style="margin-top:10px" data-act="restorepaste"'+(S.moving?" disabled":"")+'>Restore from pasted text</button>'
     + '<button class="btn ghost" data-act="restorefile"'+(S.moving?" disabled":"")+'>Restore from a file</button>';
+  // who else can see this log
+  const mem = S.members || [];
+  h += '<div class="hr"></div><div class="eyebrow">Who shares this log</div>'
+    + '<p class="small muted" style="margin-top:0">'
+    + esc((S.log && S.log.name) || "This log") + ' \u2014 '
+    + mem.length + (mem.length === 1 ? ' person' : ' people') + '.</p>';
+  mem.forEach(function(m){
+    const isMe = m.uid === S.user.uid;
+    h += '<div class="kv"><span>' + esc(m.name || m.email || "Someone")
+      + (isMe ? ' <span class="muted">(you)</span>' : '') + '</span><i class="lead"></i>'
+      + '<span>' + (isMe
+          ? '<button class="btn sm ghost" data-act="leavelog">Leave</button>'
+          : '<span class="muted tiny">' + esc(m.email || "") + '</span>')
+      + '</span></div>';
+  });
+  if(S.inviteCode){
+    h += '<div style="border:1px solid var(--brass);background:var(--stock);padding:14px;margin-top:12px">'
+      + '<p class="small" style="margin:0 0 8px">Give them this code. It works once, and expires in 30 days.</p>'
+      + '<div class="row"><span class="serif" style="font-size:26px;letter-spacing:.14em">' + esc(S.inviteCode) + '</span>'
+      + '<button class="btn sm" data-act="copyinvite">Copy</button></div></div>';
+  } else {
+    h += '<button class="btn ghost" style="margin-top:10px" data-act="makeinvite"'
+      + (S.busyNote ? ' disabled' : '') + '>Invite someone to share this log</button>';
+  }
+
   h += '<div class="hr"></div><div class="eyebrow">Settings</div>'
     + '<p class="small muted" style="margin-top:0">Reading playbills uses a Claude API key, billed to that Anthropic account. It is stored in your shared database, so you enter it once and it works on every device for both of you.</p>'
     + '<p class="small" style="color:'+(apiKey()?'var(--brass)':'var(--muted)')+'">'
@@ -915,7 +1081,8 @@ function render(){
   let head = '<div class="marquee"><span>I Saw That</span></div>'
     + '<div class="colophon">'
     + '<span>' + S.entries.length + (S.entries.length===1 ? " performance" : " performances") + '</span>'
-    + '<span>shared log</span>'
+    + '<span>' + esc((S.log && S.log.name) || "my log") + '</span>'
+    + ((S.members||[]).length > 1 ? '<span>shared</span>' : '')
     + '<span>' + (S.syncing ? "syncing" : "saved") + '</span>'
     + '<span>' + BUILD + '</span></div>'
     + '<button class="lights" data-act="lights">' + (lightsDown ? "Raise the houselights" : "Dim the houselights") + '</button>'
@@ -1182,7 +1349,7 @@ async function classifyUnsorted(){
     let n = 0;
     todo.forEach(e => {
       const k = map[e.id];
-      if(KINDS.includes(k)){ b.set(doc(db, "shows", e.id), { kind:k }, { merge:true }); n++; }
+      if(KINDS.includes(k)){ b.set(showDoc(e.id), { kind:k }, { merge:true }); n++; }
     });
     if(!n) throw new Error("Nothing came back that I could use.");
     await b.commit();
@@ -1231,6 +1398,54 @@ async function handleClick(ev){
     return;
   }
   if(act==="signout"){ await signOut(auth); return; }
+  if(act==="setupcreate"){
+    S.busyNote = "Creating your log\u2026"; render();
+    try {
+      const id = await createLog((S.logNameDraft||"").trim());
+      S.busyNote = ""; S.legacyCount = null;
+      openLog(id);
+    } catch(err){ S.busyNote = ""; fail("Could not create the log: " + (err.message || err.code)); }
+    return;
+  }
+  if(act==="setupmigrate"){
+    S.busyNote = "Creating your log\u2026"; render();
+    try {
+      const id = await createLog((S.logNameDraft||"").trim());
+      S.logId = id;
+      const r = await migrateLegacy();
+      S.busyNote = ""; S.legacyCount = null;
+      openLog(id);
+      say("Copied " + r.moved + " shows and " + r.pages + " programme pages into your log");
+    } catch(err){ S.busyNote = ""; fail("The copy stopped partway: " + (err.message || err.code) + ". Nothing was removed from the original."); }
+    return;
+  }
+  if(act==="setupjoin"){
+    S.busyNote = "Looking up that code\u2026"; render();
+    try {
+      const id = await joinByCode(S.joinCode);
+      S.busyNote = ""; S.joinCode = ""; S.legacyCount = null;
+      openLog(id);
+      say("You are in");
+    } catch(err){ S.busyNote = ""; fail(err.message || String(err)); }
+    return;
+  }
+  if(act==="makeinvite"){
+    S.busyNote = "Making an invitation\u2026"; render();
+    try { S.inviteCode = await makeInvite(); S.busyNote = ""; render(); }
+    catch(err){ S.busyNote = ""; fail("Could not create an invitation: " + (err.message || err.code)); }
+    return;
+  }
+  if(act==="copyinvite"){ return copyText(S.inviteCode); }
+  if(act==="leavelog"){
+    if(!confirm("Leave this log? The shows stay with whoever else is in it, and you will need a new invitation to come back.")) return;
+    try {
+      await leaveLog();
+      S.legacyCount = await countLegacy();
+      S.phase = "setup"; S.logId = null; S.log = null; S.members = []; S.entries = [];
+      return render();
+    } catch(err){ return fail("Could not leave: " + (err.message || err.code)); }
+  }
+
   if(act==="tab"){ if(S.tab==="log" && arg!=="log") pushView(); S.tab = arg; S.openId = null; S.error = ""; return render(); }
   if(act==="lights"){
     const el = document.documentElement;
@@ -1409,7 +1624,7 @@ async function handleClick(ev){
     lsSet(LK.key, key); lsSet(LK.model, model);          // cached here for offline use
     S.cfg = { key, model }; S.keyDraft = null; S.modelDraft = null;
     say("Key saved — it works on both your phones now");
-    setDoc(doc(db, "config", "claude"), { key, model, updatedAt: Date.now(), setBy: firstName(S.user) })
+    setDoc(cfgDoc(), { key, model, updatedAt: Date.now(), setBy: firstName(S.user) })
       .catch(err => fail("Saved on this device, but it did not reach the shared database: " + (err.message || err.code)));
     return;
   }
@@ -1420,6 +1635,8 @@ appEl.addEventListener("input", ev => {
   const val = ev.target.value;
   if(f==="query"){ S.query = val; return render(); }
   if(f==="paste"){ S.pasteText = val; return; }
+  if(f==="joincode"){ S.joinCode = val; return; }
+  if(f==="logname"){ S.logNameDraft = val; return; }
   if(f==="apikey"){ S.keyDraft = val; return; }
   if(f==="model"){ S.modelDraft = val; return; }
   if(!S.draft) return;
@@ -1471,32 +1688,67 @@ else {
   catch { db = getFirestore(fb); }
   render();
 
-  onAuthStateChanged(auth, user => {
+  onAuthStateChanged(auth, async user => {
     if (unsub) { unsub(); unsub = null; }
     if (unsubCfg) { unsubCfg(); unsubCfg = null; }
-    S.user = user; S.entries = []; S.openId = null; S.draft = null;
+    if (unsubLog) { unsubLog(); unsubLog = null; }
+    if (unsubMembers) { unsubMembers(); unsubMembers = null; }
+    S.user = user; S.members = []; S.entries = []; S.openId = null; S.draft = null;
+    S.logId = null; S.log = null;
     if (!user) { S.phase = "signin"; return render(); }
     S.phase = "loading"; render();
 
-    // the Claude key, shared between both of you
-    S.cfg = { key: lsGet(LK.key) || "", model: lsGet(LK.model) || "claude-sonnet-5" };
-    unsubCfg = onSnapshot(doc(db, "config", "claude"), snap => {
-      if (!snap.exists()) return;
-      const d = snap.data() || {};
-      if (d.key) { S.cfg = { key: d.key, model: d.model || "claude-sonnet-5" };
-        lsSet(LK.key, d.key); lsSet(LK.model, S.cfg.model); }
-      if (S.tab === "season" && S.keyDraft === null) render();
-    }, () => {});
-    unsub = onSnapshot(collection(db, "shows"), { includeMetadataChanges: true }, snap => {
-      S.entries = sortEntries(snap.docs.map(d => d.data()));
-      S.syncing = snap.metadata.hasPendingWrites;
-      S.phase = "app";
-      // don't yank a form out from under someone mid-edit
-      if (!(S.tab === "add" && S.draft) && !(S.tab === "season" && (S.keyDraft !== null || S.modelDraft !== null))) render();
-    }, err => {
-      if (err.code === "permission-denied") { S.phase = "denied"; render(); }
-      else { S.phase = "app"; fail("Could not open the shared log: " + (err.message || err.code)); }
-    });
+    // Which log is this person's? New accounts have none yet.
+    let logId = null;
+    try {
+      const u = await getDoc(userDoc(user.uid));
+      if (u.exists() && u.data().logId) logId = u.data().logId;
+    } catch {}
+
+    if (!logId) {
+      // An existing two-person archive sits at the old top-level path.
+      S.legacyCount = await countLegacy();
+      S.phase = "setup"; return render();
+    }
+    openLog(logId);
+  });
+}
+
+function openLog(logId){
+  S.logId = logId;
+  S.phase = "loading"; render();
+
+  if (unsubLog) unsubLog();
+  unsubLog = onSnapshot(doc(db, "logs", logId), snap => {
+    S.log = snap.exists() ? snap.data() : null;
+    if (S.phase === "app" && S.tab === "season") render();
+  }, () => {});
+
+  if (unsubMembers) unsubMembers();
+  unsubMembers = onSnapshot(collection(db, "logs", logId, "members"), snap => {
+    S.members = snap.docs.map(d => d.data());
+    if (S.phase === "app" && S.tab === "season") render();
+  }, () => {});
+
+  S.cfg = { key: lsGet(LK.key) || "", model: lsGet(LK.model) || "claude-sonnet-5" };
+  if (unsubCfg) unsubCfg();
+  unsubCfg = onSnapshot(cfgDoc(), snap => {
+    if (!snap.exists()) return;
+    const d = snap.data() || {};
+    if (d.key) { S.cfg = { key: d.key, model: d.model || "claude-sonnet-5" };
+      lsSet(LK.key, d.key); lsSet(LK.model, S.cfg.model); }
+    if (S.tab === "season" && S.keyDraft === null) render();
+  }, () => {});
+
+  if (unsub) unsub();
+  unsub = onSnapshot(showsCol(), { includeMetadataChanges: true }, snap => {
+    S.entries = sortEntries(snap.docs.map(d => d.data()));
+    S.syncing = snap.metadata.hasPendingWrites;
+    S.phase = "app";
+    if (!(S.tab === "add" && S.draft) && !(S.tab === "season" && (S.keyDraft !== null || S.modelDraft !== null))) render();
+  }, err => {
+    if (err.code === "permission-denied") { S.phase = "denied"; render(); }
+    else { S.phase = "app"; fail("Could not open the log: " + (err.message || err.code)); }
   });
 }
 </script>
