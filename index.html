@@ -135,7 +135,7 @@
   .seg.on{border-color:var(--brass);color:var(--brass);background:var(--stock)}
 
   /* --- the log: an index of performances, ruled, not boxed --- */
-  .stub{display:flex;align-items:flex-start;width:100%;background:none;border:0;
+  .stub{position:relative;display:flex;align-items:flex-start;width:100%;background:none;border:0;
     border-bottom:1px solid var(--line);text-align:left;padding:14px 2px;color:inherit;gap:16px}
   .stub:hover{background:var(--stock)}
   .stub.picked{background:var(--stock);box-shadow:inset 3px 0 0 var(--brass)}
@@ -174,6 +174,12 @@
   button.kv{cursor:pointer;border-bottom:1px solid transparent}
   button.kv:hover{color:var(--brass)}
 
+  /* what you thought: the one part of an entry nobody else could have written */
+  .impressions{margin:16px 0 0;padding:2px 0 2px 16px;border-left:2px solid var(--brassDim)}
+  .impressions p{font-family:var(--display);font-size:16.5px;line-height:1.6;margin:0 0 .7em;color:var(--paper)}
+  .impressions p:last-child{margin-bottom:0}
+  .wrote{position:absolute;right:2px;top:12px;font-family:var(--display);font-size:30px;
+    line-height:1;color:var(--brassDim);opacity:.55}
   .hr{height:0;border-top:1px solid var(--line);margin:18px 0}
   .orn{text-align:center;color:var(--muted);font-size:18px;line-height:1;margin:20px 0 16px;
     font-family:var(--display)}
@@ -333,7 +339,7 @@ async function preparePage(file, i){
 }
 
 /* ============ reading a program ============ */
-const BUILD = "v21";
+const BUILD = "v24";
 const KINDS = ["Theatre", "Musical", "Opera", "Classical", "Jazz", "Cabaret", "Dance", "Other"];
 function kindOf(e){ return (e && KINDS.includes(e.kind)) ? e.kind : "Unsorted"; }
 
@@ -509,7 +515,7 @@ function visibleLog(){
   let list = S.entries.slice();
   if (S.kindFilter !== "All") list = list.filter(e => kindOf(e) === S.kindFilter);
   if (q) list = list.filter(e => {
-    if([e.title,e.venue,e.city,e.company,e.notes,e.addedByName,e.kind,e.director].join(" ").toLowerCase().includes(q)) return true;
+    if([e.title,e.venue,e.city,e.company,e.notes,e.impressions,e.addedByName,e.kind,e.director].join(" ").toLowerCase().includes(q)) return true;
     if((e.creatives||[]).some(c => (c.name+" "+c.role).toLowerCase().includes(q))) return true;
     return (e.cast||[]).concat(e.understudies||[]).some(c => (c.actor+" "+c.role).toLowerCase().includes(q));
   });
@@ -536,7 +542,7 @@ function viewLog(){
     + ' from the earlier, unshared version. <button class="btn sm" style="margin-top:10px" data-act="movelegacy"'
     + (S.moving?" disabled":"")+'>'+(S.moving?"Moving…":"Move them into the shared log")+'</button></div>';
 
-  h += '<label style="margin-bottom:10px"><input type="text" placeholder="Search titles, people, venues, notes" value="'+esc(S.query)+'" data-field="query"></label>';
+  h += '<label style="margin-bottom:10px"><input type="text" placeholder="Search titles, people, venues, what you wrote" value="'+esc(S.query)+'" data-field="query"></label>';
 
   if(S.selectMode){
     const n = Object.keys(S.picked).length;
@@ -581,7 +587,7 @@ function viewLog(){
     const inKind = S.kindFilter === "All" ? S.entries
       : S.entries.filter(e => kindOf(e) === S.kindFilter);
     const qOnly = q ? S.entries.filter(e =>
-        [e.title,e.venue,e.city,e.company,e.notes,e.addedByName,e.kind,e.director].join(" ").toLowerCase().includes(q)
+        [e.title,e.venue,e.city,e.company,e.notes,e.impressions,e.addedByName,e.kind,e.director].join(" ").toLowerCase().includes(q)
         || (e.creatives||[]).some(c => (c.name+" "+c.role).toLowerCase().includes(q))
         || (e.cast||[]).concat(e.understudies||[]).some(c => (c.actor+" "+c.role).toLowerCase().includes(q))) : [];
     let msg, fix = "";
@@ -616,6 +622,7 @@ function viewLog(){
       + '<span class="title truncate">'+esc(e.title)+'</span>'
       + '<span class="credit truncate"><span class="k">'+esc(kindOf(e))+'</span> at '+esc(where)+'</span>'
       + (names ? '<span class="players truncate">'+esc(names)+'</span>' : '')
+      + (e.impressions ? '<span class="wrote">\u201c</span>' : '')
       + '</span></button>';
   }).join("");
 }
@@ -636,6 +643,7 @@ function viewDetail(){
   if(e.director) h += '<div class="small dim" style="text-align:center;margin-top:12px">Directed by '+esc(e.director)+'</div>';
   if(e.company) h += '<div class="tiny muted" style="text-align:center;margin-top:3px">'+esc(e.company)+'</div>';
   if(e.notes) h += '<div class="small dim" style="margin-top:8px">'+esc(e.notes)+'</div>';
+  if(e.impressions) h += '<div class="impressions">' + esc(e.impressions).replace(/\n+/g, '</p><p>').replace(/^/, '<p>') + '</p></div>';
   if((e.creatives||[]).length) h += '<div class="hr"></div>' + e.creatives.map(c =>
       '<div class="kv"><span class="muted">'+esc(c.role)+'</span><i class="lead"></i><span>'+esc(c.name)+'</span></div>').join("");
   h += '<div class="orn">❧</div><div class="eyebrow">Cast</div>';
@@ -725,6 +733,7 @@ function viewReview(){
     + '<label><span>Cast — one per line, “Actor as Role”</span><textarea rows="8" data-field="castText">'+esc(d.castText)+'</textarea></label>'
     + '<label><span>Understudies and standbys — “Actor as Role”</span><textarea rows="5" data-field="understudyText">'+esc(d.understudyText)+'</textarea></label>'
     + '<label><span>Notes</span><input type="text" data-field="notes" value="'+esc(d.notes)+'" placeholder="Understudy on, seats, who came along"></label>'
+    + '<label><span>What did you think?</span><textarea rows="6" data-field="impressions" placeholder="Worth writing down now \u2014 it is the part you will not remember in ten years.">'+esc(d.impressions)+'</textarea></label>'
     + '<div style="display:flex;gap:10px"><button class="btn" style="margin:0" data-act="save">File this show</button>'
     + '<button class="btn ghost" style="margin:0;width:auto;padding:14px 18px" data-act="discard">Discard</button></div></div>';
   return h;
@@ -787,6 +796,10 @@ async function mergePair(keepId, dropId){
   if(!(merged.cast||[]).length && (drop.cast||[]).length) merged.cast = drop.cast;
   if(!(merged.understudies||[]).length && (drop.understudies||[]).length) merged.understudies = drop.understudies;
   if(!(merged.creatives||[]).length && (drop.creatives||[]).length) merged.creatives = drop.creatives;
+  // never lose something somebody wrote
+  if(!(merged.impressions||"").trim() && (drop.impressions||"").trim()) merged.impressions = drop.impressions;
+  else if((drop.impressions||"").trim() && !(merged.impressions||"").includes(drop.impressions.trim()))
+    merged.impressions = (merged.impressions || "").trim() + "\n\n" + drop.impressions.trim();
   const dn = (drop.notes||"").replace(/Imported from calendar[^.]*\.?/i,"").trim();
   if(dn && !(merged.notes||"").includes(dn)) merged.notes = merged.notes ? merged.notes + " " + dn : dn;
   merged.notes = (merged.notes||"").replace(/Imported from calendar[^.]*\.?/i,"").trim();
@@ -971,6 +984,7 @@ function newDraft(base){
     dateInfo: base.dateInfo || { exact:"", rangeStart:"", rangeEnd:"", printed:"" },
     creativesText: (base.creatives||[]).map(c => (c.role ? c.role + ": " : "") + c.name).join("\n"),
     castText: castToText(base.cast), understudyText: castToText(base.understudies), notes: base.notes||"",
+    impressions: base.impressions||"",
     pageViews: base.pageViews||[], pagesNew: !!base.pagesNew,
     dateAuto: auto,
     addedBy: base.addedBy, addedByName: base.addedByName, savedAt: base.savedAt
@@ -1077,7 +1091,7 @@ function saveDraft(){
     company:d.company, venue:d.venue, city:d.city,
     dateSeen:d.dateSeen, datePrecision:precisionOf(d.dateSeen) || d.datePrecision,
     dateInfo:d.dateInfo, creatives:textToCreatives(d.creativesText), cast:textToCast(d.castText),
-    understudies:textToCast(d.understudyText), notes:d.notes,
+    understudies:textToCast(d.understudyText), notes:d.notes, impressions:(d.impressions||"").trim(),
     pageCount:(d.pageViews||[]).length, savedAt:d.savedAt || Date.now(), updatedAt:Date.now(),
     addedBy:d.addedBy || S.user.email, addedByName:d.addedByName || firstName(S.user),
     fromCalendar: d.fromCalendar && !(d.cast||[]).length ? true : false
@@ -1192,10 +1206,10 @@ async function classifyUnsorted(){
 }
 
 function exportCsv(){
-  const rows = [["Date seen","Printed on program","Title","Kind","Director","Venue","City","Company","Cast","Understudies","Notes","Filed by"]];
+  const rows = [["Date seen","Printed on program","Title","Kind","Director","Venue","City","Company","Cast","Understudies","Notes","What you thought","Filed by"]];
   S.entries.forEach(e => rows.push([e.dateSeen, (e.dateInfo&&e.dateInfo.printed)||"", e.title, e.kind||"", e.director||"", e.venue, e.city, e.company,
     (e.cast||[]).map(c => c.actor + (c.role?" as "+c.role:"")).join("; "),
-    (e.understudies||[]).map(c => c.actor + (c.role?" as "+c.role:"")).join("; "), e.notes, e.addedByName]));
+    (e.understudies||[]).map(c => c.actor + (c.role?" as "+c.role:"")).join("; "), e.notes, e.impressions||"", e.addedByName]));
   S.backupText = rows.map(r => r.map(v => '"' + String(v==null?"":v).replace(/"/g,'""') + '"').join(",")).join("\n");
   download(S.backupText, "i-saw-that.csv", "text/csv");
   render();
@@ -1285,6 +1299,7 @@ async function handleClick(ev){
     d.city = d.city || m.city;
     d.company = d.company || m.company;
     d.director = d.director || m.director;
+    if(!(d.impressions||"").trim() && (m.impressions||"").trim()) d.impressions = m.impressions;
     d.notes = (m.notes && !/Imported from calendar/i.test(m.notes) && m.notes !== d.notes)
       ? (d.notes ? m.notes + " — " + d.notes : m.notes) : d.notes;
     d.addedBy = m.addedBy; d.addedByName = m.addedByName; d.savedAt = m.savedAt;
